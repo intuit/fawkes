@@ -1,0 +1,51 @@
+{
+    "app": "sample-mint",
+    "elastic-search-index": "elastic-search-index",
+    "elastic-search-url": "elastic-search-url",
+    "kibana-dashboard-url": "kibana-dashboard-url",
+    "lifetime-rating-elastic-search-index": "lifetime-rating-elastic-search-index",
+    "app-logo": "app-logo",
+    "email-time-span": "week",
+    "bug-feature-file": "app/bug-feature-keywords.json",
+    "topic-keywords-file": "app/app-keywords.json",
+    "categorization-algorithm": "text-match-classifier",
+    "algorithm-days-filter": 1000,
+    "email-subject-name": "email-subject-name",
+    "sender-email-address": "sender-email-address",
+    "email-list": [],
+    "sendgrid-api-key": "sendgrid-api-key",
+    "slackbot-run-interval": 60,
+    "slack-hook-url": "slack-hook-url",
+    "slack-channel": "#slack-channel",
+    "slack-tags": {
+        "category": {
+            "Notification": []
+        },
+        "keywords": {
+            "crash": ["@slack-user-name"]
+        }
+    },
+    "jira": {
+        "project-id": "project-id",
+        "story-issue-type": "12",
+        "bug-issue-type": "1",
+        "base-url": "base-url"
+    },
+    "env-keys": [],
+    "review-channels": [
+        {
+            "channel-type": "ios",
+            "channel-name": "appstore",
+            "file-type": "json",
+            "is-channel-enabled": true,
+            "weekly-summary": true,
+            "timestamp-key": "updated",
+            "timezone": "UTC",
+            "message-key": "content",
+            "fetch-cron-tab": "@daily",
+            "slack-channel": null,
+            "app-id": "300238550",
+            "country": "us"
+        }
+    ]
+}

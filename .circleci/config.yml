@@ -1,0 +1,20 @@
+# trigger build
+version: 2
+debug: true
+jobs:
+  test:
+    docker:
+      - image: circleci/python:3.7.3
+    steps:
+      - checkout
+      - run:
+          name: "Installing Dependencies"
+          command: "sudo pip3 install -r requirements.txt"
+      - run:
+          name: "Running the Unit Tests"
+          command: "coverage run tests/sanity.py"
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test

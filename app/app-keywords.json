@@ -1,0 +1,56 @@
+{
+  "User Experience": [
+    "new update",
+    "update",
+    "latest",
+    "swipe",
+    "multiple scrolls",
+    "multiple scroll",
+    "UI",
+    "UX",
+    "new user interface",
+    "cards",
+    "revert",
+    "roll back",
+    "layout",
+    "navigate"
+  ],
+  "sign-in/sign-up" : [
+    "Sign-In Sign-Up",
+    "Password Reset",
+    "Change Email Address",
+    "Delete Account",
+    "Unlock or recover  account",
+    "Invalid credentials",
+    "blocked",
+    "turbotax account not working with",
+    "lock",
+    "fingerprint"
+  ],
+  "Notification" : [
+    "Alerts Notification",
+    "Bill Reminders",
+    "Marketing bill update Notifications",
+    "unsubscribe from  notifications",
+    "not receiving Notifications",
+    "push notification",
+    "email",
+    "notify"
+  ],
+  "Application" : [
+    "Application",
+    "report a bug in",
+    "Mobile app is crashing",
+    "how to use  app",
+    "version",
+    "web",
+    "website",
+    "desktop"
+  ],
+  "ads" : [
+    "offer",
+    "advertisement",
+    "ads",
+    "free"
+  ]
+}

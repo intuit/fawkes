@@ -1,0 +1,114 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "app": {
+            "type": "string",
+            "minLength": 1,
+            "title": "App. Name",
+            "description": "App. Name"
+        },
+        "elastic-search-index": {
+            "type": "string",
+            "minLength": 1,
+            "title": "",
+            "description": "The elastic search index to upload data to."
+        },
+        "elastic-search-url": {
+            "type": "string",
+            "minLength": 1,
+            "title": "",
+            "description": "The elastic search instance url."
+        },
+        "kibana-dashboard-url": {
+            "type": "string",
+            "minLength": 1,
+            "title": "",
+            "description": "The elastic search instance url."
+        },
+        "lifetime-rating-elastic-search-index": {
+            "type": "string",
+            "minLength": 1,
+            "title": "",
+            "description": "The elastic search index to upload the lifetime ratings. It needs to uploaded to a different index because it does not follow the lifecycle of a normal REVIEW."
+        },
+        "app-logo": {
+            "type": "string",
+            "minLength": 1,
+            "title": "",
+            "description": "The URL for the logo of the app."
+        },
+        "email-time-span": {
+            "type": "string",
+            "minLength": 1,
+            "title": "",
+            "description": "The time filter in days to use for sending summary emails."
+        },
+        "custom-code-path": {
+            "type": "string",
+            "minLength": 1,
+            "title": "",
+            "description": "The path for the custom codee file. Custom code can be executed at different points of time. Only for advanced users."
+        },
+        "custom-code-path": {
+            "type": "string",
+            "minLength": 1,
+            "title": "",
+            "description": "The path for the custom codee file. Custom code can be executed at different points of time. Only for advanced users."
+        },
+        "bug-feature-file": {
+            "type": "string",
+            "minLength": 1,
+            "title": "",
+            "description": "The file which contains the weight and keywords for categorizing the user feedback to bugs/features."
+        },
+        "topic-keywords-file": {
+            "type": "string",
+            "minLength": 1,
+            "title": "",
+            "description": "The file which contains the weight and keywords for categorizing the user feedback to different categories."
+        },
+        "algorithm-days-filter": {
+            "type": "number",
+            "title": "",
+            "description": "The filter in days to apply to filter out the feedbacks. This will be applied while parsing, running algorithms etc."
+        },
+        "email-subject-name": {
+            "type": "string",
+            "minLength": 1,
+            "title": "",
+            "description": "The subject name for the summary emails."
+        },
+        "email-list": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "title": "",
+            "description": "The list of email addresses to send the summary email."
+        },
+        "sendgrid-api-key": {
+            "type": "string",
+            "minLength": 1,
+            "title": "",
+            "description": "We use Sendgrid to send emails."
+        },
+        "slackbot-run-interval": {
+            "type": "number",
+            "title": "",
+            "description": "The time interval to filter the feedbacks to send to the slack channel."
+        },
+        "slack-hook-url": {
+            "type": "string",
+            "minLength": 1,
+            "title": "",
+            "description": "The slack web-hook used to send the slack notifications."
+        },
+        "slack-channel": {
+            "type": "string",
+            "minLength": 1,
+            "title": "",
+            "description": "The name of the slack channel."
+        }
+    }
+}

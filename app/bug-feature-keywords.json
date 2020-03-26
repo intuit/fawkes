@@ -1,0 +1,6 @@
+{
+    "bug": ["bug", "fix", "problem", "issue", "defect", "crash", "solve"],
+    "feature": ["add", "please", "could", "would", "hope", "improve", "miss", "need", "prefer", "request", "should", "suggest", "want", "wish"],
+    "user-experience": ["help", "support", "assist", "situation"],
+    "rating": ["Great", "good", "nice", "very", "cool", "love", "hate", "bad", "worst"]
+}
