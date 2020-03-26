@@ -2,7 +2,7 @@
     <img src=".github/Fawkes.svg" height="150"/>
     <h1>fawkes</h1>
     <img src="https://img.shields.io/badge/python-3.7-blue" />
-    <img src="https://img.shields.io/badge/builds-hourly-brightgreen" />
+    <img src="https://circleci.com/gh/intuit/fawkes.svg?style=svg" alt="fawkes-CircleCI-Status"/>
     <img src="https://img.shields.io/badge/contributions-welcome-orange" />
 </div>
 <h2>What's fawkes ?</h2>
@@ -30,7 +30,7 @@
 <h2>Configuration</h2>
 <ul>
     <li>
-        Create a config file for your app. If your app name is mint, create a file like <tr><td><a href="#"><code>mint-config.json</code></a>
+        Create a config file for your app. If your app name is mint, create a file like <tr><td><a href="app/sample-mint-config.json"><code>app/sample-mint-config.json</code></a>
     </li>
     <li>
         There are some app level configs.
