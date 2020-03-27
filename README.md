@@ -3,6 +3,9 @@
     <h1>fawkes</h1>
     <img src="https://img.shields.io/github/v/release/intuit/fawkes" />
     <img src="https://circleci.com/gh/intuit/fawkes.svg?style=svg" alt="fawkes-CircleCI-Status"/>
+    <a href="https://codecov.io/gh/intuit/fawkes">
+        <img src="https://codecov.io/gh/intuit/fawkes/branch/master/graph/badge.svg" />
+    </a>
     <img src="https://img.shields.io/badge/python-3.7-blue" />
     <img src="https://img.shields.io/badge/contributions-welcome-orange" />
 </div>
