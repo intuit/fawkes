@@ -19,3 +19,4 @@ tensorflow
 yapf
 coverage
 codecov
+pre-commit
