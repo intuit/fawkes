@@ -6,6 +6,9 @@
     <a href="https://codecov.io/gh/intuit/fawkes">
         <img src="https://codecov.io/gh/intuit/fawkes/branch/master/graph/badge.svg" />
     </a>
+    <a href="https://github.com/pre-commit/pre-commit">
+        <img src="https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white" alt="pre-commit" style="max-width:100%;">
+    </a>
     <img src="https://img.shields.io/badge/python-3.7-blue" />
     <img src="https://img.shields.io/badge/contributions-welcome-orange" />
 </div>
