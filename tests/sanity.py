@@ -9,6 +9,7 @@ import src.algorithms.algo as algo
 import src.parse.parse as parse
 import src.utils as utils
 
+
 class FawkesSanityTest(unittest.TestCase):
     def test_sanity(self):
         """
@@ -16,7 +17,9 @@ class FawkesSanityTest(unittest.TestCase):
         """
         # First we parse the sample data.
         parse.parse_reviews()
-        parsed_output = utils.open_json("processed-data/sample-mint-parsed-integrated-review.json")
+        parsed_output = utils.open_json(
+            "processed-data/sample-mint-parsed-integrated-review.json"
+        )
         expected_parsed_output = [
             {
                 "app": "sample-mint",
@@ -27,16 +30,18 @@ class FawkesSanityTest(unittest.TestCase):
                     "updated": "2020-03-15 14:13:17",
                     "rating": 5,
                     "version": "7.1.0",
-                    "content": "I just heard about this budgeting app. So I gave it a try. I am impressed thus far. However I still can\u00e2\u20ac\u2122t add all of my financial institutions so my budget is kind of skewed. But other that I can say I\u00e2\u20ac\u2122m more aware of my spending"
+                    "content": "I just heard about this budgeting app. So I gave it a try. I am impressed thus far. However I still can\u00e2\u20ac\u2122t add all of my financial institutions so my budget is kind of skewed. But other that I can say I\u00e2\u20ac\u2122m more aware of my spending",
                 },
-                "hash-id": "bd488c4c04431bdd8fb7ddb5dcf84d7a8b0479e2"
+                "hash-id": "bd488c4c04431bdd8fb7ddb5dcf84d7a8b0479e2",
             }
         ]
         self.assertEqual(parsed_output, expected_parsed_output)
-        
+
         # We run the algorithms on that data
         algo.run_algo()
-        processed_output = utils.open_json("processed-data/sample-mint-processed-integrated-review.json")
+        processed_output = utils.open_json(
+            "processed-data/sample-mint-processed-integrated-review.json"
+        )
         expected_processed_output = [
             {
                 "app": "sample-mint",
@@ -47,7 +52,7 @@ class FawkesSanityTest(unittest.TestCase):
                     "updated": "2020-03-15 14:13:17",
                     "rating": 5,
                     "version": "7.1.0",
-                    "content": "I just heard about this budgeting app. So I gave it a try. I am impressed thus far. However I still can\u00e2\u20ac\u2122t add all of my financial institutions so my budget is kind of skewed. But other that I can say I\u00e2\u20ac\u2122m more aware of my spending"
+                    "content": "I just heard about this budgeting app. So I gave it a try. I am impressed thus far. However I still can\u00e2\u20ac\u2122t add all of my financial institutions so my budget is kind of skewed. But other that I can say I\u00e2\u20ac\u2122m more aware of my spending",
                 },
                 "hash-id": "bd488c4c04431bdd8fb7ddb5dcf84d7a8b0479e2",
                 "derived-insight": {
@@ -55,7 +60,7 @@ class FawkesSanityTest(unittest.TestCase):
                         "neg": 0.0,
                         "neu": 0.928,
                         "pos": 0.072,
-                        "compound": 0.4767
+                        "compound": 0.4767,
                     },
                     "extra-properties": {
                         "category-scores": {
@@ -63,15 +68,16 @@ class FawkesSanityTest(unittest.TestCase):
                             "sign-in/sign-up": 0,
                             "Notification": 0,
                             "Application": 1,
-                            "ads": 0
+                            "ads": 0,
                         },
-                        "bug-feature": "feature"
+                        "bug-feature": "feature",
                     },
-                    "category": "Application"
-                }
+                    "category": "Application",
+                },
             }
         ]
         self.assertEqual(processed_output, expected_processed_output)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
