@@ -28,6 +28,6 @@
     <li>🔥 Built entirely using open-source tools</li>
 </ul>
 <h2>Onboarding</h2>
-Refer to the detailed [wiki](https://github.com/intuit/fawkes/wiki)
+Refer to the detailed https://github.com/intuit/fawkes/wiki
 <h2>Contributing</h2>
 For details on how to contribute to this project see <a href=".github/CONTRIBUTING.md">CONTRIBUTING.md</a>
