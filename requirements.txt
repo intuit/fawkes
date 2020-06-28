@@ -20,3 +20,4 @@ yapf
 coverage
 codecov
 pre-commit
+jsonschema
