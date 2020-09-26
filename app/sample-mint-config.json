@@ -36,7 +36,7 @@
         "bug_type": "1"
     },
     "algorithm_config": {
-        "categorization_algorithm": "text_match_classifier",
+        "categorization_algorithm": "lstm_classification",
         "algorithm_days_filter": 1000,
         "bug_feature_keywords_file": "app/bug-feature-keywords.json",
         "bug_feature_keywords_weights_file": "app/bug-feature-keywords-weights.json",
@@ -67,7 +67,8 @@
             "base_folder": "data",
             "raw_data_folder": "raw_data",
             "parsed_data_folder": "parsed_data",
-            "processed_data_folder": "processed_data"
+            "processed_data_folder": "processed_data",
+            "models_folder": "models"
         }
     }
 }

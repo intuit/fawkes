@@ -105,5 +105,4 @@ class Review:
             "channel_type": self.channel_type,
             "hash_id": self.hash_id,
             "derived_insight": self.derived_insight.to_dict(),
-            "raw_review": self.raw_review,
         }

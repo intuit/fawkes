@@ -22,6 +22,7 @@ app/*.py
 !app/sample-mint-bug-feature-file-with-weights.json
 data/**/*.json
 data/**/*.csv
+data/**/*.h5
 !data/sample-mint-appstore-raw-feedback.json
 processed-data/
 .coverage

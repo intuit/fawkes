@@ -110,7 +110,7 @@ PLAYSTORE_CLASS_TYPE = "div"
 PLAYSTORE_CLASS_NAME = "BHMmbe"
 
 # Categorization algorithms
-LSTM_CLASSIFIER = "lstm-classifier"
+LSTM_CLASSIFICATION = "lstm-classifier"
 TEXT_MATCH_CLASSIFIER = "text-match-classifier"
 
 # File paths
@@ -123,8 +123,11 @@ PROCESSED_INTEGRATED_REVIEW_FILE = "processed-data/{app_name}-processed-integrat
 PROCESSED_EMAIL_FILE = "processed-data/{app_name}-processed-email.html"
 TOPICS_WEIGHT_FILE = "app/{app}-keywords-with-weight.json"
 RAW_USER_REVIEWS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/{channel_name}-raw-feedback.{extension}"
-PARSED_USER_REVIEWS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/parsed-user-feedback.{extension}"
-PROCESSED_USER_REVIEWS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/processed-user-feedback.{extension}"
+PARSED_USER_REVIEWS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/parsed-user-feedback.json"
+PROCESSED_USER_REVIEWS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/processed-user-feedback.json"
+LSTM_CATEGORY_MODEL_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/lstm-category-trained-model.h5"
+LSTM_CATEGORY_ARTICLE_TOKENIZER_FILE = "{base_folder}/{dir_name}/{app_name}/lstm-category-article-tokenizer.json"
+LSTM_CATEGORY_LABEL_TOKENIZER_FILE = "{base_folder}/{dir_name}/{app_name}/lstm-category-label-tokenizer.json"
 BUG_FEATURE_FILE_WITH_WEIGHTS = "app/{app}-bug-feature-file-with-weights.json"
 TRAINED_MODELS = "trained-models/"
 LSTM_TRAINED_MODEL_FILE = TRAINED_MODELS + "lstm-{app_name}-trained.h5"

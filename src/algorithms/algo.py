@@ -17,14 +17,12 @@ import src.utils.utils as utils
 import src.utils.filter_utils as filter_utils
 import src.constants as constants
 
-from src.app_config.app_config import AppConfig, ReviewChannelTypes
+from src.app_config.app_config import AppConfig, ReviewChannelTypes, CategorizationAlgorithms
 from src.review.review import Review
 
 from src.algorithms.text_match.text_match import *
 from src.algorithms.sentiment import *
-# import src.algorithms.lstm_classifier.lstm_classifier as lstm_classifier
-# from src.algorithms.slackbot import *
-
+import src.algorithms.lstm_classifier.lstm_classifier as lstm_classifier
 
 def add_review_sentiment_score(review):
     # Add the sentiment to the review's derived insight and return the review
@@ -41,19 +39,20 @@ def text_match_categortization(review, app_config, topics):
     return review
 
 
-# def lstm_classification(reviews, app_config, model, article_tokenizer,
-#                         label_tokenizer, original_label_to_clean_label):
-#     articles = [review.message for review in reviews]
-#     categories = lstm_classifier.predict_labels(articles, app_config, model,
-#                                                 article_tokenizer,
-#                                                 label_tokenizer)
+def lstm_classification(reviews, model, article_tokenizer, label_tokenizer, cleaned_labels):
+    articles = [review.message for review in reviews]
+    # Get the categories for each of the reviews
+    categories = lstm_classifier.predict_labels(
+        articles,
+        model,
+        article_tokenizer,
+        label_tokenizer
+    )
 
-#     return [
-#         format_output_json(
-#             review, None, None,
-#             {LSTM_CATEGORY: original_label_to_clean_label[categories[index]]})
-#         for index, review in enumerate(reviews)
-#     ]
+    for index, review in enumerate(reviews):
+        review.derived_insight.extra_properties[constants.LSTM_CATEGORY] = cleaned_labels[categories[index]]
+
+    return reviews
 
 
 def bug_feature_classification(review, topics):
@@ -78,7 +77,6 @@ def run_algo():
             base_folder=app_config.fawkes_internal_config.data.base_folder,
             dir_name=app_config.fawkes_internal_config.data.parsed_data_folder,
             app_name=app_config.app.name,
-            extension=constants.JSON,
         )
 
         # Loading the reviews
@@ -138,67 +136,63 @@ def run_algo():
                     reviews
                 )
 
-        # if CATEGORIZATION_ALGORITHM in app_config and app_config[
-        #         CATEGORIZATION_ALGORITHM] == LSTM_CLASSIFIER:
-        #     print("[LOG] Loading LSTM Model :: ")
+        if app_config.algorithm_config.categorization_algorithm == CategorizationAlgorithms.LSTM_CLASSIFICATION:
+            # Load the TensorFlow model
+            model = tf.keras.models.load_model(
+                constants.LSTM_CATEGORY_MODEL_FILE_PATH.format(
+                    base_folder=app_config.fawkes_internal_config.data.base_folder,
+                    dir_name=app_config.fawkes_internal_config.data.models_folder,
+                    app_name=app_config.app.name,
+                )
+            )
 
-        #     model = tf.keras.models.load_model(
-        #         LSTM_TRAINED_MODEL_FILE.format(app_name=app_config.app.name))
+            # Load the article tokenizer file
+            tokenizer_json = utils.open_json(
+               constants.LSTM_CATEGORY_ARTICLE_TOKENIZER_FILE.format(
+                    base_folder=app_config.fawkes_internal_config.data.base_folder,
+                    dir_name=app_config.fawkes_internal_config.data.models_folder,
+                    app_name=app_config.app.name,
+                ),
+            )
+            article_tokenizer = tf.keras.preprocessing.text.tokenizer_from_json(
+                tokenizer_json
+            )
 
-        #     print("[LOG] Start Load of Token Files :: ")
+            # Load the label tokenizer file
+            tokenizer_json = utils.open_json(
+                constants.LSTM_CATEGORY_LABEL_TOKENIZER_FILE.format(
+                    base_folder=app_config.fawkes_internal_config.data.base_folder,
+                    dir_name=app_config.fawkes_internal_config.data.models_folder,
+                    app_name=app_config.app.name,
+                ),
+            )
+            label_tokenizer = tf.keras.preprocessing.text.tokenizer_from_json(
+                tokenizer_json
+            )
 
-        #     tokenizer_json = open_json(
-        #         LSTM_ARTICLE_TOKENIZER_FILE.format(app_name=app_config.app.name))
-        #     article_tokenizer = tf.keras.preprocessing.text.tokenizer_from_json(
-        #         tokenizer_json)
+            cleaned_labels = {}
+            for review in reviews:
+                label = review.derived_insight.category
+                cleaned_label = re.sub(r'\W+', '', label)
+                cleaned_label = cleaned_label.lower()
+                cleaned_labels[cleaned_label] = label
 
-        #     tokenizer_json = open_json(
-        #         LSTM_LABEL_TOKENIZER_FILE.format(app_name=app_config.app.name))
-        #     label_tokenizer = tf.keras.preprocessing.text.tokenizer_from_json(
-        #         tokenizer_json)
-
-        #     print("[LOG] End Load of Token Files :: ")
-
-        #     print("[LOG] Starting LSTM Categorization :: ")
-
-        #     original_label_to_clean_label = {}
-        #     for review in reviews:
-        #         label = review.derived_insight.category
-        #         cleaned_label = re.sub(r'\W+', '', label)
-        #         cleaned_label = cleaned_label.lower()
-        #         # Convert this to lower case as the tokenized label is lower
-        #         # case
-        #         original_label_to_clean_label[cleaned_label] = label
-
-        #     # Adding LSTM categorization
-        #     reviews = lstm_classification(reviews, app_config, model,
-        #                                   article_tokenizer, label_tokenizer,
-        #                                   original_label_to_clean_label)
-
-        #     lstm_text_match_parity = 0
-
-        #     for review in reviews:
-        #         if review.derived_insight.category != review[
-        #                 DERIVED_INSIGHTS][EXTRA_PROPERTIES][LSTM_CATEGORY]:
-        #             lstm_text_match_parity += 1
-
-        #     print("[LOG] Number of reviews classified differently : ",
-        #           lstm_text_match_parity)
-        #     print("[LOG] Total Reviews : ", len(reviews))
-
-        #     if len(reviews) != 0:
-        #         print("[LOG] % inaccuracy : ",
-        #               (100.0 * lstm_text_match_parity) / len(reviews))
-
-        #     print("[LOG] Ending LSTM Categorization :: ")
+            # Adding LSTM categorization
+            reviews = lstm_classification(
+                reviews,
+                model,
+                article_tokenizer,
+                label_tokenizer,
+                cleaned_labels
+            )
 
         # Create the intermediate folders
         processed_user_reviews_file_path = constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
             base_folder=app_config.fawkes_internal_config.data.base_folder,
             dir_name=app_config.fawkes_internal_config.data.processed_data_folder,
             app_name=app_config.app.name,
-            extension=constants.JSON,
         )
+
         dir_name = os.path.dirname(processed_user_reviews_file_path)
         pathlib.Path(dir_name).mkdir(parents=True, exist_ok=True)
 
@@ -206,7 +200,6 @@ def run_algo():
             [review.to_dict() for review in reviews],
             processed_user_reviews_file_path,
         )
-
 
 if __name__ == "__main__":
     run_algo()

@@ -154,7 +154,6 @@ def parse_reviews():
             base_folder=app_config.fawkes_internal_config.data.base_folder,
             dir_name=app_config.fawkes_internal_config.data.parsed_data_folder,
             app_name=app_config.app.name,
-            extension=constants.JSON,
         )
 
         # Create the intermediate folders

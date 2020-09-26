@@ -39,6 +39,10 @@ class JiraConfig:
         self.story_type = config["story_type"]
         self.bug_type = config["bug_type"]
 
+class CategorizationAlgorithms:
+    TEXT_MATCH_CLASSIFICATION = "text_match"
+    LSTM_CLASSIFICATION = "lstm_classification"
+
 class AlgorithmConfig:
     def __init__(self, config):
         self.categorization_algorithm = config["categorization_algorithm"]
@@ -129,6 +133,7 @@ class FawkesInternalDataConfig:
         self.raw_data_folder = config["raw_data_folder"]
         self.parsed_data_folder = config["parsed_data_folder"]
         self.processed_data_folder = config["processed_data_folder"]
+        self.models_folder = config["models_folder"]
 
 class FawkesInternalConfig:
     def __init__(self, config):
