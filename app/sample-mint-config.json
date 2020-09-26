@@ -36,7 +36,7 @@
         "bug_type": "1"
     },
     "algorithm_config": {
-        "categorization_algorithm": "lstm_classification",
+        "categorization_algorithm": "text_match",
         "algorithm_days_filter": 1000,
         "bug_feature_keywords_file": "app/bug-feature-keywords.json",
         "bug_feature_keywords_weights_file": "app/bug-feature-keywords-weights.json",
