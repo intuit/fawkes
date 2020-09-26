@@ -27,14 +27,14 @@ def topCategory(reviews):
 def numFeatureReq(reviews):
     return len([
         review for review in reviews
-        if review[DERIVED_INSIGHTS][EXTRA_PROPERTIES][BUG_FEATURE] == FEATURE
+        if review.derived_insight.extra_properties[constants.BUG_FEATURE] == FEATURE
     ])
 
 
 def numBugsReported(reviews):
     return len([
         review for review in reviews
-        if review[DERIVED_INSIGHTS][EXTRA_PROPERTIES][BUG_FEATURE] == BUG
+        if review.derived_insight.extra_properties[constants.BUG_FEATURE] == BUG
     ])
 
 

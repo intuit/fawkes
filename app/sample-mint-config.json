@@ -22,10 +22,10 @@
         "slack_run_interval": 60,
         "slack_notification_rules": {
             "category_based_rules": {
-                "Notification": ["@slack-user-name"]
+                "Notification": []
             },
             "keyword_based_rules": {
-                "crash": ["@slack-user-name"]
+                "crash": []
             }
         }
     },

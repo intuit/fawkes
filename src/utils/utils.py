@@ -154,7 +154,7 @@ def lemmatisation(text, allowed_postags=["NOUN", "ADJ", "VERB", "ADV"]):
 def get_positive_review(reviews):
     return [
         review for review in reviews
-        if review.derived_insight.sentiment.compound > 0.0
+        if review.derived_insight.sentiment["compound"] > 0.0
     ]
 
 
@@ -162,7 +162,7 @@ def get_negative_review(reviews):
     """ Why does positive come above negative?? Think positive man!!! Sapien!! :p """
     return [
         review for review in reviews
-        if review.derived_insight.sentiment.compound < 0.0
+        if review.derived_insight.sentiment["compound"] < 0.0
     ]
 
 
@@ -200,7 +200,7 @@ def most_common(L):
 
 
 def get_sentiment_compound(review):
-    return review.derived_insight.sentiment.compound
+    return review.derived_insight.sentiment["compound"]
 
 
 def filter_reviews(reviews, app_config, enable_key=IS_CHANNEL_ENABLED):

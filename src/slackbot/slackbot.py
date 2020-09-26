@@ -6,13 +6,17 @@ import time
 import urllib
 
 from pprint import pprint
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 #  This is so that the following imports work
 sys.path.append(os.path.realpath("."))
 
 import src.utils.utils as utils
 import src.constants as constants
+import src.utils.filter_utils as filter_utils
+
+from src.app_config.app_config import AppConfig, ReviewChannelTypes
+from src.review.review import Review
 
 def generate_star_from_rating(rating):
     return "".join(["★" for i in range(rating)])
@@ -42,57 +46,65 @@ def get_jira_details(review, app_config, issue_type):
     # Description will have the REVIEW followed by the unified json dump.
     description = review.message
     description = review.message + \
-        "\n\n Details : \n {code:json}" + json.dumps(review, indent=4) + "{code}"
+        "\n\n Details : \n {code:json}" + json.dumps(review.to_dict(), indent=4) + "{code}"
 
     # We take the issue type and the project id from the user
-    issuetype = app_config[JIRA][issue_type]
-    pid = app_config[JIRA][PROJECT_ID]
+    if issue_type == constants.BUG:
+        jira_issue_type = app_config.jira_config.bug_type
+    else:
+        jira_issue_type = app_config.jira_config.story_type
+
+    pid = app_config.jira_config.project_id
 
     params = {
         "summary": summary,
         "description": description,
-        "issuetype": issuetype,
+        "issuetype": jira_issue_type,
         "pid": pid,
         "labels": "Fawkes"
     }
 
     params_enc = urllib.parse.urlencode(params)
 
-    return JIRA_ISSUE_URL_TEMPLATE.format(
-        params=params_enc, base_url=app_config[JIRA][JIRA_BASE_URL])
+    return constants.JIRA_ISSUE_URL_TEMPLATE.format(
+        params=params_enc, base_url=app_config.jira_config.base_url)
 
 
 def get_actions(review, app_config):
-    text = "Create Story"
-    issue_type = STORY_ISSUE_TYPE
-    if review[DERIVED_INSIGHTS][EXTRA_PROPERTIES][BUG_FEATURE] == BUG:
-        text = "Report a Bug"
-        issue_type = BUG_ISSSUE_TYPE
-    elif review[DERIVED_INSIGHTS][EXTRA_PROPERTIES][BUG_FEATURE] == FEATURE:
-        text = "Request a Feature"
-    return [{
-        "type": "button",
-        "text": text,
-        "url": get_jira_details(review, app_config, issue_type),
-        "style": "primary"
-    }]
+    actions = []
+    if constants.BUG_FEATURE in review.derived_insight.extra_properties:
+        # Default Jira related stuff
+        text = "Create Story"
+        # Depending on tht type of the issue, whether its bug or story we have different actions.
+        if review.derived_insight.extra_properties[constants.BUG_FEATURE] == constants.BUG:
+            text = "Report a Bug"
+        elif review.derived_insight.extra_properties[constants.BUG_FEATURE] == constants.FEATURE:
+            text = "Request a Feature"
+        # Append the action to the list of actions.
+        actions.append({
+            "type": "button",
+            "text": text,
+            "url": get_jira_details(
+                review,
+                app_config,
+                review.derived_insight.extra_properties[constants.BUG_FEATURE]
+            ),
+            "style": "primary"
+        })
+    return actions
 
 
 def get_people_to_tag(app_config, review):
     list_of_slack_ids = []
-    if SLACK_TAGS in app_config:
-        if CATEGORY in app_config[SLACK_TAGS]:
-            # Adding all the people who have subscribed to
-            if review.derived_insight.category in app_config[SLACK_TAGS][
-                    CATEGORY]:
-                list_of_slack_ids += app_config[SLACK_TAGS][CATEGORY][
-                    review.derived_insight.category]
-        # Now adding people who have subscribed to keywords
-        if SLACK_KEYWORDS in app_config[SLACK_TAGS]:
-            for keyword in app_config[SLACK_TAGS][SLACK_KEYWORDS]:
-                if keyword in review.message:
-                    list_of_slack_ids += app_config[SLACK_TAGS][SLACK_KEYWORDS][
-                        keyword]
+    if app_config.slack_config.slack_notification_rules.category_based_rules != None:
+        # Adding all the people who have subscribed to a category
+        if review.derived_insight.category in app_config.slack_config.slack_notification_rules.category_based_rules:
+            list_of_slack_ids += app_config.slack_config.slack_notification_rules.category_based_rules[review.derived_insight.category]
+    # Now adding people who have subscribed to keywords
+    if app_config.slack_config.slack_notification_rules.keyword_based_rules != None:
+        for keyword in app_config.slack_config.slack_notification_rules.keyword_based_rules:
+            if keyword in review.message:
+                list_of_slack_ids += app_config.slack_config.slack_notification_rules.keyword_based_rules[keyword]
     return list_of_slack_ids
 
 
@@ -129,10 +141,10 @@ def send_to_slack(slack_url,
                 review.message,
             "color":
                 get_sentiment_color(
-                    review.derived_insight.sentiment.compound),
+                    review.derived_insight.sentiment["compound"]),
             "pretext":
                 "Sentiment : " +
-                str(review.derived_insight.sentiment.compound),
+                str(review.derived_insight.sentiment["compound"]),
             "author_name":
                 review.derived_insight.category,
             "author_link":
@@ -143,8 +155,8 @@ def send_to_slack(slack_url,
                 review.message + constants.SPACE + user_mention_string,
             "ts":
                 time.mktime(
-                    datetime.strptime(review.timestamp,
-                                      '%Y/%m/%d %H:%M:%S').timetuple()),
+                    review.timestamp.timetuple()
+                ),
             "footer":
                 review.app_name + " : " + review.channel_type,
             "actions":
@@ -152,23 +164,26 @@ def send_to_slack(slack_url,
         }
 
         # Twitter
-        if review.channel_type == CHANNEL_NAME_TWITTER:
+        if review.channel_type == ReviewChannelTypes.TWITTER:
             # Extract the tweet URL and send it
-            payload["text"] = TWITTER_URL.format(
-                status_id=review[PROPERTIES]["id_str"])
+            payload["text"] = constants.TWITTER_URL.format(
+                status_id=review.raw_review["id_str"]
+            )
 
             # Send the request to slack
-            response = requests.post(slack_url,
-                                     data=json.dumps(payload),
-                                     headers=headers)
+            response = requests.post(
+                slack_url,
+                data=json.dumps(payload),
+                headers=headers
+            )
 
             return
 
         # App Store and Play Store
-        elif RATING in review[PROPERTIES]:
+        elif review.rating != None:
             # attachment["color"] = get_rating_color(review[PROPERTIES][RATING])
             attachment["pretext"] = generate_star_from_rating(
-                review[PROPERTIES][RATING])
+                review.rating)
 
         attachments.append(attachment)
         payload["attachments"] = attachments
@@ -180,30 +195,47 @@ def send_to_slack(slack_url,
 
 
 if __name__ == "__main__":
+   # Read all the app-config file names
     app_configs = utils.open_json(
-        APP_CONFIG_FILE.format(file_name=APP_CONFIG_FILE_NAME))
+        constants.APP_CONFIG_FILE.format(file_name=constants.APP_CONFIG_FILE_NAME)
+    )
+    for app_config_file in app_configs:
+        app_config = AppConfig(
+            utils.open_json(
+                app_config_file
+            )
+        )
 
-    # We process all algorithms on parsed data for each app
-    for app in app_configs:
-        app_config = utils.open_json(APP_CONFIG_FILE.format(file_name=app))
-        # If the app json schema is not valid, we don't execute any thing.
-        if utils.validate_app_config(app_config):
-            app_config = utils.decrypt_config(app_config)
+        # Create the intermediate folders
+        processed_user_reviews_file_path = constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
+            base_folder=app_config.fawkes_internal_config.data.base_folder,
+            dir_name=app_config.fawkes_internal_config.data.processed_data_folder,
+            app_name=app_config.app.name,
+        )
 
-            # Loading the REVIEW's
-            reviews = utils.open_json(
-                PROCESSED_INTEGRATED_REVIEW_FILE.format(
-                    app_name=app_config.app.name))
+        print(processed_user_reviews_file_path)
 
-            reviews = utils.filter_reviews(reviews, app_config)
+         # Loading the reviews
+        reviews = utils.open_json(processed_user_reviews_file_path)
 
-            reviews = utils.filter_review_for_slack(reviews, app_config)
+        # Converting the json object to Review object
+        reviews = [Review.from_review_json(review) for review in reviews]
 
-            reviews = sorted(reviews,
-                             key=lambda review: review.derived_insight.sentiment.compound,
-                             reverse=True)
+        # Filtering out reviews which are not applicable.
+        reviews = filter_utils.filter_reviews_by_time(
+            filter_utils.filter_reviews_by_channel(
+                reviews, filter_utils.filter_disabled_review_channels(
+                    app_config
+                ),
+            ),
+            datetime.now(timezone.utc) - timedelta(minutes=app_config.slack_config.slack_run_interval)
+        )
 
-            for review in reviews:
-                send_to_slack(app_config[SLACK_HOOK_URL],
-                              app_config[SLACK_CHANNEL_NAME], review,
-                              app_config)
+        reviews = sorted(reviews,
+                            key=lambda review: review.derived_insight.sentiment["compound"],
+                            reverse=True)
+
+        for review in reviews:
+            send_to_slack(app_config.slack_config.slack_hook_url,
+                            app_config.slack_config.slack_channel, review,
+                            app_config)

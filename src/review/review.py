@@ -13,18 +13,18 @@ import src.constants as constants
 url_regex = re.compile(constants.URL_REGEX)
 
 class DerivedInsight:
-    def __init__(self):
-        # The sentiment values
-        self.sentiment = {
-            "neg": 0.0,
-            "neu": 0.0,
-            "pos": 0.0,
-            "compound": 0.0
-        }
-        # The category (inferred) of the review
-        self.category = "uncategorized" # TODO: Move this to constants
-        # Free Flowing dict to store any other information
-        self.extra_properties = {}
+    def __init__(self, derived_insight = None):
+        if derived_insight is None:
+            # The sentiment values
+            self.sentiment = None
+            # The category (inferred) of the review
+            self.category = "uncategorized" # TODO: Move this to constants
+            # Free Flowing dict to store any other information
+            self.extra_properties = {}
+        else:
+            self.sentiment = derived_insight["sentiment"]
+            self.category = derived_insight["category"]
+            self.extra_properties = derived_insight["extra_properties"]
 
     def to_dict(self):
         return {
@@ -44,7 +44,7 @@ class Review:
         channel_type = "",
         rating = None,
         review_timezone="UTC",
-        timestamp_format="%Y/%m/%d %H:%M:%S"
+        timestamp_format="%Y/%m/%d %H:%M:%S",
     ):
         # The message in the review
         self.message = message
@@ -61,9 +61,12 @@ class Review:
         # Every review hash id which is unique to the message and the timestamp
         self.hash_id = utils.calculate_hash(message + timestamp)
         # Derived Insights
-        self.derived_insight = DerivedInsight()
+        if constants.DERIVED_INSIGHTS in review[0]:
+            self.derived_insight = DerivedInsight(review[0][constants.DERIVED_INSIGHTS])
+        else:
+            self.derived_insight = DerivedInsight()
         # The raw value of the review itself.
-        self.raw_review = review
+        self.raw_review = review[0]
 
         # Now that we have all info that we wanted for a review.
         # We do some post processing.
