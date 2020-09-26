@@ -12,9 +12,7 @@ from datetime import datetime
 sys.path.append(os.path.realpath("."))
 
 import src.utils.utils as utils
-
-from src.config import *
-
+import src.constants as constants
 
 def generate_star_from_rating(rating):
     return "".join(["★" for i in range(rating)])
@@ -138,11 +136,11 @@ def send_to_slack(slack_url,
             "author_name":
                 review.derived_insight.category,
             "author_link":
-                "search-fawkes-e2e-obimwlpxmz7dnwz4owke6jmvy4.us-west-2.es.amazonaws.com/_plugin/kibana/app/kibana",
+                "",
             "author_icon":
                 "https://i.imgur.com/pydBDO7.png",
             "text":
-                review.message + SPACE + user_mention_string,
+                review.message + constants.SPACE + user_mention_string,
             "ts":
                 time.mktime(
                     datetime.strptime(review.timestamp,
