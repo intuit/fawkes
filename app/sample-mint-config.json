@@ -10,8 +10,9 @@
         "lifetime_rating_elastic_search_url": ""
     },
     "email_config": {
-        "email_time_span": "",
-        "email_subject_name": "",
+        "email_template_file": "src/email_summary/templates/weekly.html",
+        "email_time_span": 1000,
+        "email_subject_name": "Fawkes: Weekly Summary Email",
         "sender_email_address": "",
         "sendgrid_api_key": "",
         "email_list": []
@@ -68,7 +69,8 @@
             "raw_data_folder": "raw_data",
             "parsed_data_folder": "parsed_data",
             "processed_data_folder": "processed_data",
-            "models_folder": "models"
+            "models_folder": "models",
+            "emails_folder": "emails"
         }
     }
 }

@@ -181,7 +181,6 @@ def send_to_slack(slack_url,
 
         # App Store and Play Store
         elif review.rating != None:
-            # attachment["color"] = get_rating_color(review[PROPERTIES][RATING])
             attachment["pretext"] = generate_star_from_rating(
                 review.rating)
 
@@ -213,9 +212,7 @@ if __name__ == "__main__":
             app_name=app_config.app.name,
         )
 
-        print(processed_user_reviews_file_path)
-
-         # Loading the reviews
+        # Loading the reviews
         reviews = utils.open_json(processed_user_reviews_file_path)
 
         # Converting the json object to Review object

@@ -18,7 +18,7 @@ class DerivedInsight:
             # The sentiment values
             self.sentiment = None
             # The category (inferred) of the review
-            self.category = "uncategorized" # TODO: Move this to constants
+            self.category = constants.CATEGORY_NOT_FOUND
             # Free Flowing dict to store any other information
             self.extra_properties = {}
         else:

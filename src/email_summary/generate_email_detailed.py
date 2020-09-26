@@ -26,7 +26,7 @@ def compare_review_by_sentiment(review1, review2):
 
 
 def compare_review_by_category_score(review1, review2):
-    category = review1[DERIVED_INSIGHTS][CATEGORY]
+    category = review1.category
     # If the category has not been found, it will be "uncategorized"
     # All reviews in uncategorized have a score of 0
     # So we return True in such cases
@@ -90,7 +90,7 @@ if __name__ == "__main__":
                     "upDownPercentage":
                         19,
                     "reviewText":
-                        max_sentiment_per_category[category[1]][MESSAGE],
+                        max_sentiment_per_category[category[1]].message,
                     "usersTalking":
                         len(review_by_category[category[1]])
                 }

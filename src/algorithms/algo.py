@@ -4,11 +4,10 @@ import importlib
 import tensorflow as tf
 import pathlib
 
-from datetime import timezone
 from pprint import pprint
 from multiprocessing import Pool
 from functools import partial
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 #  This is so that the following imports work
 sys.path.append(os.path.realpath("."))
@@ -16,13 +15,12 @@ sys.path.append(os.path.realpath("."))
 import src.utils.utils as utils
 import src.utils.filter_utils as filter_utils
 import src.constants as constants
+import src.algorithms.lstm_classifier.lstm_classifier as lstm_classifier
 
 from src.app_config.app_config import AppConfig, ReviewChannelTypes, CategorizationAlgorithms
 from src.review.review import Review
-
-from src.algorithms.text_match.text_match import *
-from src.algorithms.sentiment import *
-import src.algorithms.lstm_classifier.lstm_classifier as lstm_classifier
+from src.algorithms.text_match.text_match import text_match
+from src.algorithms.sentiment import get_sentiment
 
 def add_review_sentiment_score(review):
     # Add the sentiment to the review's derived insight and return the review
@@ -148,7 +146,7 @@ def run_algo():
 
             # Load the article tokenizer file
             tokenizer_json = utils.open_json(
-               constants.LSTM_CATEGORY_ARTICLE_TOKENIZER_FILE.format(
+               constants.LSTM_CATEGORY_ARTICLE_TOKENIZER_FILE_PATH.format(
                     base_folder=app_config.fawkes_internal_config.data.base_folder,
                     dir_name=app_config.fawkes_internal_config.data.models_folder,
                     app_name=app_config.app.name,
@@ -160,7 +158,7 @@ def run_algo():
 
             # Load the label tokenizer file
             tokenizer_json = utils.open_json(
-                constants.LSTM_CATEGORY_LABEL_TOKENIZER_FILE.format(
+                constants.LSTM_CATEGORY_LABEL_TOKENIZER_FILE_PATH.format(
                     base_folder=app_config.fawkes_internal_config.data.base_folder,
                     dir_name=app_config.fawkes_internal_config.data.models_folder,
                     app_name=app_config.app.name,

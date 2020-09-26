@@ -221,7 +221,7 @@ def train_lstm_model():
         # Saving the tokenizers
         utils.dump_json(
             article_tokenizer.to_json(),
-            constants.LSTM_CATEGORY_ARTICLE_TOKENIZER_FILE.format(
+            constants.LSTM_CATEGORY_ARTICLE_TOKENIZER_FILE_PATH.format(
                 base_folder=app_config.fawkes_internal_config.data.base_folder,
                 dir_name=app_config.fawkes_internal_config.data.models_folder,
                 app_name=app_config.app.name,
@@ -231,7 +231,7 @@ def train_lstm_model():
         # Saving the tokenizers
         utils.dump_json(
             label_tokenizer.to_json(),
-            constants.LSTM_CATEGORY_LABEL_TOKENIZER_FILE.format(
+            constants.LSTM_CATEGORY_LABEL_TOKENIZER_FILE_PATH.format(
                 base_folder=app_config.fawkes_internal_config.data.base_folder,
                 dir_name=app_config.fawkes_internal_config.data.models_folder,
                 app_name=app_config.app.name,

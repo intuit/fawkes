@@ -23,6 +23,7 @@ app/*.py
 data/**/*.json
 data/**/*.csv
 data/**/*.h5
+data/**/*.html
 !data/sample-mint-appstore-raw-feedback.json
 processed-data/
 .coverage

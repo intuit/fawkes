@@ -6,8 +6,8 @@ from datetime import datetime
 sys.path.append(os.path.realpath("."))
 
 import src.utils.utils as utils
-from src.config import *
-
+import src.constants as constants
+from src.app_config.app_config import ReviewChannelTypes
 
 def numberOfReview(reviews):
     return len(reviews)
@@ -18,55 +18,55 @@ def topCategory(reviews):
         return utils.most_common([
             review.derived_insight.category
             for review in reviews
-            if review.derived_insight.category != CATEGORY_NOT_FOUND
+            if review.derived_insight.category != constants.CATEGORY_NOT_FOUND
         ])
     else:
-        return reviews[0][DERIVED_INSIGHTS][CATEGORY]
+        return reviews[0].category
 
 
 def numFeatureReq(reviews):
     return len([
         review for review in reviews
-        if review.derived_insight.extra_properties[constants.BUG_FEATURE] == FEATURE
+        if review.derived_insight.extra_properties[constants.BUG_FEATURE] == constants.FEATURE
     ])
 
 
 def numBugsReported(reviews):
     return len([
         review for review in reviews
-        if review.derived_insight.extra_properties[constants.BUG_FEATURE] == BUG
+        if review.derived_insight.extra_properties[constants.BUG_FEATURE] == constants.BUG
     ])
 
 
 def appStoreRating(reviews):
     reviews = [
         review for review in reviews
-        if review.channel_type == CHANNEL_NAME_APPSTORE
+        if review.channel_type == ReviewChannelTypes.IOS
     ]
     if len(reviews) == 0:
         return 0.0
-    l = [review[PROPERTIES][RATING] for review in reviews]
+    l = [review.rating for review in reviews]
     return float(sum(l)) / len(l)
 
 
 def playStoreRating(reviews):
     reviews = [
         review for review in reviews
-        if review.channel_type == CHANNEL_NAME_PLAYSTORE
+        if review.channel_type == ReviewChannelTypes.ANDROID
     ]
     if len(reviews) == 0:
         return 0.0
-    l = [review[PROPERTIES][RATING] for review in reviews]
+    l = [review.rating for review in reviews]
     return sum(l) / len(l)
 
 
 def happyReview1(reviews):
     return sorted(reviews, key=utils.get_sentiment_compound,
-                  reverse=True)[0][MESSAGE]
+                  reverse=True)[0].message
 
 
 def unhappyReview1(reviews):
-    return sorted(reviews, key=utils.get_sentiment_compound)[0][MESSAGE]
+    return sorted(reviews, key=utils.get_sentiment_compound)[0].message
 
 
 def positiveReview(reviews):
@@ -99,14 +99,14 @@ def topCategoryNumberOfReview(reviews):
 
 def fromDate(reviews):
     return min([
-        datetime.strptime(review.timestamp, '%Y/%m/%d %H:%M:%S')
+        review.timestamp
         for review in reviews
     ]).strftime('%b %d')
 
 
 def toDate(reviews):
     return max([
-        datetime.strptime(review.timestamp, '%Y/%m/%d %H:%M:%S')
+        review.timestamp
         for review in reviews
     ]).strftime('%b %d')
 
@@ -124,7 +124,7 @@ def getVocByCategory(reviews):
 def playStoreNumberReview(reviews):
     reviews = [
         review for review in reviews
-        if review.channel_type == CHANNEL_NAME_PLAYSTORE
+        if review.channel_type == ReviewChannelTypes.ANDROID
     ]
     return len(reviews)
 
@@ -132,6 +132,6 @@ def playStoreNumberReview(reviews):
 def appStoreNumberReview(reviews):
     reviews = [
         review for review in reviews
-        if review.channel_type == CHANNEL_NAME_APPSTORE
+        if review.channel_type == ReviewChannelTypes.IOS
     ]
     return len(reviews)
