@@ -28,3 +28,4 @@ data/**/*.html
 processed-data/
 .coverage
 coverage.xml
+bin/

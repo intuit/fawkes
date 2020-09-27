@@ -65,18 +65,18 @@ def dump_lifetime_ratings():
                 calculate_hash(app_config.app.name + CHANNEL_TYPE_APPSTORE), time)
 
             # deleting document to override
-            delete_document(app_config[ELASTIC_SEARCH_URL],
+            delete_document(app_config.elastic_config.elastic_search_url,
                             app_config[LIFETIME_RATING_ELASTICSEARCH_INDEX],
                             "_doc", playstore_doc[HASH_ID])
-            delete_document(app_config[ELASTIC_SEARCH_URL],
+            delete_document(app_config.elastic_config.elastic_search_url,
                             app_config[LIFETIME_RATING_ELASTICSEARCH_INDEX],
                             "_doc", appstore_doc[HASH_ID])
 
             # Uploading again
-            create_document(app_config[ELASTIC_SEARCH_URL],
+            create_document(app_config.elastic_config.elastic_search_url,
                             app_config[LIFETIME_RATING_ELASTICSEARCH_INDEX],
                             "_doc", playstore_doc[HASH_ID], playstore_doc)
-            create_document(app_config[ELASTIC_SEARCH_URL],
+            create_document(app_config.elastic_config.elastic_search_url,
                             app_config[LIFETIME_RATING_ELASTICSEARCH_INDEX],
                             "_doc", appstore_doc[HASH_ID], appstore_doc)
 
