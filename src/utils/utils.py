@@ -22,8 +22,8 @@ from nltk.corpus import stopwords
 #  This is so that the following imports work
 sys.path.append(os.path.realpath("."))
 
-from src.stop_words_file import *
-from src.constants import *
+import src.constants as constants
+from src.stop_words_file import EXTENDED_STOP_WORDS
 
 def open_json(file_location):
     with open(file_location, "r") as read_file:
@@ -71,55 +71,9 @@ def check_tweet_authenticity(tweet_message, twitter_handle_blacklist):
 
 
 def check_for_explicit_content(tweet):
-    if POSSIBLY_SENSITIVE in tweet:
-        return tweet[POSSIBLY_SENSITIVE]
+    if constants.POSSIBLY_SENSITIVE in tweet:
+        return tweet[constants.POSSIBLY_SENSITIVE]
     return True
-
-
-def format_output_json(input_dict,
-                       category=None,
-                       sentiment=None,
-                       derived_insight_properties=None):
-    """ Creates the json according to the unified json output format """
-    temp_dict = {}
-
-    # If the node that we are already passing has an insight, we write over it.
-    if DERIVED_INSIGHTS in input_dict:
-        temp_dict = input_dict[DERIVED_INSIGHTS]
-
-    if derived_insight_properties is not None:
-        if EXTRA_PROPERTIES in temp_dict:
-            temp_dict[EXTRA_PROPERTIES] = {
-                **temp_dict[EXTRA_PROPERTIES],
-                **derived_insight_properties
-            }
-        else:
-            temp_dict[EXTRA_PROPERTIES] = derived_insight_properties
-
-    # Touch the category only if you know what you are doing! You Moron!
-    if category is not None:
-        temp_dict[CATEGORY] = category
-
-    # Do not play with my sentiments! You Moron!
-    if sentiment is not None:
-        temp_dict[SENTIMENT] = sentiment
-
-    input_dict[DERIVED_INSIGHTS] = temp_dict
-
-    return input_dict
-
-def filter_review_on_channel(channel_list, reviews):
-    """ Filters the review for those channels which are not in channel_list """
-    return [
-        review for review in reviews if review.channel_type in channel_list
-    ]
-
-
-def filter_review_on_time(reviews, from_date):
-    return [
-        review for review in reviews if review.timestamp != "" and
-        datetime.strptime(review.timestamp, '%Y/%m/%d %H:%M:%S') > from_date
-    ]
 
 
 def tokenise(document):
@@ -150,30 +104,6 @@ def lemmatisation(text, allowed_postags=["NOUN", "ADJ", "VERB", "ADV"]):
     doc = nlp(" ".join(text))
     return [token.lemma_ for token in doc if token.pos_ in allowed_postags]
 
-
-def get_positive_review(reviews):
-    return [
-        review for review in reviews
-        if review.derived_insight.sentiment["compound"] > 0.0
-    ]
-
-
-def get_negative_review(reviews):
-    """ Why does positive come above negative?? Think positive man!!! Sapien!! :p """
-    return [
-        review for review in reviews
-        if review.derived_insight.sentiment["compound"] < 0.0
-    ]
-
-
-def get_top_tweets_link(review_list):
-    return [
-        review[PROPERTIES][KEY_WITH_TWEET_URL]
-        for review in review_list
-        if review.channel_type == CHANNEL_TYPE_TWITTER
-    ]
-
-
 def calculate_hash(string):
     return hashlib.sha1(string.encode("utf-8")).hexdigest()
 
@@ -203,84 +133,9 @@ def get_sentiment_compound(review):
     return review.derived_insight.sentiment["compound"]
 
 
-def filter_reviews(reviews, app_config, enable_key=IS_CHANNEL_ENABLED):
-    print("[LOG] Filtering by :: ", enable_key)
-    print("[LOG] REVIEW's before filtering :: ", len(reviews))
-
-    channel_list = []
-    # We create a list of channels which are enabled
-    for review_channel in app_config.review_channels:
-        if review_channel[enable_key]:
-            channel_list.append(review_channel.channel_name)
-
-    # We first filter the REVIEW on channel-type
-    reviews = filter_review_on_channel(channel_list, reviews)
-
-    print("[LOG] REVIEW's after filter on channel-type :: ", len(reviews))
-
-    if ALGORITHM_DAYS_FILTER in app_config:
-        # We now filter based on time
-        current_date_time = datetime.now()
-        from_date = current_date_time - \
-            timedelta(days=app_config[ALGORITHM_DAYS_FILTER])
-        reviews = filter_review_on_time(reviews, from_date)
-
-    print("[LOG] REVIEW's after filter on time :: ", len(reviews))
-
-    return reviews
-
-
-def filter_review_for_slack(reviews, app_config):
-    # We now filter based on time
-    current_date_time = datetime.now()
-
-    print("[LOG] Current Time is : ",
-          current_date_time.strftime('%Y/%m/%d %H:%M:%S'))
-
-    from_date = current_date_time - \
-        timedelta(minutes=app_config[SLACKBOT_MINUTES_FILTER])
-    reviews = filter_review_on_time(reviews, from_date)
-
-    print("[LOG] REVIEW's after filter on slackbot time :: ", len(reviews))
-
-    return reviews
-
-
 def fetch_channel_config(app_config, channel_type):
     for review_channel in app_config.review_channels:
         if review_channel.channel_type == channel_type:
             return review_channel
     return None
 
-
-def decrypt_config(app_config):
-    """
-    - Replaces the ENV variables with their values. These values are stored in local and circleCI env.
-    - Returns app_config json with reaplced values
-    """
-    env_list = app_config[ENV_KEYS]
-    app_config_formatted = json.dumps(app_config)
-
-    for key in env_list:
-        app_config_formatted = app_config_formatted.replace(
-            key, os.environ[key])
-
-    replaced_app_config = json.loads(app_config_formatted)
-    return replaced_app_config
-
-
-def validate_app_config(app_config):
-    print("[LOG] Validating app-config schema")
-    app_json_schema = open_json("src/app-config-schema.json")
-    try:
-        jsonschema.validate(app_config, app_json_schema)
-    except jsonschema.exceptions.ValidationError as e:
-        print("[Error] Parsing {file_name}. Error is {error}".format(
-            file_name=APP_CONFIG_FILE.format(file_name=app), error=e))
-        return False
-    except json.decoder.JSONDecodeError as e:
-        print(
-            "[Error] Parsing the schema file itself! This can be catastrophic!")
-        return False
-    print("[LOG] Validating app-config schema successful")
-    return True
