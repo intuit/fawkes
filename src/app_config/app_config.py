@@ -10,7 +10,7 @@ class ElasticConfig:
         self.index = config["index"]
         self.elastic_search_url = config["elastic_search_url"]
         self.kibana_url = config["kibana_url"]
-        self.lifetime_rating_elastic_search_url = config["lifetime_rating_elastic_search_url"]
+        self.lifetime_rating_index = config["lifetime_rating_index"]
 
 class EmailConfig:
     def __init__(self, config):

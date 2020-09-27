@@ -45,6 +45,7 @@ class Review:
         rating = None,
         review_timezone="UTC",
         timestamp_format="%Y/%m/%d %H:%M:%S",
+        hash_id=None,
     ):
         # The message in the review
         self.message = message
@@ -58,8 +59,13 @@ class Review:
         self.channel_name = channel_name
         # The source/type from which the review came
         self.channel_type = channel_type
-        # Every review hash id which is unique to the message and the timestamp
-        self.hash_id = utils.calculate_hash(message + timestamp)
+        # Determine the hash-id.
+        # It should almost in all cases never be overridden.
+        if hash_id != None:
+            self.hash_id = hash_id
+        else:
+            # Every review hash id which is unique to the message and the timestamp
+            self.hash_id = utils.calculate_hash(message + timestamp)
         # Derived Insights
         if constants.DERIVED_INSIGHTS in review[0]:
             self.derived_insight = DerivedInsight(review[0][constants.DERIVED_INSIGHTS])
