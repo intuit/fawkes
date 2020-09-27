@@ -42,15 +42,15 @@ def get_next_page(url, bearer_token):
 def fetch(review_channel):
     # Authenticate with salesforce api
     token_response = get_oauth_token(
-        salesforce_details.base_url,
-        salesforce_details.oauth_params)
+        review_channel.base_url,
+        review_channel.oauth_params)
 
     data = []
     records = []
 
     # Fetch the results of query
-    for query in salesforce_details.query_list:
-        data = (get_query_results(salesforce_details.base_url,
+    for query in review_channel.query_list:
+        data = (get_query_results(review_channel.base_url,
                                   token_response[constants.SALESFORCE_ACCESS_TOKEN_KEY],
                                   query))
 
@@ -63,21 +63,21 @@ def fetch(review_channel):
         # Get all the pages returned for the query
         while (constants.SALESFORCE_PAGINATION_URL in data) and (not data[constants.DONE]):
             data = get_next_page(
-                salesforce_details.base_url +
+                review_channel.base_url +
                 data[constants.SALESFORCE_PAGINATION_URL],
                 token_response[constants.SALESFORCE_ACCESS_TOKEN_KEY])
             records += data[constants.RECORDS]
 
         # If there is one query , file nomeclature changes
-        if len(salesforce_details.query_list) > 1:
+        if len(review_channel.query_list) > 1:
             file_suffix = "-" + \
-                str(salesforce_details.query_list.index(query))
+                str(review_channel.query_list.index(query))
         else:
             file_suffix = ""
 
         # Get the value of timestamp and message
         for i in range(len(records)):
-            if salesforce_details.timestamp_key in records[i]:
-                records[i][salesforce_details.timestamp_key] = records[i][
-                    salesforce_details.timestamp_key].split("T")[0]
+            if review_channel.timestamp_key in records[i]:
+                records[i][review_channel.timestamp_key] = records[i][
+                    review_channel.timestamp_key].split("T")[0]
     return records

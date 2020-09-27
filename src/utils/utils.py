@@ -246,10 +246,10 @@ def filter_review_for_slack(reviews, app_config):
     return reviews
 
 
-def fetch_channel_config(app_config, channel_name):
-    for channel_config in app_config.review_channels:
-        if channel_config[CHANNEL_NAME] == channel_name:
-            return channel_config
+def fetch_channel_config(app_config, channel_type):
+    for review_channel in app_config.review_channels:
+        if review_channel.channel_type == channel_type:
+            return review_channel
     return None
 
 

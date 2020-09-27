@@ -18,6 +18,7 @@ import src.email_summary.queries as queries
 import src.utils.utils as utils
 import src.utils.filter_utils as filter_utils
 import src.constants as constants
+import src.fetch.lifetime as lifetime
 
 from src.app_config.app_config import AppConfig, ReviewChannelTypes, CategorizationAlgorithms
 from src.review.review import Review
@@ -142,9 +143,9 @@ if __name__ == "__main__":
             "playStoreNumberOfReview":
                 queries.playStoreNumberReview(reviews),
             "appStoreLifetimeRating":
-                "0.0",
+                lifetime.getAppStoreLifetimeRating(app_config),
             "playStoreLifetimeRating":
-                "0.0",
+                lifetime.getPlayStoreLifetimeRating(app_config),
             "kibanaDashboardURL":
                 app_config.elastic_config.kibana_url
         }
