@@ -10,8 +10,9 @@
         "lifetime_rating_elastic_search_url": ""
     },
     "email_config": {
-        "email_template_file": "src/email_summary/templates/weekly.html",
+        "email_template_file": "src/email_summary/templates/weekly-detailed.html",
         "email_time_span": 1000,
+        "email_time_span_in_words": "1000 days",
         "email_subject_name": "Fawkes: Weekly Summary Email",
         "sender_email_address": "",
         "sendgrid_api_key": "",

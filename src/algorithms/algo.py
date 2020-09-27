@@ -33,6 +33,8 @@ def text_match_categortization(review, app_config, topics):
     category_scores, category = text_match(review.message, topics)
     # Add the category to the review's derived insight and return the review
     review.derived_insight.category = category
+    # Add the category scores.
+    review.derived_insight.extra_properties[constants.CATEGORY_SCORES] = category_scores
     # Return the review
     return review
 

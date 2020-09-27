@@ -16,6 +16,7 @@ class EmailConfig:
     def __init__(self, config):
         self.email_template_file = config["email_template_file"]
         self.email_time_span = config["email_time_span"]
+        self.email_time_span_in_words = config["email_time_span_in_words"]
         self.email_subject_name = config["email_subject_name"]
         self.sender_email_address = config["sender_email_address"]
         self.email_list = config["email_list"]

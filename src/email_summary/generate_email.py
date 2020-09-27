@@ -76,7 +76,7 @@ if __name__ == "__main__":
             "kibanaDashboardURL": app_config.elastic_config.kibana_url
         }
 
-        # We finally send the email
+        # Get the initial HTML from the template file.
         formatted_html = email_utils.generate_email(
             app_config.email_config.email_template_file,
             template_data
