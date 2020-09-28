@@ -8,7 +8,7 @@ sys.path.append(os.path.realpath("."))
 import src.algorithms.algo as algo
 import src.parse.parse as parse
 import src.utils.utils as utils
-
+import src.algorithms.text_match.generate_keyword_weights as generate_keyword_weights
 
 class FawkesSanityTest(unittest.TestCase):
     def test_sanity(self):
@@ -37,9 +37,12 @@ class FawkesSanityTest(unittest.TestCase):
             }
         ]
         self.assertEqual(parsed_output, expected_parsed_output)
+        # Before running the algorithms, we generate the keyword weights.
+        generate_keyword_weights.generate_keyword_weights()
 
         # We run the algorithms on that data
         algo.run_algo()
+
         processed_output = utils.open_json(
             "data/processed_data/sample-mint/processed-user-feedback.json"
         )
@@ -74,7 +77,6 @@ class FawkesSanityTest(unittest.TestCase):
             }
         ]
         self.assertEqual(processed_output, expected_processed_output)
-
 
 if __name__ == "__main__":
     unittest.main()

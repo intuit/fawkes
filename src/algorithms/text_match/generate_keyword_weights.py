@@ -41,8 +41,7 @@ def parse_keywords_file(keyword_file_name, enable_remove_stop_words=True):
         topics[topic_keyword] = topic
     return topics
 
-
-if __name__ == "__main__":
+def generate_keyword_weights():
     app_configs = utils.open_json(
          constants.APP_CONFIG_FILE.format(file_name=constants.APP_CONFIG_FILE_NAME)
     )
@@ -67,3 +66,6 @@ if __name__ == "__main__":
             ),
             app_config.algorithm_config.bug_feature_keywords_weights_file,
         )
+
+if __name__ == "__main__":
+    generate_keyword_weights()
