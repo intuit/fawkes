@@ -2,6 +2,7 @@
 # https://github.com/sendgrid/sendgrid-python
 import os
 import sys
+import pathlib
 
 from datetime import datetime, timedelta
 from sendgrid import SendGridAPIClient
@@ -11,9 +12,9 @@ from datetime import datetime
 # this is so that below import works.  Sets the pwd to home directory
 sys.path.append(os.path.realpath("."))
 
-from src.email_summary.queries import *
-from src.config import *
-
+import src.utils.utils as utils
+import src.constants as constants
+from src.app_config.app_config import AppConfig
 
 def send_email_helper(from_email_address, to_email, subject, html,
                       sendgrid_api_key):
@@ -31,25 +32,30 @@ def send_email_helper(from_email_address, to_email, subject, html,
 
 if __name__ == "__main__":
     app_configs = utils.open_json(
-        APP_CONFIG_FILE.format(file_name=APP_CONFIG_FILE_NAME))
+        constants.APP_CONFIG_FILE.format(file_name=constants.APP_CONFIG_FILE_NAME)
+    )
+    for app_config_file in app_configs:
+        app_config = AppConfig(
+            utils.open_json(
+                app_config_file
+            )
+        )
+        # Path where the generated email in html format will be stored
+        email_summary_generated_file_path = constants.EMAIL_SUMMARY_GENERATED_FILE_PATH.format(
+            base_folder=app_config.fawkes_internal_config.data.base_folder,
+            dir_name=app_config.fawkes_internal_config.data.emails_folder,
+            app_name=app_config.app.name,
+        )
 
-    # We process all algorithms on parsed data for each app
-    # We process all algorithms on parsed data for each app
-    for app in app_configs:
-        app_config = utils.open_json(APP_CONFIG_FILE.format(file_name=app))
-        # If the app json schema is not valid, we don't execute any thing.
-        if utils.validate_app_config(app_config):
-            app_config = utils.decrypt_config(app_config)
+        dir_name = os.path.dirname(email_summary_generated_file_path)
+        pathlib.Path(dir_name).mkdir(parents=True, exist_ok=True)
 
-            dir = DATA_DUMP_DIR
+        template_html = ""
 
-            fetch_file_save_path = PROCESSED_EMAIL_FILE.format(
-                dir_name=dir, app_name=app_config.app.name)
+        with open(email_summary_generated_file_path, "r") as email_file_handle:
+            template_html = email_file_handle.read()
 
-            with open(fetch_file_save_path, "r") as email_file_handle:
-                template_html = email_file_handle.read()
-
-            for email_id in app_config[EMAIL_LIST]:
-                send_email_helper(app_config[SENDER_EMAIL_ADDRESS], email_id,
-                                  app_config[EMAIL_SUBJECT_NAME], template_html,
-                                  app_config[SENDGRID_API_KEY])
+        for email_id in app_config.email_config.email_list:
+            send_email_helper(app_config.email_config.sender_email_address, email_id,
+                                app_config.email_config.email_subject_name, template_html,
+                                app_config.email_config.sendgrid_api_key)
