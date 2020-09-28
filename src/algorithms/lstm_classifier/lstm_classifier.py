@@ -9,6 +9,7 @@ import os
 import tensorflow as tf
 import numpy as np
 import nltk
+import pathlib
 
 nltk.download("stopwords")
 
@@ -20,9 +21,10 @@ from nltk.corpus import stopwords
 #  This is so that the following imports work
 sys.path.append(os.path.realpath("."))
 
-import src.utils as utils
-from src.config import *
-from src.utils import *
+import src.utils.utils as utils
+import src.constants as constants
+from src.app_config.app_config import AppConfig, ReviewChannelTypes, CategorizationAlgorithms
+from src.review.review import Review
 
 STOPWORDS = set(stopwords.words("english"))
 
@@ -39,7 +41,7 @@ NUM_EPOCHS = 10
 
 def get_articles_and_labels(reviews, labels=[]):
     """
-    Given a list of reviews (in unified json format) returns a tuple of review, category
+    Given a list of reviews returns a tuple of review, category
     We call them articles and labels
     Ideally if you want to implement the LSTM classifier for a different data-set, you should only have to change this function
     """
@@ -48,12 +50,12 @@ def get_articles_and_labels(reviews, labels=[]):
     # In this process we clean up the original labels
     # This is required because these labels will be tokenized afterwards
     # We need to maintain a mapping of what the original labels were
-    original_label_to_clean_label = {}
+    cleaned_labels = {}
 
     # We go through the list of reviews
     for review in reviews:
-        article = review[MESSAGE]
-        label = review[DERIVED_INSIGHTS][CATEGORY]
+        article = review.message
+        label = review.derived_insight.category
 
         # Now we remove stopwords
         for word in STOPWORDS:
@@ -65,17 +67,17 @@ def get_articles_and_labels(reviews, labels=[]):
         article.strip()
 
         # We remove the empty/usless articles
-        if article == "" or article == NA_STRING:
+        if article == "" or article == constants.NA_STRING:
             continue
 
         # Cleaning up the labels
         cleaned_label = re.sub(r"\W+", "", label)
-        original_label_to_clean_label[cleaned_label] = label
+        cleaned_labels[cleaned_label] = label
 
         articles.append(article)
         labels.append(cleaned_label)
 
-    return (articles, labels, original_label_to_clean_label)
+    return (articles, labels, cleaned_labels)
 
 
 def split_data(articles, labels):
@@ -167,54 +169,77 @@ def train(articles, labels):
 
 
 def train_lstm_model():
-    app_configs = open_json(APP_CONFIG_FILE.format(file_name=APP_CONFIG_FILE_NAME))
+    app_configs = utils.open_json(
+        constants.APP_CONFIG_FILE.format(file_name=constants.APP_CONFIG_FILE_NAME)
+    )
+    for app_config_file in app_configs:
+        app_config = AppConfig(
+            utils.open_json(
+                app_config_file
+            )
+        )
+        print("[LOG] going through app config ", app_config.app.name)
 
-    # We process all algorithms on parsed data for each app
-    for app in app_configs:
-        app_config = open_json(APP_CONFIG_FILE.format(file_name=app))
-        # If the app json schema is not valid, we don't execute any thing.
-        if not utils.validate_app_config(app_config):
-            return
-        app_config = decrypt_config(app_config)
+        # Path where the user reviews were stored after parsing.
+        processed_user_reviews_file_path = constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
+            base_folder=app_config.fawkes_internal_config.data.base_folder,
+            dir_name=app_config.fawkes_internal_config.data.processed_data_folder,
+            app_name=app_config.app.name,
+        )
 
         if not (
-            CATEGORIZATION_ALGORITHM in app_config
-            and app_config[CATEGORIZATION_ALGORITHM] == LSTM_CLASSIFIER
+            app_config.algorithm_config.categorization_algorithm != None
+            and app_config.algorithm_config.categorization_algorithm == CategorizationAlgorithms.LSTM_CLASSIFICATION
         ):
             continue
 
-        # Loading the REVIEW's
-        reviews = utils.open_json(
-            PROCESSED_INTEGRATED_REVIEW_FILE.format(app_name=app_config[APP])
-        )
+       # Loading the reviews
+        reviews = utils.open_json(processed_user_reviews_file_path)
+
+        # Converting the json object to Review object
+        reviews = [Review.from_review_json(review) for review in reviews]
 
         # reviews = utils.filter_reviews(reviews, app_config)
 
-        articles, labels, original_label_to_clean_label = get_articles_and_labels(
+        articles, labels, cleaned_labels = get_articles_and_labels(
             reviews
         )
 
         trained_model, article_tokenizer, label_tokenizer = train(articles, labels)
 
-        if not os.path.exists(TRAINED_MODELS):
-            os.makedirs(TRAINED_MODELS)
+        trained_lstm_categorization_model_file_path = constants.LSTM_CATEGORY_MODEL_FILE_PATH.format(
+            base_folder=app_config.fawkes_internal_config.data.base_folder,
+            dir_name=app_config.fawkes_internal_config.data.models_folder,
+            app_name=app_config.app.name,
+        )
 
-        trained_model.save(LSTM_TRAINED_MODEL_FILE.format(app_name=app_config[APP]))
+        dir_name = os.path.dirname(trained_lstm_categorization_model_file_path)
+        pathlib.Path(dir_name).mkdir(parents=True, exist_ok=True)
+
+        trained_model.save(trained_lstm_categorization_model_file_path)
 
         # Saving the tokenizers
-        dump_json(
+        utils.dump_json(
             article_tokenizer.to_json(),
-            LSTM_ARTICLE_TOKENIZER_FILE.format(app_name=app_config[APP]),
+            constants.LSTM_CATEGORY_ARTICLE_TOKENIZER_FILE_PATH.format(
+                base_folder=app_config.fawkes_internal_config.data.base_folder,
+                dir_name=app_config.fawkes_internal_config.data.models_folder,
+                app_name=app_config.app.name,
+            ),
         )
 
         # Saving the tokenizers
-        dump_json(
+        utils.dump_json(
             label_tokenizer.to_json(),
-            LSTM_LABEL_TOKENIZER_FILE.format(app_name=app_config[APP]),
+            constants.LSTM_CATEGORY_LABEL_TOKENIZER_FILE_PATH.format(
+                base_folder=app_config.fawkes_internal_config.data.base_folder,
+                dir_name=app_config.fawkes_internal_config.data.models_folder,
+                app_name=app_config.app.name,
+            ),
         )
 
 
-def predict_labels(articles, app_config, model, article_tokenizer, label_tokenizer):
+def predict_labels(articles, model, article_tokenizer, label_tokenizer):
     """ Given an article we predict the label """
 
     # Convert the give article to tokens

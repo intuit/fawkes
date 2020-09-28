@@ -21,7 +21,7 @@ class LstmClassifierTest(unittest.TestCase):
 
         cleaned_articles = result[0]
         cleaned_labels = result[1]
-        original_label_to_clean_label = result[2]
+        cleaned_labels = result[2]
 
         # Check if the review message has been cleaned
         self.assertEqual(cleaned_articles[0], "I heard budgeting app I gave try done.")
@@ -29,16 +29,16 @@ class LstmClassifierTest(unittest.TestCase):
         # Check if empty articles are removed
         self.assertEqual(len(cleaned_articles), 1)
 
-        # Check if the lengths of cleaned_articles, cleaned_labels and original_label_to_clean_label match
+        # Check if the lengths of cleaned_articles, cleaned_labels and cleaned_labels match
         self.assertEqual(len(cleaned_articles), len(cleaned_labels))
-        self.assertEqual(len(cleaned_articles), len(original_label_to_clean_label))
+        self.assertEqual(len(cleaned_articles), len(cleaned_labels))
 
         # Check if non-alphanumeric labels are cleaned
         self.assertEqual(cleaned_labels[0], "signinsignup")
 
         # Check the original to clean label mapping correctness
         self.assertEqual(
-            (original_label_to_clean_label[cleaned_labels[0]]),
+            (cleaned_labels[cleaned_labels[0]]),
             review[0]["derived-insight"]["category"],
         )
 

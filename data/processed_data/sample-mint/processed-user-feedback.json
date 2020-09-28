@@ -1,0 +1,30 @@
+[
+    {
+        "message": "I just heard about this budgeting app. So I gave it a try. I am impressed thus far. However I still cant add all of my financial institutions so my budget is kind of skewed. But other that I can say Im more aware of my spending",
+        "timestamp": "2020/03/15 14:13:17",
+        "rating": 5,
+        "app_name": "sample-mint",
+        "channel_name": "appstore",
+        "channel_type": "ios",
+        "hash_id": "6dde3aa82726c0a9e3777623854d839184767571",
+        "derived_insight": {
+            "sentiment": {
+                "neg": 0.0,
+                "neu": 0.928,
+                "pos": 0.072,
+                "compound": 0.4767
+            },
+            "category": "Application",
+            "extra_properties": {
+                "category_scores": {
+                    "User Experience": 0,
+                    "sign-in/sign-up": 0,
+                    "Notification": 0,
+                    "Application": 1,
+                    "ads": 0
+                },
+                "bug_feature": "feature"
+            }
+        }
+    }
+]

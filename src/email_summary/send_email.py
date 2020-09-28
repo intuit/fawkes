@@ -44,7 +44,7 @@ if __name__ == "__main__":
             dir = DATA_DUMP_DIR
 
             fetch_file_save_path = PROCESSED_EMAIL_FILE.format(
-                dir_name=dir, app_name=app_config[APP])
+                dir_name=dir, app_name=app_config.app.name)
 
             with open(fetch_file_save_path, "r") as email_file_handle:
                 template_html = email_file_handle.read()

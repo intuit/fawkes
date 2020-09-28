@@ -7,10 +7,11 @@ from bs4 import BeautifulSoup
 # this is so that below import works.  Sets the pwd to home directory
 sys.path.append(os.path.realpath("."))
 
-import src.utils as utils
+import src.utils.utils as utils
+import src.constants as constants
 
-from src.config import *
-
+from src.app_config.app_config import ReviewChannelTypes
+from src.review.review import Review
 
 def extract_rating(url, classtype, classname):
     r = requests.get(url)
@@ -23,20 +24,24 @@ def extract_rating(url, classtype, classname):
 
 
 def getAppStoreLifetimeRating(app_config):
-    ios_channel_config = utils.fetch_channel_config(app_config,
-                                                    CHANNEL_NAME_APPSTORE)
+    ios_channel_config = utils.fetch_channel_config(
+        app_config,
+        ReviewChannelTypes.IOS
+    )
     if ios_channel_config is None:
         return 0.0
     return extract_rating(
-        APP_STORE_APP_URL.format(app_id=ios_channel_config[APP_ID]),
-        APPSTORE_CLASS_TYPE, APPSTORE_CLASS_NAME)
+        constants.APP_STORE_APP_URL.format(app_id=ios_channel_config.app_id),
+        constants.APPSTORE_CLASS_TYPE, constants.APPSTORE_CLASS_NAME)
 
 
 def getPlayStoreLifetimeRating(app_config):
-    android_channel_config = utils.fetch_channel_config(app_config,
-                                                        CHANNEL_NAME_PLAYSTORE)
+    android_channel_config = utils.fetch_channel_config(
+        app_config,
+        ReviewChannelTypes.ANDROID
+    )
     if android_channel_config is None:
         return 0.0
     return extract_rating(
-        PLAY_STORE_APP_URL.format(app_id=android_channel_config[APP_ID]),
-        PLAYSTORE_CLASS_TYPE, PLAYSTORE_CLASS_NAME)
+        constants.PLAY_STORE_APP_URL.format(app_id=android_channel_config.app_id),
+        constants.PLAYSTORE_CLASS_TYPE, constants.PLAYSTORE_CLASS_NAME)

@@ -70,14 +70,14 @@ def create_corpus(reviews, category_dict):
     # Category_dict format {topic1: [reviews in topic1],"topic2": [reviews in
     # topic2]}
     for review in reviews:
-        if review[DERIVED_INSIGHTS][CATEGORY] != "uncategorized":
+        if review.derived_insight.category != "uncategorized":
             # If list is empty
-            if not category_dict[review[DERIVED_INSIGHTS][CATEGORY]]:
-                category_dict[review[DERIVED_INSIGHTS][CATEGORY]] = " ".join(
-                    remove_stop_words(tokenise(review[MESSAGE])))
+            if not category_dict[review.derived_insight.category]:
+                category_dict[review.derived_insight.category] = " ".join(
+                    remove_stop_words(tokenise(review.message)))
             else:
-                category_dict[review[DERIVED_INSIGHTS][CATEGORY]] += " ".join(
-                    remove_stop_words(tokenise(review[MESSAGE])))
+                category_dict[review.derived_insight.category] += " ".join(
+                    remove_stop_words(tokenise(review.message)))
 
     # Our corpus - ["reviews in topic1","reviews in tpoic2"]
     for topic in category_dict:
@@ -123,9 +123,9 @@ if __name__ == "__main__":
             keywords_list = open_json(app_config[TOPIC_KEYWORDS_FILE])
             reviews = open_json(
                 PROCESSED_INTEGRATED_REVIEW_FILE.format(
-                    app_name=app_config[APP]))
+                    app_name=app_config.app.name))
             top_keywords_in_categories = improve_categorywise_keywords(
                 reviews, keywords_list)
             dump_json(
                 top_keywords_in_categories,
-                IMPROVED_CATEGORY_KEYWORDS.format(app_name=app_config[APP]))
+                IMPROVED_CATEGORY_KEYWORDS.format(app_name=app_config.app.name))

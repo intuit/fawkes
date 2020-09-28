@@ -1,28 +1,38 @@
 .DS_Store
-docs
-data-dumps
-data-parsed
 src/__pycache__/
 src/parse/__pycache__/
+
 *.pyc
 .tag*
-downloads/
-src/scripts/fawkes_secrets.env
-fawkes-config/
-trained-models/
+
+# All the secret files
+src/scripts/fawkes-secrets.env
+
+# Google Spreadsheets
 storages.json
+
+# App Config related
 app/*.csv
 app/*.json
 app/*.py
 !app/app-config.json
 !app/bug-feature-keywords.json
-!app/app-keywords.json
-!app/sample-mint-config.json
-!app/sample-mint-keywords-with-weight.json
-!app/sample-mint-bug-feature-file-with-weights.json
-data/*.json
-data/*.csv
-!data/sample-mint-appstore-raw-feedback.json
-processed-data/
+!app/category-keywords.json
+
+# Data related stuff
+data/**/*.json
+data/**/*.csv
+data/**/*.h5
+data/**/*.html
+
+# Emabling sample-data
+!data/raw_data/sample-mint/*
+!data/parsed_data/sample-mint/*
+!data/processed_data/sample-mint/*
+
+# Code coverage
 .coverage
 coverage.xml
+
+# All the binaries including elasticsearch, kibana etc.
+bin/

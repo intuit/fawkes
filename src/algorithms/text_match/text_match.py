@@ -9,8 +9,8 @@ from nltk.stem.wordnet import WordNetLemmatizer
 
 sys.path.append(os.path.realpath("."))
 
-from src.utils import *
-from src.config import *
+import src.utils.utils as utils
+import src.constants as constants
 
 lmtzr = WordNetLemmatizer()
 nltk.download("wordnet")
@@ -76,6 +76,6 @@ def text_match(text, list_of_topics):
 
     # If the score is not found, let make it uncategorized
     if max(scores.values()) == 0:
-        category = CATEGORY_NOT_FOUND
+        category = constants.CATEGORY_NOT_FOUND
 
     return scores, category

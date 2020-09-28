@@ -1,147 +1,170 @@
-# using SendGrid's Python Library
-# https://github.com/sendgrid/sendgrid-python
 import os
 import sys
 import functools
+import pathlib
 
 from pprint import pprint
 from datetime import datetime, timedelta
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 # this is so that below import works.  Sets the pwd to home directory
 sys.path.append(os.path.realpath("."))
 
-import src.utils as utils
-from src.fetch_source_data.fetch_lifetime_ratings import *
-from src.email_summary.email_utils import *
-from src.email_summary.queries import *
-from src.config import *
+import src.email_summary.email_utils as email_utils
+import src.email_summary.queries as queries
 
+import src.utils.utils as utils
+import src.utils.filter_utils as filter_utils
+import src.constants as constants
+import src.fetch.lifetime as lifetime
+
+from src.app_config.app_config import AppConfig, ReviewChannelTypes, CategorizationAlgorithms
+from src.review.review import Review
 
 def compare_review_by_sentiment(review1, review2):
-    return (review1[DERIVED_INSIGHTS][SENTIMENT][COMPOUND] -
-            review2[DERIVED_INSIGHTS][SENTIMENT][COMPOUND])
+    return (review1.derived_insight.sentiment["compound"] -
+            review2.derived_insight.sentiment["compound"])
 
 
 def compare_review_by_category_score(review1, review2):
-    category = review1[DERIVED_INSIGHTS][CATEGORY]
+    category = review1.derived_insight.category
     # If the category has not been found, it will be "uncategorized"
     # All reviews in uncategorized have a score of 0
     # So we return True in such cases
-    if category != CATEGORY_NOT_FOUND:
-        return (review2[DERIVED_INSIGHTS][EXTRA_PROPERTIES][CATEGORY_SCORES]
-                [category] - review1[DERIVED_INSIGHTS][EXTRA_PROPERTIES]
-                [CATEGORY_SCORES][category])
+    if category != constants.CATEGORY_NOT_FOUND:
+        return (review2.derived_insight.extra_properties[constants.CATEGORY_SCORES][category] - review1.derived_insight.extra_properties[constants.CATEGORY_SCORES][category])
     else:
         return True
 
 
 if __name__ == "__main__":
     app_configs = utils.open_json(
-        APP_CONFIG_FILE.format(file_name=APP_CONFIG_FILE_NAME))
+        constants.APP_CONFIG_FILE.format(file_name=constants.APP_CONFIG_FILE_NAME)
+    )
+    for app_config_file in app_configs:
+        app_config = AppConfig(
+            utils.open_json(
+                app_config_file
+            )
+        )
+        # Path where the user reviews were stored after parsing.
+        processed_user_reviews_file_path = constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
+            base_folder=app_config.fawkes_internal_config.data.base_folder,
+            dir_name=app_config.fawkes_internal_config.data.processed_data_folder,
+            app_name=app_config.app.name,
+        )
 
-    # We process all algorithms on parsed data for each app
-    # We process all algorithms on parsed data for each app
-    for app in app_configs:
-        print("[LOG] Processing : ", app)
-        app_config = utils.open_json(APP_CONFIG_FILE.format(file_name=app))
-        # If the app json schema is not valid, we don't execute any thing.
-        if utils.validate_app_config(app_config):
-            app_config = utils.decrypt_config(app_config)
+        # Loading the reviews
+        reviews = utils.open_json(processed_user_reviews_file_path)
 
-            # Loading the REVIEW's
-            reviews = utils.open_json(
-                PROCESSED_INTEGRATED_REVIEW_FILE.format(
-                    app_name=app_config[APP]))
+        # Converting the json object to Review object
+        reviews = [Review.from_review_json(review) for review in reviews]
 
-            reviews = utils.filter_reviews(reviews, app_config, WEEKLY_SUMMARY)
+        # Filtering out reviews which are not applicable.
+        reviews = filter_utils.filter_reviews_by_time(
+            filter_utils.filter_reviews_by_channel(
+                reviews, filter_utils.filter_disabled_review_channels(
+                    app_config
+                ),
+            ),
+            datetime.now(timezone.utc) - timedelta(days=app_config.email_config.email_time_span)
+        )
+        if len(reviews) == 0:
+            continue
 
-            if len(reviews) == 0:
+        review_by_category = queries.getVocByCategory(reviews)
+
+        top_categories = sorted([(len(review_by_category[key]), key)
+                                    for key in review_by_category],
+                                reverse=True)
+
+        top_categories = top_categories[:5]
+
+        max_sentiment_per_category = {}
+
+        for category in top_categories:
+            max_sentiment_per_category[category[1]] = sorted(
+                review_by_category[category[1]],
+                key=functools.cmp_to_key(
+                    compare_review_by_category_score))[0]
+
+        reviewDivHTML = ""
+
+        for category in top_categories:
+            if category[1] == constants.CATEGORY_NOT_FOUND:
                 continue
-
-            review_by_category = getVocByCategory(reviews)
-
-            top_categories = sorted([(len(review_by_category[key]), key)
-                                     for key in review_by_category],
-                                    reverse=True)
-
-            top_categories = top_categories[:5]
-
-            max_sentiment_per_category = {}
-
-            for category in top_categories:
-                max_sentiment_per_category[category[1]] = sorted(
-                    review_by_category[category[1]],
-                    key=functools.cmp_to_key(
-                        compare_review_by_category_score))[0]
-
-            reviewDivHTML = ""
-
-            for category in top_categories:
-                if category[1] == CATEGORY_NOT_FOUND:
-                    continue
-                template_data = {
-                    "catetgoryName":
-                        category[1],
-                    "upOrDown":
-                        "down",
-                    "upDownPercentage":
-                        19,
-                    "reviewText":
-                        max_sentiment_per_category[category[1]][MESSAGE],
-                    "usersTalking":
-                        len(review_by_category[category[1]])
-                }
-
-                formatted_html = generate_email(
-                    WEEKLY_EMAIL_DETAILED_REVIEW_BLOCK_TEMPLATE, template_data)
-
-                reviewDivHTML += formatted_html
-
-            # We get all the data.
             template_data = {
-                "appStoreRating":
-                    "{0:.2f}".format(appStoreRating(reviews)),
-                "playStoreRating":
-                    "{0:.2f}".format(playStoreRating(reviews)),
-                "positiveReview":
-                    positiveReview(reviews),
-                "neutralReview":
-                    neutralReview(reviews),
-                "negativeReview":
-                    negativeReview(reviews),
-                "fromDate":
-                    fromDate(reviews),
-                "toDate":
-                    toDate(reviews),
-                "appLogo":
-                    app_config[APP_LOGO],
-                "timeSpanWords":
-                    app_config[EMAIL_TIME_SPAN_WORDS],
-                "reviewBlock":
-                    reviewDivHTML,
-                "appStoreNumberOfReview":
-                    appStoreNumberReview(reviews),
-                "playStoreNumberOfReview":
-                    playStoreNumberReview(reviews),
-                "appStoreLifetimeRating":
-                    getAppStoreLifetimeRating(app_config),
-                "playStoreLifetimeRating":
-                    getPlayStoreLifetimeRating(app_config),
-                "kibanaDashboardURL":
-                    app_config[KIBANA_DASHBOARD_URL]
+                "catetgoryName":
+                    category[1],
+                "upOrDown":
+                    "down",
+                "upDownPercentage":
+                    19,
+                "reviewText":
+                    max_sentiment_per_category[category[1]].message,
+                "usersTalking":
+                    len(review_by_category[category[1]])
             }
 
-            # We finally send the email
-            formatted_html = generate_email(WEEKLY_EMAIL_DETAILED_TEMPLATE,
-                                            template_data)
+            formatted_html = email_utils.generate_email(
+                constants.WEEKLY_EMAIL_DETAILED_REVIEW_BLOCK_TEMPLATE,
+                template_data
+            )
 
-            dir = DATA_DUMP_DIR
 
-            fetch_file_save_path = PROCESSED_EMAIL_FILE.format(
-                dir_name=dir, app_name=app_config[APP])
+            reviewDivHTML += formatted_html
 
-            with open(fetch_file_save_path, "w") as email_file_handle:
-                email_file_handle.write(formatted_html)
+        # We get all the data.
+        template_data = {
+            "appStoreRating":
+                "{0:.2f}".format(queries.appStoreRating(reviews)),
+            "playStoreRating":
+                "{0:.2f}".format(queries.playStoreRating(reviews)),
+            "positiveReview":
+                queries.positiveReview(reviews),
+            "neutralReview":
+                queries.neutralReview(reviews),
+            "negativeReview":
+                queries.negativeReview(reviews),
+            "fromDate":
+                queries.fromDate(reviews),
+            "toDate":
+                queries.toDate(reviews),
+            "appLogo":
+                app_config.app.logo,
+            "timeSpanWords":
+                app_config.email_config.email_time_span_in_words,
+            "reviewBlock":
+                reviewDivHTML,
+            "appStoreNumberOfReview":
+                queries.appStoreNumberReview(reviews),
+            "playStoreNumberOfReview":
+                queries.playStoreNumberReview(reviews),
+            "appStoreLifetimeRating":
+                lifetime.getAppStoreLifetimeRating(app_config),
+            "playStoreLifetimeRating":
+                lifetime.getPlayStoreLifetimeRating(app_config),
+            "kibanaDashboardURL":
+                app_config.elastic_config.kibana_url
+        }
+
+        # We finally send the email
+        formatted_html = email_utils.generate_email(
+            app_config.email_config.email_template_file,
+            template_data
+        )
+
+        # Path where the generated email in html format will be stored
+        email_summarty_generated_file_path = constants.EMAIL_SUMMARY_GENERATED_FILE_PATH.format(
+            base_folder=app_config.fawkes_internal_config.data.base_folder,
+            dir_name=app_config.fawkes_internal_config.data.emails_folder,
+            app_name=app_config.app.name,
+        )
+
+        dir_name = os.path.dirname(email_summarty_generated_file_path)
+        pathlib.Path(dir_name).mkdir(parents=True, exist_ok=True)
+
+        with open(email_summarty_generated_file_path, "w") as email_file_handle:
+            email_file_handle.write(formatted_html)

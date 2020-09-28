@@ -9,17 +9,18 @@ from pprint import pprint
 # This is so that below import works
 sys.path.append(os.path.realpath("."))
 
-from src.utils import *
-from src.config import *
+import src.utils.utils as utils
+import src.constants as constants
 
 
-def fetch_app_store_reviews(review_config, app):
+def fetch(review_channel):
     reviews = []
-    for i in range(APP_STORE_PAGES_TO_FETCH):
+
+    for i in range(constants.APP_STORE_PAGES_TO_FETCH):
         # Fetch the app-store reviews
         response = requests.get(
-            APP_STORE_RSS_URL.format(country=review_config[COUNTRY],
-                                     app_id=review_config[APP_ID],
+            constants.APP_STORE_RSS_URL.format(country=review_channel.country,
+                                     app_id=review_channel.app_id,
                                      page_number=i + 1))
         # We get an XML reponse, we convert it to json
         review = json.loads(json.dumps(xmltodict.parse(response.text)))
@@ -27,6 +28,7 @@ def fetch_app_store_reviews(review_config, app):
             reviews += review["feed"]["entry"]
 
     new_reviews = []
+
     # Correcting the timestamps
     for i in range(len(reviews)):
         try:
@@ -45,15 +47,4 @@ def fetch_app_store_reviews(review_config, app):
         except BaseException:
             print("[LOG] Parse Error in fetch_app_store_reviews")
 
-    dir = DATA_DUMP_DIR
-
-    if not os.path.exists(dir):
-        os.makedirs(dir)
-
-    fetch_file_save_path = FETCH_FILE_SAVE_PATH.format(
-        dir_name=dir,
-        app_name=app,
-        channel_name=review_config[CHANNEL_NAME],
-        extension="json")
-
-    dump_json(new_reviews, fetch_file_save_path)
+    return new_reviews

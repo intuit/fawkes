@@ -1,16 +1,17 @@
 # Fields in unified json
 TIMESTAMP = "timestamp"
 MESSAGE = "message"
-CHANNEL_TYPE = "channel-type"
+CHANNEL_TYPE = "channel_type"
 PROPERTIES = "properties"
 APP = "app"
-DERIVED_INSIGHTS = "derived-insight"
-EXTRA_PROPERTIES = "extra-properties"
-CATEGORY_SCORES = "category-scores"
+DERIVED_INSIGHTS = "derived_insight"
+EXTRA_PROPERTIES = "extra_properties"
+CATEGORY_SCORES = "category_scores"
 CATEGORY = "category"
 SENTIMENT = "sentiment"
 COMPOUND = "compound"
 TIMEZONE = "timezone"
+RAW_REVIEW = "raw_review"
 
 # String constants
 TWITTER_QUERY_LANGUAGE = "en"
@@ -45,8 +46,8 @@ FILE_TYPE = "file-type"
 CUSTOM_CODE_PATH = "custom-code-path"
 HASH_ID = "hash-id"
 FILE_PATH = "file-path"
-BUG_FEATURE = "bug-feature"
-LSTM_CATEGORY = "lstm-category"
+BUG_FEATURE = "bug_feature"
+LSTM_CATEGORY = "lstm_category"
 BUG = "bug"
 FEATURE = "feature"
 APP_ID = "app-id"
@@ -72,6 +73,11 @@ CHANNEL_TYPE_CSV = "csv"
 CHANNEL_NAME_TWITTER = "twitter"
 CHANNEL_NAME_PLAYSTORE = "playstore"
 CHANNEL_NAME_APPSTORE = "appstore"
+
+JSON = "json"
+CSV = "csv"
+
+TIMESTAMP_FORMAT = "%Y/%m/%d %H:%M:%S"
 
 # Salesforce related stuff
 SALESFORCE_EXTRACTION_DAYS = 10
@@ -99,15 +105,15 @@ APP_STORE_APP_URL = "https://apps.apple.com/us/app/id{app_id}"
 APPSTORE_CLASS_TYPE = "span"
 APPSTORE_CLASS_NAME = "we-customer-ratings__averages__display"
 APP_STORE_PAGES_TO_FETCH = 10
-PLAYSTORE_FETCH_PAGES = 1
 
 # Play Store
 PLAY_STORE_APP_URL = "https://play.google.com/store/apps/details?id={app_id}"
 PLAYSTORE_CLASS_TYPE = "div"
 PLAYSTORE_CLASS_NAME = "BHMmbe"
+PLAYSTORE_FETCH_PAGES = 1
 
 # Categorization algorithms
-LSTM_CLASSIFIER = "lstm-classifier"
+LSTM_CLASSIFICATION = "lstm-classifier"
 TEXT_MATCH_CLASSIFIER = "text-match-classifier"
 
 # File paths
@@ -119,7 +125,15 @@ PARSED_INTEGRATED_REVIEW_FILE = "processed-data/{app_name}-parsed-integrated-rev
 PROCESSED_INTEGRATED_REVIEW_FILE = "processed-data/{app_name}-processed-integrated-review.json"
 PROCESSED_EMAIL_FILE = "processed-data/{app_name}-processed-email.html"
 TOPICS_WEIGHT_FILE = "app/{app}-keywords-with-weight.json"
-FETCH_FILE_SAVE_PATH = "{dir_name}{app_name}-{channel_name}-raw-feedback.{extension}"
+
+RAW_USER_REVIEWS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/{channel_name}-raw-feedback.{extension}"
+PARSED_USER_REVIEWS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/parsed-user-feedback.json"
+PROCESSED_USER_REVIEWS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/processed-user-feedback.json"
+LSTM_CATEGORY_MODEL_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/lstm-category-trained-model.h5"
+LSTM_CATEGORY_ARTICLE_TOKENIZER_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/lstm-category-article-tokenizer.json"
+LSTM_CATEGORY_LABEL_TOKENIZER_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/lstm-category-label-tokenizer.json"
+EMAIL_SUMMARY_GENERATED_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/email-summary-generated.html"
+
 BUG_FEATURE_FILE_WITH_WEIGHTS = "app/{app}-bug-feature-file-with-weights.json"
 TRAINED_MODELS = "trained-models/"
 LSTM_TRAINED_MODEL_FILE = TRAINED_MODELS + "lstm-{app_name}-trained.h5"

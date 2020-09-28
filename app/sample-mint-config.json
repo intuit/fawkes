@@ -1,51 +1,77 @@
 {
-    "app": "sample-mint",
-    "elastic-search-index": "elastic-search-index",
-    "elastic-search-url": "elastic-search-url",
-    "kibana-dashboard-url": "kibana-dashboard-url",
-    "lifetime-rating-elastic-search-index": "lifetime-rating-elastic-search-index",
-    "app-logo": "app-logo",
-    "email-time-span": "week",
-    "bug-feature-file": "app/bug-feature-keywords.json",
-    "topic-keywords-file": "app/app-keywords.json",
-    "categorization-algorithm": "text-match-classifier",
-    "algorithm-days-filter": 1000,
-    "email-subject-name": "email-subject-name",
-    "sender-email-address": "sender-email-address",
-    "email-list": [],
-    "sendgrid-api-key": "sendgrid-api-key",
-    "slackbot-run-interval": 60,
-    "slack-hook-url": "slack-hook-url",
-    "slack-channel": "#slack-channel",
-    "slack-tags": {
-        "category": {
-            "Notification": []
-        },
-        "keywords": {
-            "crash": ["@slack-user-name"]
+    "app": {
+        "name": "sample-mint",
+        "logo": "logo"
+    },
+    "elastic_config": {
+        "index": "fawkes-user-reviews",
+        "elastic_search_url": "http://localhost:9200/",
+        "kibana_url": "http://localhost:5601",
+        "lifetime_rating_index": ""
+    },
+    "email_config": {
+        "email_template_file": "src/email_summary/templates/weekly-detailed.html",
+        "email_time_span": 1000,
+        "email_time_span_in_words": "week",
+        "email_subject_name": "Fawkes: Weekly Summary Email",
+        "sender_email_address": "",
+        "sendgrid_api_key": "",
+        "email_list": []
+    },
+    "slack_config": {
+        "slack_channel": "",
+        "slack_hook_url": "",
+        "slack_run_interval": 60,
+        "slack_notification_rules": {
+            "category_based_rules": {
+                "Notification": []
+            },
+            "keyword_based_rules": {
+                "crash": []
+            }
         }
     },
-    "jira": {
-        "project-id": "project-id",
-        "story-issue-type": "12",
-        "bug-issue-type": "1",
-        "base-url": "base-url"
+    "jira_config": {
+        "base_url": "",
+        "project_id": "",
+        "story_type": "12",
+        "bug_type": "1"
     },
-    "env-keys": [],
-    "review-channels": [
+    "algorithm_config": {
+        "categorization_algorithm": "text_match",
+        "algorithm_days_filter": 1000,
+        "bug_feature_keywords_file": "app/bug-feature-keywords.json",
+        "bug_feature_keywords_weights_file": "app/bug-feature-keywords-weights.json",
+        "category_keywords_file": "app/category-keywords.json",
+        "category_keywords_weights_file": "app/category-keywords-weights.json"
+    },
+    "env_keys": [],
+    "review_channels": [
         {
-            "channel-type": "ios",
-            "channel-name": "appstore",
-            "file-type": "json",
-            "is-channel-enabled": true,
-            "weekly-summary": true,
-            "timestamp-key": "updated",
+            "channel_type": "ios",
+            "channel_name": "appstore",
+            "file_type": "json",
+            "file_path": null,
+            "is_channel_enabled": true,
+            "weekly_summary": true,
+            "timestamp_key": "updated",
+            "timestamp_format": "",
             "timezone": "UTC",
-            "message-key": "content",
-            "fetch-cron-tab": "@daily",
-            "slack-channel": null,
-            "app-id": "300238550",
+            "message_key": "content",
+            "rating_key": "rating",
+            "app_id": "300238550",
             "country": "us"
         }
-    ]
+    ],
+    "custom_code_module_path": null,
+    "fawkes_internal_config": {
+        "data": {
+            "base_folder": "data",
+            "raw_data_folder": "raw_data",
+            "parsed_data_folder": "parsed_data",
+            "processed_data_folder": "processed_data",
+            "models_folder": "models",
+            "emails_folder": "emails"
+        }
+    }
 }
