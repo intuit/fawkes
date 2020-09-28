@@ -25,6 +25,11 @@ data/**/*.csv
 data/**/*.h5
 data/**/*.html
 
+# Emabling sample-data
+!data/raw_data/sample-mint/*
+!data/parsed_data/sample-mint/*
+!data/processed_data/sample-mint/*
+
 # Code coverage
 .coverage
 coverage.xml

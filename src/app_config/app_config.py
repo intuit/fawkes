@@ -150,7 +150,6 @@ class AppConfig:
     def __init__(self, config):
         # First we convert any env-keys to their actual values.
         config = self.inject_env_vars_as_values(config)
-        pprint(config)
         # We initialize each of the attributes of AppConfig
         self.app = App(config["app"])
         self.elastic_config = ElasticConfig(config["elastic_config"])
