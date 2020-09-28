@@ -83,14 +83,14 @@ if __name__ == "__main__":
         )
 
         # Path where the generated email in html format will be stored
-        email_summarty_generated_file_path = constants.EMAIL_SUMMARY_GENERATED_FILE_PATH.format(
+        email_summary_generated_file_path = constants.EMAIL_SUMMARY_GENERATED_FILE_PATH.format(
             base_folder=app_config.fawkes_internal_config.data.base_folder,
             dir_name=app_config.fawkes_internal_config.data.emails_folder,
             app_name=app_config.app.name,
         )
 
-        dir_name = os.path.dirname(email_summarty_generated_file_path)
+        dir_name = os.path.dirname(email_summary_generated_file_path)
         pathlib.Path(dir_name).mkdir(parents=True, exist_ok=True)
 
-        with open(email_summarty_generated_file_path, "w") as email_file_handle:
+        with open(email_summary_generated_file_path, "w") as email_file_handle:
             email_file_handle.write(formatted_html)
