@@ -1,3 +1,5 @@
+import json
+import os
 from pprint import pprint
 
 class App:
@@ -104,7 +106,7 @@ class PlayStoreReviewChannel(ReviewChannel):
 class TwitterReviewChannel(ReviewChannel):
     def __init__(self, config):
         super().__init__(config)
-        self.consumer_key = config["app_id"]
+        self.consumer_key = config["consumer_key"]
         self.consumer_secret = config["consumer_secret"]
         self.access_token_key = config["access_token_key"]
         self.access_token_secret = config["access_token_secret"]
@@ -113,7 +115,9 @@ class TwitterReviewChannel(ReviewChannel):
 
         # Pre defined constants for Twitter
         self.timestamp_key = "created_at"
+        self.timestamp_format = "%a %b %d %H:%M:%S %z %Y"
         self.message_key = "text"
+        self.timezone = "GMT"
 
 class SpreadSheetReviewChannel(ReviewChannel):
     def __init__(self, config):
@@ -144,6 +148,10 @@ class FawkesInternalConfig:
 
 class AppConfig:
     def __init__(self, config):
+        # First we convert any env-keys to their actual values.
+        config = self.inject_env_vars_as_values(config)
+        pprint(config)
+        # We initialize each of the attributes of AppConfig
         self.app = App(config["app"])
         self.elastic_config = ElasticConfig(config["elastic_config"])
         self.email_config = EmailConfig(config["email_config"])
@@ -181,4 +189,13 @@ class AppConfig:
                 )
 
     def inject_env_vars_as_values(self, config):
-        pass
+        config_string = json.dumps(config)
+        env_vars = config["env_keys"]
+
+        for key in env_vars:
+            config_string = config_string.replace(
+                key,
+                os.environ[key]
+            )
+        return json.loads(config_string)
+

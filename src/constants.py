@@ -1,7 +1,7 @@
 # Fields in unified json
 TIMESTAMP = "timestamp"
 MESSAGE = "message"
-CHANNEL_TYPE = "channel-type"
+CHANNEL_TYPE = "channel_type"
 PROPERTIES = "properties"
 APP = "app"
 DERIVED_INSIGHTS = "derived_insight"

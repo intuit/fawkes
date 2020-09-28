@@ -29,30 +29,30 @@ def search_handle_mentions(api,
     query = "q=%40{handle}".format(handle=handle)
 
     # Adding parameter for only extracting only english tweets
-    query += AMPERSAND + "lang={language}".format(language=language)
+    query += constants.AMPERSAND + "lang={language}".format(language=language)
 
     # Adding the count. (default = 15).max to 100 per page
-    query += AMPERSAND + "count={count}".format(count=count)
+    query += constants.AMPERSAND + "count={count}".format(count=count)
 
     # Adding date. Extracts tweets before given date. Date Format : YYYY-MM-DD
     # query += AMPERSAND + "until={until}".format(until=date)
 
     # Adding max_id to extract next page in twitter timeline pages
     if latest_id is not None:
-        query += AMPERSAND + "max_id={id_num}".format(id_num=latest_id)
+        query += constants.AMPERSAND + "max_id={id_num}".format(id_num=latest_id)
 
     # URL encode it
     return api.GetSearch(raw_query=query, return_json=True)
 
 
 def fetch(review_channel):
-    api = twitter_authenthication(twitter_config.consumer_key,
-                                  twitter_config.consumer_secret,
-                                  twitter_config.access_token_key,
-                                  twitter_config.access_token_secret)
+    api = twitter_authenthication(review_channel.consumer_key,
+                                  review_channel.consumer_secret,
+                                  review_channel.access_token_key,
+                                  review_channel.access_token_secret)
 
     all_tweets = []
-    for twitter_handle in twitter_config.twitter_handle_list:
+    for twitter_handle in review_channel.twitter_handle_list:
         # Fetch the first page of the timeline
         query_results = search_handle_mentions(
             api, twitter_handle,

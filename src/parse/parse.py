@@ -81,7 +81,9 @@ def parse_json(raw_user_reviews_file_path, review_channel, app_config):
         # TODO: Conver this to a standard format like jsonpath
         message = utils.get_json_key_value(review, review_channel.message_key.split("."))
         timestamp = utils.get_json_key_value(review, review_channel.timestamp_key.split("."))
-        rating = utils.get_json_key_value(review, review_channel.rating_key.split("."))
+        rating = None
+        if review_channel.rating_key != None:
+            rating = utils.get_json_key_value(review, review_channel.rating_key.split("."))
 
         # Add the review object to the parsed reviews
         parsed_reviews.append(

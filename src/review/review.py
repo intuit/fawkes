@@ -44,7 +44,7 @@ class Review:
         channel_type = "",
         rating = None,
         review_timezone="UTC",
-        timestamp_format="%Y/%m/%d %H:%M:%S",
+        timestamp_format=constants.TIMESTAMP_FORMAT,
         hash_id=None,
     ):
         # The message in the review
@@ -106,7 +106,7 @@ class Review:
         return {
             "message": self.message,
             "timestamp": self.timestamp.strftime(
-                "%Y/%m/%d %H:%M:%S" # Convert it to a standard datetime format
+                constants.TIMESTAMP_FORMAT # Convert it to a standard datetime format
             ),
             "rating": self.rating,
             "app_name": self.app_name,

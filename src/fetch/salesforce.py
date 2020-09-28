@@ -11,7 +11,6 @@ sys.path.append(os.path.realpath("."))
 import src.utils.utils as utils
 import src.constants as constants
 
-
 def get_oauth_token(base_url, params):
 
     url = base_url + "/services/oauth2/token"

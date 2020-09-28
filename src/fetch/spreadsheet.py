@@ -22,6 +22,6 @@ def fetch_sheet_data(token_file, spreadsheet_id):
 
 
 def fetch(review_channel):
-    sheets = fetch_sheet_data(review_channel[CLIENT_SECRET_FILE], review_channel[SPREADSHEET_ID])
+    sheets = fetch_sheet_data(review_channel.client_secrets_file, review_channel.spreadsheet_id)
     # Funny enough, there is no direct way to put into a csv string.
-    return sheets[channel_config[SHEET_ID]].to_frame().to_csv()
+    return sheets[review_channel.sheet_id].to_frame().to_csv()
