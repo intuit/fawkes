@@ -21,3 +21,4 @@ coverage
 codecov
 pre-commit
 jsonschema
+pdoc3
