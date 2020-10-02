@@ -5,10 +5,10 @@ import os
 #  This is so that the following imports work
 sys.path.append(os.path.realpath("."))
 
-import src.algorithms.algo as algo
-import src.parse.parse as parse
-import src.utils.utils as utils
-import src.algorithms.text_match.generate_keyword_weights as generate_keyword_weights
+import fawkes.algorithms.algo as algo
+import fawkes.parse.parse as parse
+import fawkes.utils.utils as utils
+import fawkes.algorithms.text_match.generate_keyword_weights as generate_keyword_weights
 
 class FawkesSanityTest(unittest.TestCase):
     def test_sanity(self):
