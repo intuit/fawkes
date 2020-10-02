@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 
 sys.path.append(os.path.realpath("."))
 
-import src.algorithms.lstm_classifier.lstm_classifier as lstm_classifier
+import fawkes.algorithms.lstm_classifier.lstm_classifier as lstm_classifier
 
 
 class LstmClassifierTest(unittest.TestCase):

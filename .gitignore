@@ -1,12 +1,12 @@
 .DS_Store
-src/__pycache__/
-src/parse/__pycache__/
+fawkes/__pycache__/
+fawkes/parse/__pycache__/
 
 *.pyc
 .tag*
 
 # All the secret files
-src/scripts/fawkes-secrets.env
+scripts/fawkes-secrets.env
 
 # Google Spreadsheets
 storages.json
