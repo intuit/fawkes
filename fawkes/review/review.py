@@ -13,13 +13,22 @@ import fawkes.constants as constants
 url_regex = re.compile(constants.URL_REGEX)
 
 class DerivedInsight:
+    """ The Derived Insights from a user review.
+
+    Derived insights include attributes like sentiment, category etc. which are obtained by running algorithms on top of the existing user review.
+
+    Attributes:
+        sentiment: The sentiment attached to the user review.
+        category: The category in which the user review falls.
+        extra_properties: Any other extra derived insights. Free flowing dict.
+    """
+
     def __init__(self, derived_insight = None):
+        """ Initialiser of the derived insight """
+
         if derived_insight is None:
-            # The sentiment values
             self.sentiment = None
-            # The category (inferred) of the review
             self.category = constants.CATEGORY_NOT_FOUND
-            # Free Flowing dict to store any other information
             self.extra_properties = {}
         else:
             self.sentiment = derived_insight["sentiment"]
@@ -27,6 +36,8 @@ class DerivedInsight:
             self.extra_properties = derived_insight["extra_properties"]
 
     def to_dict(self):
+        """ Converts the DerivedInsight class object to a dict """
+
         return {
             "sentiment": self.sentiment,
             "category": self.category,
@@ -34,6 +45,22 @@ class DerivedInsight:
         }
 
 class Review:
+    """ Definition of a user review.
+
+    When initialising a user review, we also standardise the timestamp and cleanup the message.
+
+    Attributes:
+        message: The message in the review.
+        timestamp: The timestamp when the review was submitted.
+        rating: The rating attached to the review. Ideally a numeric value.
+        app_name: The name of the app from where the review originated.
+        channel_name: The source/channel name from which the review originated.
+        channel_type: The source/type from which the review originated.
+        hash_id: A unique id for the review. Determined by sha1 of (message + timestamp).
+        derived_insight: The derived insights like category, sentiment etc. associated with review.
+        raw_review: The raw review without any modifications.
+    """
+
     def __init__(
         self,
         *review,
@@ -47,17 +74,13 @@ class Review:
         timestamp_format=constants.TIMESTAMP_FORMAT,
         hash_id=None,
     ):
-        # The message in the review
+        """ Initialiser of a user review """
+
         self.message = message
-        # The timestamp when the review was submitted
         self.timestamp = timestamp
-        # Rating.
         self.rating = rating
-        # The app from which the review came
         self.app_name = app_name
-        # The source/channel from which the review came
         self.channel_name = channel_name
-        # The source/type from which the review came
         self.channel_type = channel_type
         # Determine the hash-id.
         # It should almost in all cases never be overridden.
@@ -92,6 +115,8 @@ class Review:
 
     @classmethod
     def from_review_json(cls, review):
+        """ Initialse a user review object from a dict """
+
         return cls(
             review,
             message=review["message"],
@@ -103,6 +128,8 @@ class Review:
         )
 
     def to_dict(self):
+        """ Converts the Review class object to a dict """
+
         return {
             "message": self.message,
             "timestamp": self.timestamp.strftime(

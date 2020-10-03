@@ -53,7 +53,6 @@
             "file_type": "json",
             "file_path": null,
             "is_channel_enabled": true,
-            "weekly_summary": true,
             "timestamp_key": "updated",
             "timestamp_format": "",
             "timezone": "UTC",
