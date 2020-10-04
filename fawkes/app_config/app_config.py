@@ -133,6 +133,7 @@ class ReviewChannelTypes:
     CSV = "csv"
     JSON = "json"
     BLANK = "blank"
+    REMOTE_FILE = "remote_file"
 
 class ReviewChannel:
     """ Definition of a Review Channel.

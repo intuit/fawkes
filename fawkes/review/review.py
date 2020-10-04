@@ -88,7 +88,7 @@ class Review:
             self.hash_id = hash_id
         else:
             # Every review hash id which is unique to the message and the timestamp
-            self.hash_id = utils.calculate_hash(message + timestamp)
+            self.hash_id = utils.calculate_hash(message + str(timestamp))
         # Derived Insights
         if constants.DERIVED_INSIGHTS in review[0]:
             self.derived_insight = DerivedInsight(review[0][constants.DERIVED_INSIGHTS])
@@ -99,10 +99,14 @@ class Review:
 
         # Now that we have all info that we wanted for a review.
         # We do some post processing.
-        # Fixing the timezone
-        self.timestamp = datetime.strptime(
-            timestamp, timestamp_format # Parse it using the given timestamp format
-        ).replace(
+        if timestamp_format == constants.UNIX_TIMESTAMP:
+            self.timestamp = datetime.fromtimestamp(timestamp)
+        else:
+            self.timestamp = datetime.strptime(
+                timestamp, timestamp_format # Parse it using the given timestamp format
+            )
+
+        self.timestamp = self.timestamp.replace(
             tzinfo=timezone(review_timezone) # Replace the timezone with the given timezone
         ).astimezone(
             timezone("UTC") # Convert it to UTC timezone
