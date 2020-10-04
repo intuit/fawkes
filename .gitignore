@@ -36,3 +36,5 @@ coverage.xml
 
 # All the binaries including elasticsearch, kibana etc.
 bin/
+
+docs/
