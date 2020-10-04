@@ -9,7 +9,7 @@ xmltodict==0.12.0
 sendgrid===6.4.1
 BeautifulSoup4==4.9.3
 html5lib==1.1
-tensorflow==2.2.0
+tensorflow==2.2.1
 yapf==0.30.0
 coverage==5.1
 codecov==2.1.7
