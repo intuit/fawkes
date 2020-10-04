@@ -60,6 +60,18 @@
             "rating_key": "rating",
             "app_id": "300238550",
             "country": "us"
+        },
+        {
+            "channel_type": "remote_file",
+            "channel_name": "amazon-musical-instruments",
+            "file_type": "json.lines",
+            "file_path": "https://github.com/MadaraUchiha-314/fawkes-dataset/blob/main/amazon/musical-instruments/musical-instruments-sample.json?raw=true",
+            "is_channel_enabled": false,
+            "timestamp_key": "unixReviewTime",
+            "timestamp_format": "unix_timestamp",
+            "timezone": "UTC",
+            "message_key": "reviewText",
+            "rating_key": "overall"
         }
     ],
     "custom_code_module_path": null,

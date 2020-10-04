@@ -78,9 +78,12 @@ def parse_json(raw_user_reviews_file_path, review_channel, app_config):
     parsed_reviews = []
 
     for review in reviews:
-        # TODO: Conver this to a standard format like jsonpath
+        # TODO: Conver this to a standard format like jsonpath.
+        # Extract the message.
         message = utils.get_json_key_value(review, review_channel.message_key.split("."))
+        # Extract the timestamp.
         timestamp = utils.get_json_key_value(review, review_channel.timestamp_key.split("."))
+        # Extract the rating if present.
         rating = None
         if review_channel.rating_key != None:
             rating = utils.get_json_key_value(review, review_channel.rating_key.split("."))
@@ -102,6 +105,37 @@ def parse_json(raw_user_reviews_file_path, review_channel, app_config):
 
     return parsed_reviews
 
+def parse_json_lines(raw_user_reviews_file_path, review_channel, app_config):
+    parsed_reviews = []
+    with open(raw_user_reviews_file_path, "r") as raw_user_reviews_file_handle:
+        # We read the file line by line as each line is a valid json string. https://jsonlines.org/
+        for line in raw_user_reviews_file_handle:
+            review = json.loads(line)
+            # TODO: Conver this to a standard format like jsonpath.
+            # Extract the message.
+            message = utils.get_json_key_value(review, review_channel.message_key.split("."))
+            # Extract the timestamp.
+            timestamp = utils.get_json_key_value(review, review_channel.timestamp_key.split("."))
+            # Extract the rating if present.
+            rating = None
+            if review_channel.rating_key != None:
+                rating = utils.get_json_key_value(review, review_channel.rating_key.split("."))
+
+            # Add the review object to the parsed reviews
+            parsed_reviews.append(
+                Review(
+                    review,
+                    message=message,
+                    timestamp=timestamp,
+                    rating=rating,
+                    app_name=app_config.app.name,
+                    channel_name=review_channel.channel_name,
+                    channel_type=review_channel.channel_type,
+                    review_timezone=review_channel.timezone,
+                    timestamp_format=review_channel.timestamp_format,
+                )
+            )
+    return parsed_reviews
 
 def parse_reviews():
     # Read all the app-config file names
@@ -133,6 +167,12 @@ def parse_reviews():
                     )
                 elif review_channel.file_type == constants.CSV: # Parse CSV
                     channel_reviews = parse_csv(
+                        raw_user_reviews_file_path,
+                        review_channel,
+                        app_config
+                    )
+                elif review_channel.file_type == constants.JSON_LINES:
+                    channel_reviews = parse_json_lines(
                         raw_user_reviews_file_path,
                         review_channel,
                         app_config
