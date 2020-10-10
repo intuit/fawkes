@@ -36,5 +36,13 @@ coverage.xml
 
 # All the binaries including elasticsearch, kibana etc.
 bin/
+lib/
+pyvenv.cfg
 
+# Documentation
 docs/
+
+# PyInstaller related stuff
+cli.spec
+build/
+dist/
