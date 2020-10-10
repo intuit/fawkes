@@ -16,6 +16,9 @@ jobs:
       - run:
           name: "Sending coverage reports to CodeCov"
           command: "bash <(curl -s https://codecov.io/bash)"
+      - run:
+          name: "Building a binary out of fawkes"
+          command: "pyinstaller --onefile fawkes/cli/cli.py"
 workflows:
   version: 2
   test:

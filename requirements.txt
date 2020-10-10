@@ -14,3 +14,4 @@ coverage==5.3
 codecov==2.1.10
 pre-commit==2.7.1
 jsonschema==3.2.0
+pyinstaller==4.0
