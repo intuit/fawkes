@@ -1,5 +1,4 @@
-pandas==1.1.2
-gensim==3.8.3
+pandas==1.1.3
 nltk==3.5
 python-twitter==3.5
 spacy==2.3.2
@@ -9,9 +8,10 @@ xmltodict==0.12.0
 sendgrid===6.4.1
 BeautifulSoup4==4.9.3
 html5lib==1.1
-tensorflow==2.2.1
+tensorflow==2.3.1
 yapf==0.30.0
-coverage==5.1
-codecov==2.1.7
-pre-commit==2.5.1
+coverage==5.3
+codecov==2.1.10
+pre-commit==2.7.1
 jsonschema==3.2.0
+pyinstaller==4.0
