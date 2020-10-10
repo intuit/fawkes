@@ -17,16 +17,20 @@ import fawkes.email_summary.queries as queries
 
 import fawkes.utils.utils as utils
 import fawkes.utils.filter_utils as filter_utils
-import fawkes.constants as constants
+import fawkes.constants.constants as constants
 
-from fawkes.app_config.app_config import AppConfig, ReviewChannelTypes, CategorizationAlgorithms
+from fawkes.configs.app_config import AppConfig, ReviewChannelTypes, CategorizationAlgorithms
+from fawkes.configs.fawkes_config import FawkesConfig
 from fawkes.review.review import Review
 
-if __name__ == "__main__":
-    app_configs = utils.open_json(
-        constants.APP_CONFIG_FILE.format(file_name=constants.APP_CONFIG_FILE_NAME)
+def generate_email_summary(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
+    # Read the app-config.json file.
+    fawkes_config = FawkesConfig(
+        utils.open_json(fawkes_config_file)
     )
-    for app_config_file in app_configs:
+    # For every app registered in app-config.json we
+    for app_config_file in fawkes_config.apps:
+        # Creating an AppConfig object
         app_config = AppConfig(
             utils.open_json(
                 app_config_file
@@ -94,3 +98,4 @@ if __name__ == "__main__":
 
         with open(email_summary_generated_file_path, "w") as email_file_handle:
             email_file_handle.write(formatted_html)
+

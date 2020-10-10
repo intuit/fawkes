@@ -8,7 +8,7 @@ sys.path.append(os.path.realpath("."))
 import fawkes.algorithms.algo as algo
 import fawkes.parse.parse as parse
 import fawkes.utils.utils as utils
-import fawkes.algorithms.text_match.generate_keyword_weights as generate_keyword_weights
+import fawkes.algorithms.categorisation.text_match.trainer as text_match_trainer
 
 class FawkesSanityTest(unittest.TestCase):
     def test_sanity(self):
@@ -38,7 +38,7 @@ class FawkesSanityTest(unittest.TestCase):
         ]
         self.assertEqual(parsed_output, expected_parsed_output)
         # Before running the algorithms, we generate the keyword weights.
-        generate_keyword_weights.generate_keyword_weights()
+        text_match_trainer.generate_keyword_weights()
 
         # We run the algorithms on that data
         algo.run_algo()

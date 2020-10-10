@@ -16,17 +16,18 @@ import fawkes.fetch.comma_separated_values as comma_separated_values
 import fawkes.fetch.remote as remote
 
 import fawkes.utils.utils as utils
-import fawkes.constants as constants
+import fawkes.constants.constants as constants
 
-from fawkes.app_config.app_config import AppConfig, ReviewChannelTypes
+from fawkes.configs.app_config import AppConfig, ReviewChannelTypes
+from fawkes.configs.fawkes_config import FawkesConfig
 
-def fetch_reviews():
+def fetch_reviews(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
     # Read the app-config.json file.
-    app_configs = utils.open_json(
-        constants.APP_CONFIG_FILE.format(file_name=constants.APP_CONFIG_FILE_NAME)
+    fawkes_config = FawkesConfig(
+        utils.open_json(fawkes_config_file)
     )
     # For every app registered in app-config.json we
-    for app_config_file in app_configs:
+    for app_config_file in fawkes_config.apps:
         # Creating an AppConfig object
         app_config = AppConfig(
             utils.open_json(
@@ -95,5 +96,3 @@ def fetch_reviews():
             custom_code_module = importlib.import_module(app_config.custom_code_module_path, package=None)
             reviews = custom_code_module.run_custom_code_post_fetch()
 
-if __name__ == "__main__":
-    fetch_reviews()

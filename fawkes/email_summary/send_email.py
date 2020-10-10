@@ -13,8 +13,9 @@ from datetime import datetime
 sys.path.append(os.path.realpath("."))
 
 import fawkes.utils.utils as utils
-import fawkes.constants as constants
-from fawkes.app_config.app_config import AppConfig
+import fawkes.constants.constants as constants
+from fawkes.configs.app_config import AppConfig
+from fawkes.configs.fawkes_config import FawkesConfig
 
 def send_email_helper(from_email_address, to_email, subject, html,
                       sendgrid_api_key):
@@ -30,11 +31,14 @@ def send_email_helper(from_email_address, to_email, subject, html,
         print(e.message)
 
 
-if __name__ == "__main__":
-    app_configs = utils.open_json(
-        constants.APP_CONFIG_FILE.format(file_name=constants.APP_CONFIG_FILE_NAME)
+def send_email(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
+    # Read the app-config.json file.
+    fawkes_config = FawkesConfig(
+        utils.open_json(fawkes_config_file)
     )
-    for app_config_file in app_configs:
+    # For every app registered in app-config.json we
+    for app_config_file in fawkes_config.apps:
+        # Creating an AppConfig object
         app_config = AppConfig(
             utils.open_json(
                 app_config_file
@@ -59,3 +63,4 @@ if __name__ == "__main__":
             send_email_helper(app_config.email_config.sender_email_address, email_id,
                                 app_config.email_config.email_subject_name, template_html,
                                 app_config.email_config.sendgrid_api_key)
+

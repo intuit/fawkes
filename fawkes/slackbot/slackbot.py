@@ -12,10 +12,11 @@ from datetime import datetime, timedelta, timezone
 sys.path.append(os.path.realpath("."))
 
 import fawkes.utils.utils as utils
-import fawkes.constants as constants
+import fawkes.constants.constants as constants
 import fawkes.utils.filter_utils as filter_utils
 
-from fawkes.app_config.app_config import AppConfig, ReviewChannelTypes
+from fawkes.configs.app_config import AppConfig, ReviewChannelTypes
+from fawkes.configs.fawkes_config import FawkesConfig
 from fawkes.review.review import Review
 
 def generate_star_from_rating(rating):
@@ -108,7 +109,7 @@ def get_people_to_tag(app_config, review):
     return list_of_slack_ids
 
 
-def send_to_slack(slack_url,
+def send_review_to_slack(slack_url,
                   slack_channel,
                   review,
                   app_config,
@@ -193,12 +194,14 @@ def send_to_slack(slack_url,
                              headers=headers)
 
 
-if __name__ == "__main__":
-   # Read all the app-config file names
-    app_configs = utils.open_json(
-        constants.APP_CONFIG_FILE.format(file_name=constants.APP_CONFIG_FILE_NAME)
+def send_reviews_to_slack(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
+   ## Read the app-config.json file.
+    fawkes_config = FawkesConfig(
+        utils.open_json(fawkes_config_file)
     )
-    for app_config_file in app_configs:
+    # For every app registered in app-config.json we
+    for app_config_file in fawkes_config.apps:
+        # Creating an AppConfig object
         app_config = AppConfig(
             utils.open_json(
                 app_config_file
@@ -233,6 +236,7 @@ if __name__ == "__main__":
                             reverse=True)
 
         for review in reviews:
-            send_to_slack(app_config.slack_config.slack_hook_url,
+            send_review_to_slack(app_config.slack_config.slack_hook_url,
                             app_config.slack_config.slack_channel, review,
                             app_config)
+

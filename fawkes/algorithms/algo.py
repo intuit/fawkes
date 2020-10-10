@@ -3,6 +3,7 @@ import os
 import importlib
 import tensorflow as tf
 import pathlib
+import re
 
 from pprint import pprint
 from multiprocessing import Pool
@@ -14,13 +15,14 @@ sys.path.append(os.path.realpath("."))
 
 import fawkes.utils.utils as utils
 import fawkes.utils.filter_utils as filter_utils
-import fawkes.constants as constants
-import fawkes.algorithms.lstm_classifier.lstm_classifier as lstm_classifier
+import fawkes.constants.constants as constants
+import fawkes.algorithms.categorisation.lstm.categoriser as lstm_categoriser
+import fawkes.algorithms.categorisation.text_match.categoriser as text_match_categoriser
 
-from fawkes.app_config.app_config import AppConfig, ReviewChannelTypes, CategorizationAlgorithms
+from fawkes.configs.app_config import AppConfig, ReviewChannelTypes, CategorizationAlgorithms
+from fawkes.configs.fawkes_config import FawkesConfig
 from fawkes.review.review import Review
-from fawkes.algorithms.text_match.text_match import text_match
-from fawkes.algorithms.sentiment import get_sentiment
+from fawkes.algorithms.sentiment.sentiment import get_sentiment
 
 def add_review_sentiment_score(review):
     # Add the sentiment to the review's derived insight and return the review
@@ -30,7 +32,7 @@ def add_review_sentiment_score(review):
 
 def text_match_categortization(review, app_config, topics):
     # Find the category of the review
-    category_scores, category = text_match(review.message, topics)
+    category_scores, category = text_match_categoriser.text_match(review.message, topics)
     # Add the category to the review's derived insight and return the review
     review.derived_insight.category = category
     # Add the category scores.
@@ -42,7 +44,7 @@ def text_match_categortization(review, app_config, topics):
 def lstm_classification(reviews, model, article_tokenizer, label_tokenizer, cleaned_labels):
     articles = [review.message for review in reviews]
     # Get the categories for each of the reviews
-    categories = lstm_classifier.predict_labels(
+    categories = lstm_categoriser.predict_labels(
         articles,
         model,
         article_tokenizer,
@@ -56,17 +58,20 @@ def lstm_classification(reviews, model, article_tokenizer, label_tokenizer, clea
 
 
 def bug_feature_classification(review, topics):
-    _, category = text_match(review.message, topics)
+    _, category = text_match_categoriser.text_match(review.message, topics)
     # Add the bug-feature classification to the review's derived insight and return the review
     review.derived_insight.extra_properties[constants.BUG_FEATURE] = category
     # Return the review
     return review
 
-def run_algo():
-    app_configs = utils.open_json(
-        constants.APP_CONFIG_FILE.format(file_name=constants.APP_CONFIG_FILE_NAME)
+def run_algo(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
+    # Read the app-config.json file.
+    fawkes_config = FawkesConfig(
+        utils.open_json(fawkes_config_file)
     )
-    for app_config_file in app_configs:
+    # For every app registered in app-config.json we
+    for app_config_file in fawkes_config.apps:
+        # Creating an AppConfig object
         app_config = AppConfig(
             utils.open_json(
                 app_config_file
@@ -200,6 +205,3 @@ def run_algo():
             [review.to_dict() for review in reviews],
             processed_user_reviews_file_path,
         )
-
-if __name__ == "__main__":
-    run_algo()

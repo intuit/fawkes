@@ -10,7 +10,7 @@
         "lifetime_rating_index": ""
     },
     "email_config": {
-        "email_template_file": "src/email_summary/templates/weekly-detailed.html",
+        "email_template_file": "fawkes/email_summary/templates/weekly-detailed.html",
         "email_time_span": 1000,
         "email_time_span_in_words": "week",
         "email_subject_name": "Fawkes: Weekly Summary Email",

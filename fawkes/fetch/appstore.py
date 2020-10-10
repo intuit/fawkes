@@ -10,7 +10,7 @@ from pprint import pprint
 sys.path.append(os.path.realpath("."))
 
 import fawkes.utils.utils as utils
-import fawkes.constants as constants
+import fawkes.constants.constants as constants
 
 
 def fetch(review_channel):

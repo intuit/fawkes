@@ -7,7 +7,7 @@ from gsheets import Sheets
 sys.path.append(os.path.realpath("."))
 
 import fawkes.utils.utils as utils
-import fawkes.constants as constants
+import fawkes.constants.constants as constants
 
 def fetch_sheet_data(token_file, spreadsheet_id):
     """

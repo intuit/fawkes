@@ -9,7 +9,7 @@ from pprint import pprint
 sys.path.append(os.path.realpath("."))
 
 import fawkes.utils.utils as utils
-import fawkes.constants as constants
+import fawkes.constants.constants as constants
 
 def fetch(review_channel):
     # Since searchman allows us to have limited credits, we iterate over a set of API keys that we will use every month.

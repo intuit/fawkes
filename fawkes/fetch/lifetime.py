@@ -8,9 +8,9 @@ from bs4 import BeautifulSoup
 sys.path.append(os.path.realpath("."))
 
 import fawkes.utils.utils as utils
-import fawkes.constants as constants
+import fawkes.constants.constants as constants
 
-from fawkes.app_config.app_config import ReviewChannelTypes
+from fawkes.configs.app_config import ReviewChannelTypes
 from fawkes.review.review import Review
 
 def extract_rating(url, classtype, classname):

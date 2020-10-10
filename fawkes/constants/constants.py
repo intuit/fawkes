@@ -64,8 +64,7 @@ PLAYSTORE_CLASS_NAME = "BHMmbe"
 PLAYSTORE_FETCH_PAGES = 1
 
 # File paths
-APP_CONFIG_FILE = "app/{file_name}"
-APP_CONFIG_FILE_NAME = "app-config.json"
+FAWKES_CONFIG_FILE = "app/fawkes-config.json"
 RAW_USER_REVIEWS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/{channel_name}-raw-feedback.{extension}"
 PARSED_USER_REVIEWS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/parsed-user-feedback.json"
 PROCESSED_USER_REVIEWS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/processed-user-feedback.json"
@@ -73,14 +72,6 @@ LSTM_CATEGORY_MODEL_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/lstm-catego
 LSTM_CATEGORY_ARTICLE_TOKENIZER_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/lstm-category-article-tokenizer.json"
 LSTM_CATEGORY_LABEL_TOKENIZER_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/lstm-category-label-tokenizer.json"
 EMAIL_SUMMARY_GENERATED_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/email-summary-generated.html"
-
-BUG_FEATURE_FILE_WITH_WEIGHTS = "app/{app}-bug-feature-file-with-weights.json"
-TRAINED_MODELS = "trained-models/"
-LSTM_TRAINED_MODEL_FILE = TRAINED_MODELS + "lstm-{app_name}-trained.h5"
-LSTM_ARTICLE_TOKENIZER_FILE = TRAINED_MODELS + \
-    "lstm-article-tokenizer-{app_name}.json"
-LSTM_LABEL_TOKENIZER_FILE = TRAINED_MODELS + \
-    "lstm-label-tokenizer-{app_name}.json"
 
 # Generic cleanup
 URL_REGEX = r"(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=% &:/~+#-]*[\w@?^=%&/~+#-])?"
