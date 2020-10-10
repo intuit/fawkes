@@ -12,9 +12,10 @@ from pprint import pprint
 sys.path.append(os.path.realpath("."))
 
 import fawkes.utils.utils as utils
-import fawkes.constants as constants
+import fawkes.constants.constants as constants
 
-from fawkes.app_config.app_config import AppConfig, ReviewChannelTypes
+from fawkes.configs.app_config import AppConfig, ReviewChannelTypes
+from fawkes.configs.fawkes_config import FawkesConfig
 from fawkes.review.review import Review
 
 def parse_csv(raw_user_reviews_file_path, review_channel, app_config):
@@ -137,12 +138,14 @@ def parse_json_lines(raw_user_reviews_file_path, review_channel, app_config):
             )
     return parsed_reviews
 
-def parse_reviews():
-    # Read all the app-config file names
-    app_configs = utils.open_json(
-        constants.APP_CONFIG_FILE.format(file_name=constants.APP_CONFIG_FILE_NAME)
+def parse_reviews(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
+    # Read the app-config.json file.
+    fawkes_config = FawkesConfig(
+        utils.open_json(fawkes_config_file)
     )
-    for app_config_file in app_configs:
+    # For every app registered in app-config.json we
+    for app_config_file in fawkes_config.apps:
+        # Creating an AppConfig object
         app_config = AppConfig(
             utils.open_json(
                 app_config_file
@@ -206,7 +209,3 @@ def parse_reviews():
             [parsed_review.to_dict() for parsed_review in parsed_reviews],
             parsed_user_reviews_file_path
         )
-
-
-if __name__ == "__main__":
-    parse_reviews()

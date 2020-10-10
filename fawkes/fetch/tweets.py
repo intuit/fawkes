@@ -9,7 +9,7 @@ from datetime import datetime
 sys.path.append(os.path.realpath("."))
 
 import fawkes.utils.utils as utils
-import fawkes.constants as constants
+import fawkes.constants.constants as constants
 
 def twitter_authenthication(consumer_key, consumer_secret, access_token_key,
                             access_token_secret):

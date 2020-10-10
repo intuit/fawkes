@@ -22,8 +22,9 @@ from nltk.corpus import stopwords
 sys.path.append(os.path.realpath("."))
 
 import fawkes.utils.utils as utils
-import fawkes.constants as constants
-from fawkes.app_config.app_config import AppConfig, ReviewChannelTypes, CategorizationAlgorithms
+import fawkes.constants.constants as constants
+from fawkes.configs.app_config import AppConfig, ReviewChannelTypes, CategorizationAlgorithms
+from fawkes.configs.fawkes_config import FawkesConfig
 from fawkes.review.review import Review
 
 STOPWORDS = set(stopwords.words("english"))
@@ -168,11 +169,14 @@ def train(articles, labels):
     return model, article_tokenizer, label_tokenizer
 
 
-def train_lstm_model():
-    app_configs = utils.open_json(
-        constants.APP_CONFIG_FILE.format(file_name=constants.APP_CONFIG_FILE_NAME)
+def train_lstm_model(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
+    # Read the app-config.json file.
+    fawkes_config = FawkesConfig(
+        utils.open_json(fawkes_config_file)
     )
-    for app_config_file in app_configs:
+    # For every app registered in app-config.json we
+    for app_config_file in fawkes_config.apps:
+        # Creating an AppConfig object
         app_config = AppConfig(
             utils.open_json(
                 app_config_file
@@ -237,35 +241,3 @@ def train_lstm_model():
                 app_name=app_config.app.name,
             ),
         )
-
-
-def predict_labels(articles, model, article_tokenizer, label_tokenizer):
-    """ Given an article we predict the label """
-
-    # Convert the give article to tokens
-    tokenized_articles = article_tokenizer.texts_to_sequences(articles)
-    # Add padding
-    tokenized_articles = pad_sequences(
-        tokenized_articles,
-        maxlen=MAX_LENGTH,
-        padding=PADDING_TYPE,
-        truncating=TRUNC_TYPE,
-    )
-
-    # Predict the label
-    predictions = model.predict(tokenized_articles)
-
-    # Now to find out the label, we have to do a reverse index search on the
-    # label_tokens
-    label_names = dict(
-        (token, label_name)
-        for (label_name, token) in label_tokenizer.word_index.items()
-    )
-
-    labels = [label_names[np.argmax(prediction)] for prediction in predictions]
-
-    return labels
-
-
-if __name__ == "__main__":
-    train_lstm_model()

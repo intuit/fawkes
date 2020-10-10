@@ -297,7 +297,7 @@ class FawkesInternalConfig:
         self.data = FawkesInternalDataConfig(config["data"])
 
 class AppConfig:
-    """ The configuration for running Fawkes.
+    """ The configuration for running Fawkes for a particular app.
 
 
 Definition of a Review Channel.

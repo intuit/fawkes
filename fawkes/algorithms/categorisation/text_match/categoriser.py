@@ -10,11 +10,10 @@ from nltk.stem.wordnet import WordNetLemmatizer
 sys.path.append(os.path.realpath("."))
 
 import fawkes.utils.utils as utils
-import fawkes.constants as constants
+import fawkes.constants.constants as constants
 
 lmtzr = WordNetLemmatizer()
 nltk.download("wordnet")
-
 
 def isBigram(word):
     if " " in word:

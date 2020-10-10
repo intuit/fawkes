@@ -8,9 +8,10 @@ from nltk.stem.wordnet import WordNetLemmatizer
 sys.path.append(os.path.realpath("."))
 
 import fawkes.utils.utils as utils
-import fawkes.constants as constants
+import fawkes.constants.constants as constants
 
-from fawkes.app_config.app_config import AppConfig
+from fawkes.configs.app_config import AppConfig
+from fawkes.configs.fawkes_config import FawkesConfig
 
 lmtzr = WordNetLemmatizer()
 
@@ -41,11 +42,14 @@ def parse_keywords_file(keyword_file_name, enable_remove_stop_words=True):
         topics[topic_keyword] = topic
     return topics
 
-def generate_keyword_weights():
-    app_configs = utils.open_json(
-         constants.APP_CONFIG_FILE.format(file_name=constants.APP_CONFIG_FILE_NAME)
+def generate_keyword_weights(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
+    # Read the app-config.json file.
+    fawkes_config = FawkesConfig(
+        utils.open_json(fawkes_config_file)
     )
-    for app_config_file in app_configs:
+    # For every app registered in app-config.json we
+    for app_config_file in fawkes_config.apps:
+        # Creating an AppConfig object
         app_config = AppConfig(
             utils.open_json(
                 app_config_file
@@ -66,6 +70,3 @@ def generate_keyword_weights():
             ),
             app_config.algorithm_config.bug_feature_keywords_weights_file,
         )
-
-if __name__ == "__main__":
-    generate_keyword_weights()

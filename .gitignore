@@ -15,7 +15,7 @@ storages.json
 app/*.csv
 app/*.json
 app/*.py
-!app/app-config.json
+!app/fawkes-config.json
 !app/bug-feature-keywords.json
 !app/category-keywords.json
 

@@ -6,8 +6,8 @@ from datetime import datetime
 sys.path.append(os.path.realpath("."))
 
 import fawkes.utils.utils as utils
-import fawkes.constants as constants
-from fawkes.app_config.app_config import ReviewChannelTypes
+import fawkes.constants.constants as constants
+from fawkes.configs.app_config import ReviewChannelTypes
 
 def numberOfReview(reviews):
     return len(reviews)

@@ -8,7 +8,7 @@ from pytz import timezone
 sys.path.append(os.path.realpath("."))
 
 import fawkes.utils.utils as utils
-import fawkes.constants as constants
+import fawkes.constants.constants as constants
 
 url_regex = re.compile(constants.URL_REGEX)
 
