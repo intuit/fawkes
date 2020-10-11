@@ -13,7 +13,7 @@ import fawkes.utils.utils as utils
 import fawkes.constants.constants as constants
 
 lmtzr = WordNetLemmatizer()
-nltk.download("wordnet")
+nltk.download("wordnet", quiet=True)
 
 def isBigram(word):
     if " " in word:
