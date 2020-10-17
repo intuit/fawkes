@@ -4,6 +4,7 @@ fawkes/parse/__pycache__/
 
 *.pyc
 .tag*
+.idea/
 
 # All the secret files
 scripts/fawkes-secrets.env

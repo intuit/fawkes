@@ -1,0 +1,406 @@
+{
+  "type": "object",
+  "properties": {
+    "app": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "logo": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "logo"
+      ]
+    },
+    "elastic_config": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "string"
+        },
+        "elastic_search_url": {
+          "type": "string"
+        },
+        "kibana_url": {
+          "type": "string"
+        },
+        "lifetime_rating_index": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "index",
+        "elastic_search_url",
+        "kibana_url",
+        "lifetime_rating_index"
+      ]
+    },
+    "email_config": {
+      "type": "object",
+      "properties": {
+        "email_template_file": {
+          "type": "string"
+        },
+        "email_time_span": {
+          "type": "integer"
+        },
+        "email_time_span_in_words": {
+          "type": "string"
+        },
+        "email_subject_name": {
+          "type": "string"
+        },
+        "sender_email_address": {
+          "type": "string"
+        },
+        "sendgrid_api_key": {
+          "type": "string"
+        },
+        "email_list": {
+          "type": "array",
+          "items": {}
+        }
+      },
+      "required": [
+        "email_template_file",
+        "email_time_span",
+        "email_time_span_in_words",
+        "email_subject_name",
+        "sender_email_address",
+        "sendgrid_api_key",
+        "email_list"
+      ]
+    },
+    "slack_config": {
+      "type": "object",
+      "properties": {
+        "slack_channel": {
+          "type": "string"
+        },
+        "slack_hook_url": {
+          "type": "string"
+        },
+        "slack_run_interval": {
+          "type": "integer"
+        },
+        "slack_notification_rules": {
+          "type": "object",
+          "properties": {
+            "category_based_rules": {
+              "type": "object",
+              "properties": {
+                "Notification": {
+                  "type": "array",
+                  "items": {}
+                }
+              },
+              "required": [
+                "Notification"
+              ]
+            },
+            "keyword_based_rules": {
+              "type": "object",
+              "properties": {
+                "crash": {
+                  "type": "array",
+                  "items": {}
+                }
+              },
+              "required": [
+                "crash"
+              ]
+            }
+          },
+          "required": [
+            "category_based_rules",
+            "keyword_based_rules"
+          ]
+        }
+      },
+      "required": [
+        "slack_channel",
+        "slack_hook_url",
+        "slack_run_interval",
+        "slack_notification_rules"
+      ]
+    },
+    "jira_config": {
+      "type": "object",
+      "properties": {
+        "base_url": {
+          "type": "string"
+        },
+        "project_id": {
+          "type": "string"
+        },
+        "story_type": {
+          "type": "string"
+        },
+        "bug_type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "base_url",
+        "project_id",
+        "story_type",
+        "bug_type"
+      ]
+    },
+    "algorithm_config": {
+      "type": "object",
+      "properties": {
+        "categorization_algorithm": {
+          "enum": ["text_match","lstm_classification"]
+        },
+        "algorithm_days_filter": {
+          "type": "integer"
+        },
+        "bug_feature_keywords_file": {
+          "type": "string"
+        },
+        "bug_feature_keywords_weights_file": {
+          "type": "string"
+        },
+        "category_keywords_file": {
+          "type": "string"
+        },
+        "category_keywords_weights_file": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "categorization_algorithm",
+        "algorithm_days_filter",
+        "bug_feature_keywords_file",
+        "bug_feature_keywords_weights_file",
+        "category_keywords_file",
+        "category_keywords_weights_file"
+      ]
+    },
+    "env_keys": {
+      "type": "array",
+      "items": {
+          "type": "string"
+      }
+    },
+    "review_channels": {
+      "type": "array",
+      "items":
+        {
+          "type": "object",
+          "properties": {
+            "channel_type": {
+              "enum": ["ios", "android", "spreadsheet","twitter","salesforce","csv","json","remote_file", "blank"]
+            },
+            "channel_name": {
+              "type": "string"
+            },
+            "file_type": {
+              "enum": ["json", "csv", "json.lines"]
+            },
+            "file_path": {
+              "type": ["string", "null"]
+            },
+            "is_channel_enabled": {
+              "type": "boolean"
+            },
+            "weekly_summary": {
+              "type": "boolean"
+            },
+            "timestamp_key": {
+              "type": "string"
+            },
+            "timestamp_format": {
+              "type": "string"
+            },
+            "timezone": {
+              "type": "string"
+            },
+            "message_key": {
+              "type": "string"
+            },
+            "rating_key": {
+              "type": "string"
+            },
+            "app_id": {
+              "type": "string"
+            },
+            "country": {
+              "type": "string"
+            },
+            "searchman_api_key": {
+              "type": "string"
+            },
+            "spreadsheet_id": {
+              "type": "string"
+            },
+            "sheet_id": {
+              "type": "number"
+            },
+            "client_secrets_file": {
+              "type": "string"
+            },
+            "consumer_key": {
+              "type": "string"
+            },
+            "consumer_secret": {
+              "type": "string"
+            },
+            "access_token_key": {
+              "type": "string"
+            },
+            "access_token_secret": {
+              "type": "string"
+            },
+            "twitter_handle_list": {
+              "type": "array",
+              "items": {
+                 "type": "string"
+               }
+            },
+            "twitter_handle_filter_list": {
+               "type": "array",
+               "items": {
+                 "type": "string"
+               }
+            },
+            "base_url": {
+              "type": "string"
+            },
+            "oauth_params": {
+              "type": "object"
+            },
+            "query_list": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "channel_type",
+            "channel_name",
+            "file_type",
+            "file_path",
+            "is_channel_enabled",
+            "timestamp_key",
+            "timestamp_format",
+            "timezone",
+            "message_key",
+            "rating_key"
+          ],
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "channel_type": { "const": "ios" }
+                         }
+                    },
+                    "then": {
+                        "required": ["app_id","country"]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "channel_type": { "const": "android" }
+                         }
+                    },
+                    "then": {
+                        "required": ["app_id","searchman_api_key"]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "channel_type": { "const": "spreadsheet" }
+                         }
+                    },
+                    "then": {
+                        "required": ["spreadsheet_id","sheet_id","client_secrets_file"]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "channel_type": { "const": "twitter" }
+                         }
+                    },
+                    "then": {
+                        "required": ["consumer_key","consumer_secret","access_token_key","access_token_secret","twitter_handle_list","twitter_handle_filter_list"]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "channel_type": { "const": "salesforce" }
+                         }
+                    },
+                    "then": {
+                        "required": ["base_url","oauth_params","query_list"]
+                    }
+                }
+            ]
+        }
+    },
+    "custom_code_module_path": {
+      "type": ["string","null"]
+    },
+    "fawkes_internal_config": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "base_folder": {
+              "type": "string"
+            },
+            "raw_data_folder": {
+              "type": "string"
+            },
+            "parsed_data_folder": {
+              "type": "string"
+            },
+            "processed_data_folder": {
+              "type": "string"
+            },
+            "models_folder": {
+              "type": "string"
+            },
+            "emails_folder": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "base_folder",
+            "raw_data_folder",
+            "parsed_data_folder",
+            "processed_data_folder",
+            "models_folder",
+            "emails_folder"
+          ]
+        }
+      },
+      "required": [
+        "data"
+      ]
+    }
+  },
+  "required": [
+    "app",
+    "elastic_config",
+    "email_config",
+    "slack_config",
+    "jira_config",
+    "algorithm_config",
+    "env_keys",
+    "review_channels",
+    "custom_code_module_path",
+    "fawkes_internal_config"
+  ]
+}
