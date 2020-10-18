@@ -7,7 +7,7 @@ from jsonschema import ValidationError
 
 sys.path.append(os.path.realpath("."))
 
-import fawkes.constants as constants
+import fawkes.constants.constants as constants
 import fawkes.utils.utils as utils
 
 class App:
