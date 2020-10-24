@@ -15,6 +15,7 @@ from pprint import pprint
 from datetime import datetime, timedelta
 
 from nltk.corpus import stopwords
+from pathlib import Path
 
 #  This is so that the following imports work
 sys.path.append(os.path.realpath("."))
@@ -31,6 +32,15 @@ def open_json(file_location):
 def dump_json(records, write_file):
     with open(write_file, "w") as file:
         json.dump(records, file, indent=4)
+
+def dump_csv(records, write_file):
+    #Get the column values from query response
+    field_names = list(records.keys())
+    #Write the value corresponding to above columns in csv file
+    with open(write_file, 'w') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=field_names)
+        writer.writeheader()
+        writer.writerow(records)
 
 def get_json_key_value(json_object, keys_list):
     """ Get the value from json pointing to string of keys input: [k1,k2] """
@@ -131,3 +141,11 @@ def fetch_channel_config(app_config, channel_type):
             return review_channel
     return None
 
+def write_query_results(response, write_file, format):
+    # Create the intermediate folders
+    dir_name = os.path.dirname(write_file)
+    Path(dir_name).mkdir(parents=True, exist_ok=True)
+    if format == constants.JSON:
+        dump_json(response, write_file)
+    elif format == constants.CSV:
+        dump_csv(response, write_file)

@@ -293,6 +293,7 @@ class FawkesInternalDataConfig:
         self.processed_data_folder = config["processed_data_folder"]
         self.models_folder = config["models_folder"]
         self.emails_folder = config["emails_folder"]
+        self.query_response_folder = config["query_response_folder"]
 
 class FawkesInternalConfig:
     """ The internal configurations of fawkes exposed so that users can modify as required.

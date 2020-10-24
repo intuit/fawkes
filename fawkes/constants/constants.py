@@ -87,6 +87,7 @@ TWEET_LIMIT = 5
 # Elasticsearch related
 BULK_UPLOAD_SIZE = 10000
 NEW_LINE = "\n"
+ELASTICSEARCH_FETCH_DATA_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/fetch-query-response.{extension}"
 
 # Slackbot related
 JIRA_ISSUE_URL_TEMPLATE = "{base_url}/secure/CreateIssueDetails!init.jspa?{params}"
@@ -105,6 +106,7 @@ PROCESS_NUMBER = 6
 IMPROVEMENT_KEYWORDS_NUMBER = 20
 IMPROVED_CATEGORY_KEYWORDS = "app/improved-{app_name}-category-keywords.json"
 CIRCLECI = "CIRCLECI"
+SEARCH = "search"
 
 # Email notification service
 WEEKLY_EMAIL_TEMPLATE = "fawkes/email_summary/templates/weekly.html"

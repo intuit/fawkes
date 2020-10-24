@@ -149,3 +149,34 @@ def push_data_to_elasticsearch(fawkes_config_file = constants.FAWKES_CONFIG_FILE
                 print("[Error] push_data_to_elasticsearch :: Response is : ",
                       response.text)
             i += 1
+
+def query_from_elasticsearch(fawkes_config_file = constants.FAWKES_CONFIG_FILE, query_term="", format=constants.JSON):
+    fawkes_config = FawkesConfig(
+        utils.open_json(fawkes_config_file)
+    )
+    # For every app registered in app-config.json we
+    for app_config_file in fawkes_config.apps:
+        # Creating an AppConfig object
+        app_config = AppConfig(
+            utils.open_json(
+                app_config_file
+            )
+        )
+
+    if query_term == "":
+        endpoint = app_config.elastic_config.elastic_search_url + "_" + constants.SEARCH
+    else:
+        endpoint = app_config.elastic_config.elastic_search_url + query_term + "/" + "_" + constants.SEARCH
+    response = requests.get(endpoint)
+    results = json.loads(response.text)
+    query_response_file = constants.ELASTICSEARCH_FETCH_DATA_FILE_PATH.format(
+        base_folder=app_config.fawkes_internal_config.data.base_folder,
+        dir_name=app_config.fawkes_internal_config.data.query_response_folder,
+        app_name=app_config.app.name,
+        extension=format
+    )
+    utils.write_query_results(results, query_response_file, format)
+    return results
+
+if __name__ == "__main__":
+    push_data_to_elasticsearch()
