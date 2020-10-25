@@ -142,6 +142,7 @@ class Review:
             channel_name=review["channel_name"],
             channel_type=review["channel_type"],
             rating=review["rating"],
+            user_id=review["user_id"],
         )
 
     def to_dict(self):
