@@ -3,6 +3,7 @@ import os
 import re
 from datetime import datetime, timedelta
 from pytz import timezone
+from pprint import pprint
 
 # This is so that below import works.  Sets the pwd to home directory
 sys.path.append(os.path.realpath("."))
@@ -52,7 +53,8 @@ class Review:
     Attributes:
         message: The message in the review.
         timestamp: The timestamp when the review was submitted.
-        rating: The rating attached to the review. Ideally a numeric value.
+        rating: The rating attached to the review. Ideally a numeric value..
+        user_id: Any identifier which uniquely indetifies a user.
         app_name: The name of the app from where the review originated.
         channel_name: The source/channel name from which the review originated.
         channel_type: The source/type from which the review originated.
@@ -70,6 +72,7 @@ class Review:
         channel_name = "",
         channel_type = "",
         rating = None,
+        user_id = None,
         review_timezone="UTC",
         timestamp_format=constants.TIMESTAMP_FORMAT,
         hash_id=None,
@@ -78,17 +81,21 @@ class Review:
 
         self.message = message
         self.timestamp = timestamp
-        self.rating = rating
         self.app_name = app_name
         self.channel_name = channel_name
         self.channel_type = channel_type
-        # Determine the hash-id.
-        # It should almost in all cases never be overridden.
-        if hash_id != None:
-            self.hash_id = hash_id
+        # Optional but core fields
+        # Rating. We check if the rating is present or not.
+        if rating != None:
+            # Sometimes we get empty strings. So can't assume anything about the data type.
+            try:
+                self.rating = float(rating)
+            except ValueError:
+                self.rating = None
         else:
-            # Every review hash id which is unique to the message and the timestamp
-            self.hash_id = utils.calculate_hash(message + str(timestamp))
+            self.rating = None
+        # User Id.
+        self.user_id = user_id
         # Derived Insights
         if constants.DERIVED_INSIGHTS in review[0]:
             self.derived_insight = DerivedInsight(review[0][constants.DERIVED_INSIGHTS])
@@ -96,7 +103,6 @@ class Review:
             self.derived_insight = DerivedInsight()
         # The raw value of the review itself.
         self.raw_review = review[0]
-
         # Now that we have all info that we wanted for a review.
         # We do some post processing.
         if timestamp_format == constants.UNIX_TIMESTAMP:
@@ -116,6 +122,13 @@ class Review:
         self.message = url_regex.sub("", self.message)
         # Removing the non ascii chars
         self.message = (self.message.encode("ascii", "ignore")).decode("utf-8")
+        # Determine the hash-id.
+        # It should almost in all cases never be overridden.
+        if hash_id != None:
+            self.hash_id = hash_id
+        else:
+            # Every review hash id which is unique to the message and the timestamp
+            self.hash_id = utils.calculate_hash(message + str(timestamp))
 
     @classmethod
     def from_review_json(cls, review):
@@ -140,6 +153,7 @@ class Review:
                 constants.TIMESTAMP_FORMAT # Convert it to a standard datetime format
             ),
             "rating": self.rating,
+            "user_id": self.user_id,
             "app_name": self.app_name,
             "channel_name": self.channel_name,
             "channel_type": self.channel_type,

@@ -16,7 +16,7 @@ import fawkes.constants.constants as constants
 def fetch(review_channel):
     reviews = []
 
-    for i in range(constants.APP_STORE_PAGES_TO_FETCH):
+    for i in range(review_channel.num_pages_to_fetch):
         # Fetch the app-store reviews
         response = requests.get(
             constants.APP_STORE_RSS_URL.format(country=review_channel.country,

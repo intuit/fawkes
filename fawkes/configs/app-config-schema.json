@@ -225,7 +225,7 @@
               "type": "string"
             },
             "rating_key": {
-              "type": "string"
+                "type": ["string", "null"]
             },
             "app_id": {
               "type": "string"
@@ -234,7 +234,10 @@
               "type": "string"
             },
             "searchman_api_key": {
-              "type": "string"
+                "type": "array",
+                "items": {
+                   "type": "string"
+                }
             },
             "spreadsheet_id": {
               "type": "string"
@@ -280,6 +283,12 @@
               "items": {
                 "type": "string"
               }
+            },
+            "num_pages_to_fetch": {
+                "type": "number"
+            },
+            "user_id_key": {
+                "type": ["string", "null"]
             }
           },
           "required": [
@@ -292,7 +301,8 @@
             "timestamp_format",
             "timezone",
             "message_key",
-            "rating_key"
+            "rating_key",
+            "user_id_key"
           ],
             "allOf": [
                 {
@@ -302,7 +312,7 @@
                          }
                     },
                     "then": {
-                        "required": ["app_id","country"]
+                        "required": ["app_id","country","num_pages_to_fetch"]
                     }
                 },
                 {
@@ -312,7 +322,7 @@
                          }
                     },
                     "then": {
-                        "required": ["app_id","searchman_api_key"]
+                        "required": ["app_id","searchman_api_key","num_pages_to_fetch"]
                     }
                 },
                 {

@@ -55,13 +55,11 @@ APP_STORE_RSS_URL = "https://itunes.apple.com/{country}/rss/customerreviews/id={
 APP_STORE_APP_URL = "https://apps.apple.com/us/app/id{app_id}"
 APPSTORE_CLASS_TYPE = "span"
 APPSTORE_CLASS_NAME = "we-customer-ratings__averages__display"
-APP_STORE_PAGES_TO_FETCH = 10
 
 # Play Store
 PLAY_STORE_APP_URL = "https://play.google.com/store/apps/details?id={app_id}"
 PLAYSTORE_CLASS_TYPE = "div"
 PLAYSTORE_CLASS_NAME = "BHMmbe"
-PLAYSTORE_FETCH_PAGES = 1
 
 # File paths
 FAWKES_CONFIG_FILE = "app/fawkes-config.json"

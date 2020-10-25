@@ -59,7 +59,9 @@
             "message_key": "content",
             "rating_key": "rating",
             "app_id": "300238550",
-            "country": "us"
+            "country": "us",
+            "user_id_key": null,
+            "num_pages_to_fetch": 10
         },
         {
             "channel_type": "remote_file",
@@ -71,7 +73,8 @@
             "timestamp_format": "unix_timestamp",
             "timezone": "UTC",
             "message_key": "reviewText",
-            "rating_key": "overall"
+            "rating_key": "overall",
+            "user_id_key": null
         }
     ],
     "custom_code_module_path": null,
