@@ -29,11 +29,8 @@ def parse_csv(raw_user_reviews_file_path, review_channel, app_config):
         # TODO: We should change this to be taken from the configuration.
         # There might be usecases where column names are not present in the data.
         # People might want to indicate the message, timestamp keys using integer indices to the columns.
-        json_keys_list = reviews[0]
+        json_keys_list = next(reviews)
         parsed_reviews = []
-
-        # Removing the first row.
-        reviews = reviews[1:]
 
         # Iterate through all the reviews
         for row in reviews:
@@ -41,6 +38,7 @@ def parse_csv(raw_user_reviews_file_path, review_channel, app_config):
             timestamp = ""
             message = ""
             rating = None
+            user_id = None
 
             # There are some csvs for which the last column is empty.
             # Hence we need to take the min below
@@ -53,6 +51,8 @@ def parse_csv(raw_user_reviews_file_path, review_channel, app_config):
                     message = row[i]
                 elif json_keys_list[i] == review_channel.rating_key:
                     rating = row[i]
+                elif json_keys_list[i] == review_channel.user_id_key:
+                    user_id = row[i]
                 # Storing the raw review as received from the source.
                 review[json_keys_list[i]] = row[i]
 
@@ -62,7 +62,9 @@ def parse_csv(raw_user_reviews_file_path, review_channel, app_config):
                     review,
                     message=message,
                     timestamp=timestamp,
+                    timestamp_format=review_channel.timestamp_format,
                     rating=rating,
+                    user_id=user_id,
                     app_name=app_config.app.name,
                     channel_name=review_channel.channel_name,
                     channel_type=review_channel.channel_type,
@@ -88,6 +90,10 @@ def parse_json(raw_user_reviews_file_path, review_channel, app_config):
         rating = None
         if review_channel.rating_key != None:
             rating = utils.get_json_key_value(review, review_channel.rating_key.split("."))
+        # Extract the user_id if present. Note user_id is just any identifier which uniquely identifies a user.
+        user_id = None
+        if review_channel.user_id_key != None:
+            user_id = utils.get_json_key_value(review, review_channel.user_id_key.split("."))
 
         # Add the review object to the parsed reviews
         parsed_reviews.append(
@@ -96,6 +102,7 @@ def parse_json(raw_user_reviews_file_path, review_channel, app_config):
                 message=message,
                 timestamp=timestamp,
                 rating=rating,
+                user_id=user_id,
                 app_name=app_config.app.name,
                 channel_name=review_channel.channel_name,
                 channel_type=review_channel.channel_type,
@@ -121,6 +128,10 @@ def parse_json_lines(raw_user_reviews_file_path, review_channel, app_config):
             rating = None
             if review_channel.rating_key != None:
                 rating = utils.get_json_key_value(review, review_channel.rating_key.split("."))
+            # Extract the user_id if present. Note user_id is just any identifier which uniquely identifies a user.
+            user_id = None
+            if review_channel.user_id_key != None:
+                user_id = utils.get_json_key_value(review, review_channel.user_id_key.split("."))
 
             # Add the review object to the parsed reviews
             parsed_reviews.append(
@@ -129,6 +140,7 @@ def parse_json_lines(raw_user_reviews_file_path, review_channel, app_config):
                     message=message,
                     timestamp=timestamp,
                     rating=rating,
+                    user_id=user_id,
                     app_name=app_config.app.name,
                     channel_name=review_channel.channel_name,
                     channel_type=review_channel.channel_type,
@@ -156,6 +168,7 @@ def parse_reviews(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
         for review_channel in app_config.review_channels:
             # We parse the channels only if its enabled!
             if review_channel.is_channel_enabled and review_channel.channel_type != ReviewChannelTypes.BLANK:
+                print(review_channel.channel_name)
                 raw_user_reviews_file_path = constants.RAW_USER_REVIEWS_FILE_PATH.format(
                     base_folder=app_config.fawkes_internal_config.data.base_folder,
                     dir_name=app_config.fawkes_internal_config.data.raw_data_folder,

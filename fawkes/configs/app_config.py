@@ -174,6 +174,7 @@ class ReviewChannel:
         self.timezone = config["timezone"]
         self.message_key = config["message_key"]
         self.rating_key = config["rating_key"]
+        self.user_id_key = config["user_id_key"]
 
 class AppStoreReviewChannel(ReviewChannel):
     """ The configurations specific to App. Store.
@@ -184,12 +185,14 @@ class AppStoreReviewChannel(ReviewChannel):
             Example for mint. https://apps.apple.com/us/app/mint-personal-finance-money/id300238550
             The app_id here is 300238550.
         country: The country for which you want to retrieve the user reviews.
+        num_pages_to_fetch: The number of user review pages to fetch from App. Store
     """
 
     def __init__(self, config):
         super().__init__(config)
         self.app_id = config["app_id"]
         self.country = config["country"]
+        self.num_pages_to_fetch = config["num_pages_to_fetch"]
 
         # Pre defined constants for App. Store.
         self.timestamp_key = "updated"
@@ -206,16 +209,20 @@ class PlayStoreReviewChannel(ReviewChannel):
             Example for mint. https://play.google.com/store/apps/details?id=com.mint&hl=en
             The app_id here is com.mint.
         searchman_api_key: A list of api key's for searchman. https://searchman.com/
+        num_pages_to_fetch: The number of user review pages to fetch from Play. Store
     """
 
     def __init__(self, config):
         super().__init__(config)
         self.app_id = config["app_id"]
         self.searchman_api_key = config["searchman_api_key"]
+        self.num_pages_to_fetch = config["num_pages_to_fetch"]
 
         # Pre defined constants for Play. Store.
         self.timestamp_key = "timestamp"
-        self.message_key = "content"
+        self.timestamp_format = "%Y-%m-%d %H:%M:%S"
+        self.message_key = "body"
+        self.rating_key = "rating"
 
 class TwitterReviewChannel(ReviewChannel):
     """ The configurations specific to Twitter.

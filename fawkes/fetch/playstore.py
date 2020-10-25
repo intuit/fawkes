@@ -25,7 +25,7 @@ def fetch(review_channel):
     reviews = []
     current_page = 0
 
-    while current_page < constants.PLAYSTORE_FETCH_PAGES:
+    while current_page < review_channel.num_pages_to_fetch:
         # I am using try catch because we can't afford to waste the response of the API call.
         # TODO: Remove any such thing from when we directly fetch from play
         # store.

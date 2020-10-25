@@ -13,9 +13,9 @@ scripts/fawkes-secrets.env
 storages.json
 
 # App Config related
-app/*.csv
-app/*.json
-app/*.py
+app/**/*.csv
+app/**/*.json
+app/**/*.py
 !app/fawkes-config.json
 !app/bug-feature-keywords.json
 !app/category-keywords.json
