@@ -3,6 +3,7 @@ import sys
 import os
 import importlib
 import pathlib
+import logging
 
 #  This is so that the following imports work
 sys.path.append(os.path.realpath("."))
@@ -17,9 +18,11 @@ import fawkes.fetch.remote as remote
 
 import fawkes.utils.utils as utils
 import fawkes.constants.constants as constants
+import fawkes.constants.logs as logs
 
 from fawkes.configs.app_config import AppConfig, ReviewChannelTypes
 from fawkes.configs.fawkes_config import FawkesConfig
+from fawkes.cli.fawkes_actions import FawkesActions
 
 def fetch_reviews(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
     # Read the app-config.json file.
@@ -37,6 +40,11 @@ def fetch_reviews(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
         # Each app has a list of review channels from which the user reviews are fetched.
         for review_channel in app_config.review_channels:
             if review_channel.is_channel_enabled and review_channel.channel_type != ReviewChannelTypes.BLANK:
+
+                # Log the current operation which is being performed.
+                logging.info(logs.OPERATION, FawkesActions.FETCH, review_channel.channel_name, app_config.app.name)
+
+                reviews = []
                 # Depending on the channel type, we have different "fetchers" to get the data.
                 if review_channel.channel_type == ReviewChannelTypes.TWITTER:
                     reviews = tweets.fetch(
@@ -68,6 +76,9 @@ def fetch_reviews(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
                     )
                 else:
                     continue
+
+                # Log the number of reviews we got.
+                logging.info(logs.NUM_REVIEWS, len(reviews), review_channel.channel_name, app_config.app.name)
 
                 # After fetching the review for that particular channel, we dump it into a file.
                 # The file has a particular format.
