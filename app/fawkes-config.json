@@ -1,5 +1,5 @@
 {
     "apps": [
-        "app/sample-mint-config.json"
+        "app/mint/mint-config.json"
     ]
 }
