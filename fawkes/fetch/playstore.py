@@ -51,7 +51,7 @@ def fetch(review_channel):
                 params["apiKey"] = review_channel.searchman_api_key[
                     searchman_api_key_index]
             else:
-                logging.error(logs.API_KEYS_EXHAUSTED)
+                logging.error(logs.PLAYSTORE_API_KEYS_EXHAUSTED)
                 break
 
     return reviews
