@@ -8,7 +8,6 @@ import operator
 import dateutil.parser
 import hashlib
 
-import spacy
 import jsonschema
 
 from pprint import pprint
@@ -93,18 +92,6 @@ def remove_stop_words(document):
     stop_words = stopwords.words("english")
     stop_words = set(stop_words + EXTENDED_STOP_WORDS)
     return [token for token in document if token not in stop_words]
-
-
-def lemmatisation(text, allowed_postags=["NOUN", "ADJ", "VERB", "ADV"]):
-    """
-    Does lemmatisation. whats lemmatisation? google :P
-    Input : ["phil", "is", "good"]
-    - https://spacy.io/api/annotation
-    - https://spacy.io/api/top-level
-    """
-    nlp = spacy.load("en", disable=["parser", "ner"])
-    doc = nlp(" ".join(text))
-    return [token.lemma_ for token in doc if token.pos_ in allowed_postags]
 
 def calculate_hash(string):
     return hashlib.sha1(string.encode("utf-8")).hexdigest()
