@@ -4,6 +4,7 @@ import importlib
 import tensorflow as tf
 import pathlib
 import re
+import logging
 
 from pprint import pprint
 from multiprocessing import Pool
@@ -18,11 +19,13 @@ import fawkes.utils.filter_utils as filter_utils
 import fawkes.constants.constants as constants
 import fawkes.algorithms.categorisation.lstm.categoriser as lstm_categoriser
 import fawkes.algorithms.categorisation.text_match.categoriser as text_match_categoriser
+import fawkes.constants.logs as logs
 
 from fawkes.configs.app_config import AppConfig, ReviewChannelTypes, CategorizationAlgorithms
 from fawkes.configs.fawkes_config import FawkesConfig
 from fawkes.review.review import Review
 from fawkes.algorithms.sentiment.sentiment import get_sentiment
+from fawkes.cli.fawkes_actions import FawkesActions
 
 def add_review_sentiment_score(review):
     # Add the sentiment to the review's derived insight and return the review
@@ -77,6 +80,9 @@ def run_algo(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
                 app_config_file
             )
         )
+        # Log the current operation which is being performed.
+        logging.info(logs.OPERATION, FawkesActions.RUN_ALGO, 'ALL', app_config.app.name)
+
         # Path where the user reviews were stored after parsing.
         parsed_user_reviews_file_path = constants.PARSED_USER_REVIEWS_FILE_PATH.format(
             base_folder=app_config.fawkes_internal_config.data.base_folder,
@@ -100,17 +106,29 @@ def run_algo(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
             datetime.now(timezone.utc) - timedelta(days=app_config.algorithm_config.algorithm_days_filter)
         )
 
+        # Log the number of reviews we got.
+        logging.info(logs.NUM_REVIEWS, len(reviews), 'ALL', app_config.app.name)
+
         # Number of process to make
         num_processes = min(constants.PROCESS_NUMBER, os.cpu_count())
 
         if constants.CIRCLECI in os.environ:
             num_processes = 2
 
+        # Log the number of reviews we got.
+        logging.info(logs.CURRENT_ALGORITHM_START, 'SENTIMENT_ANALYSIS', 'ALL', app_config.app.name)
+
         # Adding sentiment
         with Pool(num_processes) as process:
             reviews = process.map(add_review_sentiment_score, reviews)
 
+        # Log the number of reviews we got.
+        logging.info(logs.CURRENT_ALGORITHM_END, 'SENTIMENT_ANALYSIS', 'ALL', app_config.app.name)
+
         if app_config.algorithm_config.categorization_algorithm != None and app_config.algorithm_config.category_keywords_weights_file != None:
+            # Log the number of reviews we got.
+            logging.info(logs.CURRENT_ALGORITHM_START, 'CATEGORIZATION_TEXT_MATCH', 'ALL', app_config.app.name)
+
             # We read from the topic file first
             topics = {}
             topics = utils.open_json(app_config.algorithm_config.category_keywords_weights_file)
@@ -126,7 +144,13 @@ def run_algo(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
                     reviews
                 )
 
+            # Log the number of reviews we got.
+            logging.info(logs.CURRENT_ALGORITHM_END, 'CATEGORIZATION_TEXT_MATCH', 'ALL', app_config.app.name)
+
         if app_config.algorithm_config.bug_feature_keywords_weights_file != None:
+            # Log the number of reviews we got.
+            logging.info(logs.CURRENT_ALGORITHM_START, 'BUG_FEATURE_CATEGORIZATION_TEXT_MATCH', 'ALL', app_config.app.name)
+
             # We read from the topic file first
             topics = {}
             topics = utils.open_json(app_config.algorithm_config.bug_feature_keywords_weights_file)
@@ -140,8 +164,13 @@ def run_algo(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
                     ),
                     reviews
                 )
+            # Log the number of reviews we got.
+            logging.info(logs.CURRENT_ALGORITHM_END, 'BUG_FEATURE_CATEGORIZATION_TEXT_MATCH', 'ALL', app_config.app.name)
 
         if app_config.algorithm_config.categorization_algorithm == CategorizationAlgorithms.LSTM_CLASSIFICATION:
+            # Log the number of reviews we got.
+            logging.info(logs.CURRENT_ALGORITHM_START, 'LSTM_CLASSIFICATION', 'ALL', app_config.app.name)
+
             # Load the TensorFlow model
             model = tf.keras.models.load_model(
                 constants.LSTM_CATEGORY_MODEL_FILE_PATH.format(
@@ -190,6 +219,12 @@ def run_algo(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
                 label_tokenizer,
                 cleaned_labels
             )
+
+            # Log the number of reviews we got.
+            logging.info(logs.CURRENT_ALGORITHM_END, 'LSTM_CLASSIFICATION', 'ALL', app_config.app.name)
+
+        # Log the number of reviews we got.
+        logging.info(logs.NUM_REVIEWS, len(reviews), 'ALL', app_config.app.name)
 
         # Create the intermediate folders
         processed_user_reviews_file_path = constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(

@@ -2,6 +2,7 @@ import requests
 import json
 import sys
 import os
+import logging
 
 from pprint import pprint
 
@@ -10,6 +11,8 @@ sys.path.append(os.path.realpath("."))
 
 import fawkes.utils.utils as utils
 import fawkes.constants.constants as constants
+
+import fawkes.constants.logs as logs
 
 def fetch(review_channel):
     # Since searchman allows us to have limited credits, we iterate over a set of API keys that we will use every month.
@@ -40,17 +43,15 @@ def fetch(review_channel):
                 reviews += review_page
                 current_page += 1
             else:
-                print(
-                    "[LOG][ERROR] Bad Response from fetch_app_reviews. Trying next API Key."
-                )
-                raise Exception("Bad Response from fetch_app_reviews")
+                logging.error(logs.BAD_RESPONSE_PLAYSTORE)
+                raise Exception(logs.BAD_RESPONSE_PLAYSTORE)
         except BaseException:
             searchman_api_key_index += 1
             if searchman_api_key_index < len(review_channel.searchman_api_key):
                 params["apiKey"] = review_channel.searchman_api_key[
                     searchman_api_key_index]
             else:
-                print("[LOG][ERROR] Exhausted all API keys")
+                logging.error(logs.API_KEYS_EXHAUSTED)
                 break
 
     return reviews

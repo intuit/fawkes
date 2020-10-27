@@ -2,6 +2,7 @@
 import argparse
 import sys
 import os
+import logging
 
 # This is so that below import works.  Sets the pwd to home directory
 sys.path.append(os.path.realpath("."))
@@ -18,17 +19,7 @@ import fawkes.slackbot.slackbot as slackbot
 import fawkes.algorithms.categorisation.text_match.trainer as text_match_trainer
 import fawkes.algorithms.categorisation.lstm.trainer as lstm_trainer
 
-class FawkesActions:
-    FETCH = 'fetch'
-    PARSE = 'parse'
-    RUN_ALGO = 'run.algo'
-    GENERATE_EMAIL = 'email.generate'
-    SEND_EMAIL = 'email.send'
-    PUSH_ELASTICSEARCH = 'push.elasticsearch'
-    QUERY_ELASTICSEARCH = 'query.elasticsearch'
-    PUSH_SLACK = 'push.slack'
-    GENERATE_TEXT_MATCH_KEYWORDS = 'generate.text_match.keywords'
-    TRAIN_LSTM_MODEL = 'train.model.lstm_classification'
+from fawkes.cli.fawkes_actions import FawkesActions
 
 def define_arguments(parser):
     # Specify an action
@@ -71,6 +62,11 @@ def define_arguments(parser):
         default=constants.JSON,
     )
 
+def init_logger():
+    logging.basicConfig(
+        format='%(levelname)s: %(message)s', level=logging.INFO
+    )
+
 if __name__ == "__main__":
     # Init the arg parser
     parser = argparse.ArgumentParser()
@@ -84,6 +80,9 @@ if __name__ == "__main__":
     app_config_file = args.config
     query_term = args.query
     query_response_file_format = args.format
+
+    # Initialise the logger
+    init_logger()
 
     if action == FawkesActions.FETCH:
         fetch.fetch_reviews(app_config_file)

@@ -4,6 +4,7 @@ import json
 import csv
 import importlib
 import pathlib
+import logging
 
 from pytz import timezone
 from pprint import pprint
@@ -13,10 +14,12 @@ sys.path.append(os.path.realpath("."))
 
 import fawkes.utils.utils as utils
 import fawkes.constants.constants as constants
+import fawkes.constants.logs as logs
 
 from fawkes.configs.app_config import AppConfig, ReviewChannelTypes
 from fawkes.configs.fawkes_config import FawkesConfig
 from fawkes.review.review import Review
+from fawkes.cli.fawkes_actions import FawkesActions
 
 def parse_csv(raw_user_reviews_file_path, review_channel, app_config):
     """ Parses the CSV files to a Review object """
@@ -168,7 +171,9 @@ def parse_reviews(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
         for review_channel in app_config.review_channels:
             # We parse the channels only if its enabled!
             if review_channel.is_channel_enabled and review_channel.channel_type != ReviewChannelTypes.BLANK:
-                print(review_channel.channel_name)
+                # Log the current operation which is being performed.
+                logging.info(logs.OPERATION, FawkesActions.PARSE, review_channel.channel_name, app_config.app.name)
+
                 raw_user_reviews_file_path = constants.RAW_USER_REVIEWS_FILE_PATH.format(
                     base_folder=app_config.fawkes_internal_config.data.base_folder,
                     dir_name=app_config.fawkes_internal_config.data.raw_data_folder,
@@ -198,6 +203,9 @@ def parse_reviews(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
                         "Format not supported exception. Check your file-type key in your config."
                     )
                 parsed_reviews += channel_reviews
+
+        # Log the number of reviews we got.
+        logging.info(logs.NUM_REVIEWS, len(parsed_reviews), 'ALL', app_config.app.name)
 
         # Executing custom code after parsing.
         if app_config.custom_code_module_path != None:

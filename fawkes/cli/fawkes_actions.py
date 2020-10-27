@@ -1,0 +1,11 @@
+class FawkesActions:
+    FETCH = 'fetch'
+    PARSE = 'parse'
+    RUN_ALGO = 'run.algo'
+    GENERATE_EMAIL = 'email.generate'
+    SEND_EMAIL = 'email.send'
+    PUSH_ELASTICSEARCH = 'push.elasticsearch'
+    QUERY_ELASTICSEARCH = 'query.elasticsearch'
+    PUSH_SLACK = 'push.slack'
+    GENERATE_TEXT_MATCH_KEYWORDS = 'generate.text_match.keywords'
+    TRAIN_LSTM_MODEL = 'train.model.lstm_classification'

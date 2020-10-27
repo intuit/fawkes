@@ -3,6 +3,7 @@ import json
 import sys
 import os
 import xmltodict
+import logging
 
 from pprint import pprint
 
@@ -11,6 +12,7 @@ sys.path.append(os.path.realpath("."))
 
 import fawkes.utils.utils as utils
 import fawkes.constants.constants as constants
+import fawkes.constants.logs as logs
 
 
 def fetch(review_channel):
@@ -45,6 +47,6 @@ def fetch(review_channel):
             }
             new_reviews.append(new_review)
         except BaseException:
-            print("[LOG] Parse Error in fetch_app_store_reviews")
+            logging.error(logs.APPSTORE_BAD_RESPONSE)
 
     return new_reviews
