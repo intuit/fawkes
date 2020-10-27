@@ -20,7 +20,7 @@ from fawkes.configs.fawkes_config import FawkesConfig
 from fawkes.review.review import Review
 
 def generate_star_from_rating(rating):
-    return "".join(["★" for i in range(rating)])
+    return "".join(["★" for i in range(round(rating))])
 
 
 def get_rating_color(rating):
@@ -230,6 +230,8 @@ def send_reviews_to_slack(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
             ),
             datetime.now(timezone.utc) - timedelta(minutes=app_config.slack_config.slack_run_interval)
         )
+
+        print(len(reviews))
 
         reviews = sorted(reviews,
                             key=lambda review: review.derived_insight.sentiment["compound"],
