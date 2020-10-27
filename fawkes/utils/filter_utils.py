@@ -1,6 +1,7 @@
 # Modular composable utility functions to filter user reviews for different purposes.
 # There are many usecases where different filters apply.
 # Fetch, Parse, Algorithms, Slackbot, Email Summary, Elastic Search
+from datetime import datetime, timezone
 
 # Given a set of review_channels, filters out review channels which are disabled
 def filter_disabled_review_channels(app_config):
@@ -15,7 +16,7 @@ def filter_reviews_by_channel(reviews, review_channels):
     ]
 
 # Given a set of reviews and a earliest date-time, filters our reviews which are before the time
-def filter_reviews_by_time(reviews, earliest_date_time):
+def filter_reviews_by_time(reviews, earliest_date_time, latest_date_time = datetime.now(timezone.utc)):
     return [
-        review for review in reviews if review.timestamp > earliest_date_time
+        review for review in reviews if review.timestamp > earliest_date_time and review.timestamp < latest_date_time
     ]
