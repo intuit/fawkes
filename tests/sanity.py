@@ -23,7 +23,7 @@ class FawkesSanityTest(unittest.TestCase):
         expected_parsed_output = [
             {
                 "message": "I just heard about this budgeting app. So I gave it a try. I am impressed thus far. However I still cant add all of my financial institutions so my budget is kind of skewed. But other that I can say Im more aware of my spending",
-                "timestamp": "2020/03/15 14:13:17",
+                "timestamp": "2020/03/15 22:06:17",
                 "rating": 5.0,
                 "user_id": None,
                 "app_name": "sample-mint",
@@ -50,13 +50,13 @@ class FawkesSanityTest(unittest.TestCase):
         expected_processed_output = [
             {
                 "message": "I just heard about this budgeting app. So I gave it a try. I am impressed thus far. However I still cant add all of my financial institutions so my budget is kind of skewed. But other that I can say Im more aware of my spending",
-                "timestamp": "2020/03/15 14:13:17",
+                "timestamp": "2020/03/15 22:06:17",
                 "rating": 5.0,
                 "user_id": None,
                 "app_name": "sample-mint",
                 "channel_name": "appstore",
                 "channel_type": "ios",
-                "hash_id": "6dde3aa82726c0a9e3777623854d839184767571",
+                "hash_id": "17663da08ed71f2664446e4c1b2f2a4417fcbb68",
                 "derived_insight": {
                     "sentiment": {
                         "neg": 0.0,

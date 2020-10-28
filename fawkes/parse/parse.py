@@ -65,12 +65,13 @@ def parse_csv(raw_user_reviews_file_path, review_channel, app_config):
                     review,
                     message=message,
                     timestamp=timestamp,
-                    timestamp_format=review_channel.timestamp_format,
                     rating=rating,
                     user_id=user_id,
                     app_name=app_config.app.name,
                     channel_name=review_channel.channel_name,
                     channel_type=review_channel.channel_type,
+                    review_timezone=review_channel.timezone,
+                    timestamp_format=review_channel.timestamp_format,
                 )
             )
 
@@ -97,7 +98,6 @@ def parse_json(raw_user_reviews_file_path, review_channel, app_config):
         user_id = None
         if review_channel.user_id_key != None:
             user_id = utils.get_json_key_value(review, review_channel.user_id_key.split("."))
-
         # Add the review object to the parsed reviews
         parsed_reviews.append(
             Review(
