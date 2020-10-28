@@ -195,7 +195,7 @@
           "type": "object",
           "properties": {
             "channel_type": {
-              "enum": ["ios", "android", "spreadsheet","twitter","salesforce","csv","json","remote_file", "blank"]
+              "enum": ["ios", "android", "spreadsheet","twitter","salesforce","csv","json","remote_file", "blank", "splunk"]
             },
             "channel_name": {
               "type": "string"
@@ -353,6 +353,16 @@
                     },
                     "then": {
                         "required": ["base_url","oauth_params","query_list"]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "channel_type": { "const": "splunk" }
+                         }
+                    },
+                    "then": {
+                        "required": ["host","port","username", "password","query"]
                     }
                 }
             ]

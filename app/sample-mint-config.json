@@ -75,6 +75,24 @@
             "message_key": "reviewText",
             "rating_key": "overall",
             "user_id_key": null
+        },
+        {
+            "channel_type": "splunk",
+            "channel_name": "splunk-review",
+            "file_type": "json",
+            "file_path": null,
+            "is_channel_enabled": false,
+            "timestamp_key": "updated",
+            "timestamp_format": "%Y-%m-%d %H:%M:%S",
+            "timezone": "UTC",
+            "message_key": "content",
+            "rating_key": "rating",
+            "host": "localhost",
+            "port": 443,
+            "username": "user",
+            "password": "password",
+            "query" : "index=user_reviews earliest=-10m latest=now",
+            "user_id_key": null
         }
     ],
     "custom_code_module_path": null,
