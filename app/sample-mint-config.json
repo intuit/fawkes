@@ -55,7 +55,7 @@
             "is_channel_enabled": true,
             "timestamp_key": "updated",
             "timestamp_format": "",
-            "timezone": "UTC",
+            "timezone": "US/Pacific",
             "message_key": "content",
             "rating_key": "rating",
             "app_id": "300238550",
