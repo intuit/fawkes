@@ -212,7 +212,7 @@ def send_reviews_to_slack(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
         )
 
         # Log the current operation which is being performed.
-        logging.info(logs.OPERATION, FawkesActions.PUSH_SLACK, 'ALL', app_config.app.name)
+        logging.info(logs.OPERATION, FawkesActions.PUSH_SLACK, "ALL", app_config.app.name)
 
         # Create the intermediate folders
         processed_user_reviews_file_path = constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
@@ -238,7 +238,7 @@ def send_reviews_to_slack(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
         )
 
         # Log the number of reviews we got.
-        logging.info(logs.NUM_REVIEWS, len(reviews), 'ALL', app_config.app.name)
+        logging.info(logs.NUM_REVIEWS, len(reviews), "ALL", app_config.app.name)
 
         reviews = sorted(reviews,
                             key=lambda review: review.derived_insight.sentiment["compound"],

@@ -47,3 +47,6 @@ docs/
 cli.spec
 build/
 dist/
+
+# Downloaded software
+downloads/

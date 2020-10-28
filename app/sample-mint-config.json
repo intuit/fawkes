@@ -7,7 +7,8 @@
         "index": "fawkes-user-reviews",
         "elastic_search_url": "http://localhost:9200/",
         "kibana_url": "http://localhost:5601",
-        "lifetime_rating_index": ""
+        "lifetime_rating_index": "",
+        "elastic_search_days_filter": 2000
     },
     "email_config": {
         "email_template_file": "fawkes/email_summary/templates/weekly-detailed.html",
