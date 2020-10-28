@@ -205,7 +205,7 @@ def parse_reviews(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
                 parsed_reviews += channel_reviews
 
         # Log the number of reviews we got.
-        logging.info(logs.NUM_REVIEWS, len(parsed_reviews), 'ALL', app_config.app.name)
+        logging.info(logs.NUM_REVIEWS, len(parsed_reviews), "ALL", app_config.app.name)
 
         # Executing custom code after parsing.
         if app_config.custom_code_module_path != None:

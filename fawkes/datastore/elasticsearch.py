@@ -3,6 +3,7 @@ import sys
 import os
 import json
 import random
+import logging
 
 from pprint import pprint
 from datetime import datetime, timedelta, timezone
@@ -12,10 +13,12 @@ sys.path.append(os.path.realpath("."))
 import fawkes.utils.utils as utils
 import fawkes.utils.filter_utils as filter_utils
 import fawkes.constants.constants as constants
+import fawkes.constants.logs as logs
 
 from fawkes.configs.app_config import AppConfig
 from fawkes.configs.fawkes_config import FawkesConfig
 from fawkes.review.review import Review
+from fawkes.cli.fawkes_actions import FawkesActions
 
 def create_index(elastic_search_url, index):
     response = requests.put(elastic_search_url + "/" + index)
@@ -100,6 +103,9 @@ def push_data_to_elasticsearch(fawkes_config_file = constants.FAWKES_CONFIG_FILE
                 app_config_file
             )
         )
+        # Log the current operation which is being performed.
+        logging.info(logs.OPERATION, FawkesActions.PUSH_ELASTICSEARCH, "ALL", app_config.app.name)
+
         # Path where the user reviews were stored after parsing.
         processed_user_reviews_file_path = constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
             base_folder=app_config.fawkes_internal_config.data.base_folder,
@@ -120,8 +126,11 @@ def push_data_to_elasticsearch(fawkes_config_file = constants.FAWKES_CONFIG_FILE
                     app_config
                 ),
             ),
-            datetime.now(timezone.utc) - timedelta(days=app_config.email_config.email_time_span)
+            datetime.now(timezone.utc) - timedelta(days=app_config.elastic_config.elastic_search_days_filter)
         )
+
+         # Log the number of reviews we got.
+        logging.info(logs.NUM_REVIEWS, len(reviews), "ALL", app_config.app.name)
 
         # We shuffle the reviews. This is because of how elastic search.
         random.shuffle(reviews)

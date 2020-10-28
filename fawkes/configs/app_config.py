@@ -32,6 +32,7 @@ class ElasticConfig:
         lifetime_rating_index:
             A separate index has to be create for pushing the lifetime ratings of the user reviews.
             This is because lifetime rating differs from the usual user review itself.
+        elastic_search_days_filter: The filter in days to apply when pushing things to elastic search
     """
 
     def __init__(self, config):
@@ -39,6 +40,7 @@ class ElasticConfig:
         self.elastic_search_url = config["elastic_search_url"]
         self.kibana_url = config["kibana_url"]
         self.lifetime_rating_index = config["lifetime_rating_index"]
+        self.elastic_search_days_filter = config["elastic_search_days_filter"]
 
 class EmailConfig:
     """ The configurations required for sending an email summary from fawkes.
