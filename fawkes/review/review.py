@@ -84,6 +84,7 @@ class Review:
         self.app_name = app_name
         self.channel_name = channel_name
         self.channel_type = channel_type
+
         # Optional but core fields
         # Rating. We check if the rating is present or not.
         if rating != None:
@@ -96,13 +97,16 @@ class Review:
             self.rating = None
         # User Id.
         self.user_id = user_id
+
         # Derived Insights
         if constants.DERIVED_INSIGHTS in review[0]:
             self.derived_insight = DerivedInsight(review[0][constants.DERIVED_INSIGHTS])
         else:
             self.derived_insight = DerivedInsight()
+
         # The raw value of the review itself.
         self.raw_review = review[0]
+
         # Now that we have all info that we wanted for a review.
         # We do some post processing.
         if timestamp_format == constants.UNIX_TIMESTAMP:
@@ -117,18 +121,22 @@ class Review:
         ).astimezone(
             timezone("UTC") # Convert it to UTC timezone
         )
+
         # Clean up the message
         # Removes links from message using regex
         self.message = url_regex.sub("", self.message)
         # Removing the non ascii chars
         self.message = (self.message.encode("ascii", "ignore")).decode("utf-8")
+
         # Determine the hash-id.
-        # It should almost in all cases never be overridden.
+        # It should, almost in all cases never be overridden.
         if hash_id != None:
             self.hash_id = hash_id
         else:
             # Every review hash id which is unique to the message and the timestamp
-            self.hash_id = utils.calculate_hash(message + str(timestamp))
+            self.hash_id = utils.calculate_hash(self.message + self.timestamp.strftime(
+                constants.TIMESTAMP_FORMAT # Convert it to a standard datetime format
+            ))
 
     @classmethod
     def from_review_json(cls, review):
