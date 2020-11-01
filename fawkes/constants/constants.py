@@ -63,7 +63,7 @@ PLAYSTORE_CLASS_NAME = "BHMmbe"
 
 # File paths
 FAWKES_CONFIG_FILE = "app/fawkes-config.json"
-APP_CONFIG_SCHEMA_FILE = "fawkes/configs/app-config-schema.json"
+APP_CONFIG_SCHEMA_FILE = "fawkes/configs/schemas/app-config-schema.json"
 RAW_USER_REVIEWS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/{channel_name}-raw-feedback.{extension}"
 PARSED_USER_REVIEWS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/parsed-user-feedback.json"
 PROCESSED_USER_REVIEWS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/processed-user-feedback.json"
