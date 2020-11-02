@@ -1,7 +1,6 @@
 import sys
 import os
 import importlib
-import tensorflow as tf
 import pathlib
 import re
 import logging
@@ -17,18 +16,17 @@ sys.path.append(os.path.realpath("."))
 import fawkes.utils.utils as utils
 import fawkes.utils.filter_utils as filter_utils
 import fawkes.constants.constants as constants
-import fawkes.algorithms.categorisation.lstm.categoriser as lstm_categoriser
-import fawkes.algorithms.categorisation.text_match.categoriser as text_match_categoriser
 import fawkes.constants.logs as logs
 
 from fawkes.configs.app_config import AppConfig, ReviewChannelTypes, CategorizationAlgorithms, Algorithms
 from fawkes.configs.fawkes_config import FawkesConfig
 from fawkes.review.review import Review
-from fawkes.algorithms.sentiment.sentiment import get_sentiment
 from fawkes.cli.fawkes_actions import FawkesActions
-from fawkes.algorithms.similarity.similarity import embed_reviews
 
 def add_review_sentiment_score(review):
+    # WE import the module only when its required.
+    from fawkes.algorithms.sentiment.sentiment import get_sentiment
+
     # Add the sentiment to the review's derived insight and return the review
     review.derived_insight.sentiment = get_sentiment(review.message)
     # Return the review
@@ -42,6 +40,9 @@ def add_review_message_encoding(review, encoding):
     return review
 
 def text_match_categortization(review, app_config, topics):
+    # WE import the module only when its required.
+    import fawkes.algorithms.categorisation.text_match.categoriser as text_match_categoriser
+
     # Find the category of the review
     category_scores, category = text_match_categoriser.text_match(review.message, topics)
     # Add the category to the review's derived insight and return the review
@@ -52,6 +53,9 @@ def text_match_categortization(review, app_config, topics):
     return review
 
 def bug_feature_classification(review, topics):
+    # WE import the module only when its required.
+    import fawkes.algorithms.categorisation.text_match.categoriser as text_match_categoriser
+
     _, category = text_match_categoriser.text_match(review.message, topics)
     # Add the bug-feature classification to the review's derived insight and return the review
     review.derived_insight.extra_properties[constants.BUG_FEATURE] = category
@@ -59,6 +63,9 @@ def bug_feature_classification(review, topics):
     return review
 
 def lstm_classification(reviews, model, article_tokenizer, label_tokenizer, cleaned_labels):
+    # WE import the module only when its required.
+    import fawkes.algorithms.categorisation.lstm.categoriser as lstm_categoriser
+
     articles = [review.message for review in reviews]
     # Get the categories for each of the reviews
     categories = lstm_categoriser.predict_labels(
@@ -111,6 +118,9 @@ def run_categorization(reviews, app_config, num_processes):
             # Log the number of reviews we got.
             logging.info(logs.CURRENT_ALGORITHM_END, CategorizationAlgorithms.TEXT_MATCH_CLASSIFICATION, "ALL", app_config.app.name)
         elif app_config.algorithm_config.categorization.algorithm == CategorizationAlgorithms.LSTM_CLASSIFICATION:
+            # WE import the module only when its required.
+            import tensorflow as tf
+
             # Log the number of reviews we got.
             logging.info(logs.CURRENT_ALGORITHM_START, CategorizationAlgorithms.LSTM_CLASSIFICATION, "ALL", app_config.app.name)
 
@@ -196,6 +206,9 @@ def run_bug_feature_categorization(reviews, app_config, num_processes):
 
 def run_review_text_encoding(reviews, app_config, num_processes):
     if Algorithms.MESSAGE_ENCODING in app_config.algorithm_config.algorithms_to_run:
+        # WE import the module only when its required.
+        from fawkes.algorithms.similarity.similarity import embed_reviews
+
         # Log the number of reviews we got.
         logging.info(logs.CURRENT_ALGORITHM_START, Algorithms.MESSAGE_ENCODING, "ALL", app_config.app.name)
         # Adding review text embeddings
@@ -207,6 +220,7 @@ def run_review_text_encoding(reviews, app_config, num_processes):
         ]
         # Log the number of reviews we got.
         logging.info(logs.CURRENT_ALGORITHM_END, Algorithms.MESSAGE_ENCODING, "ALL", app_config.app.name)
+
     return reviews
 
 def run_algo(fawkes_config_file = constants.FAWKES_CONFIG_FILE):

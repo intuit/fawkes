@@ -9,16 +9,7 @@ sys.path.append(os.path.realpath("."))
 
 import fawkes.constants.constants as constants
 
-import fawkes.fetch.fetch as fetch
-import fawkes.parse.parse as parse
-import fawkes.algorithms.algo as algo
-import fawkes.email_summary.email_summary_detailed as email_summary_detailed
-import fawkes.email_summary.send_email as send_email
-import fawkes.datastore.elasticsearch as elasticsearch
-import fawkes.slackbot.slackbot as slackbot
-import fawkes.algorithms.categorisation.text_match.trainer as text_match_trainer
-import fawkes.algorithms.categorisation.lstm.trainer as lstm_trainer
-import fawkes.algorithms.similarity.similarity as similarity
+
 
 from fawkes.cli.fawkes_actions import FawkesActions
 
@@ -94,26 +85,37 @@ if __name__ == "__main__":
     init_logger()
 
     if action == FawkesActions.FETCH:
+        import fawkes.fetch.fetch as fetch
         fetch.fetch_reviews(fawkes_config_file)
     elif action == FawkesActions.PARSE:
+        import fawkes.parse.parse as parse
         parse.parse_reviews(fawkes_config_file)
     elif action == FawkesActions.RUN_ALGO:
+        import fawkes.algorithms.algo as algo
         algo.run_algo(fawkes_config_file)
     elif action == FawkesActions.GENERATE_EMAIL:
+        import fawkes.email_summary.email_summary_detailed as email_summary_detailed
         email_summary_detailed.generate_email_summary_detailed(fawkes_config_file)
     elif action == FawkesActions.SEND_EMAIL:
+        import fawkes.email_summary.send_email as send_email
         send_email.send_email(fawkes_config_file)
     elif action == FawkesActions.PUSH_ELASTICSEARCH:
+        import fawkes.datastore.elasticsearch as elasticsearch
         elasticsearch.push_data_to_elasticsearch(fawkes_config_file)
     elif action == FawkesActions.QUERY_ELASTICSEARCH:
+        import fawkes.datastore.elasticsearch as elasticsearch
         elasticsearch.query_from_elasticsearch(fawkes_config_file, query_term = query_term, format = query_response_file_format)
     elif action == FawkesActions.PUSH_SLACK:
+        import fawkes.slackbot.slackbot as slackbot
         slackbot.send_reviews_to_slack(fawkes_config_file)
     elif action == FawkesActions.GENERATE_TEXT_MATCH_KEYWORDS:
+        import fawkes.algorithms.categorisation.text_match.trainer as text_match_trainer
         text_match_trainer.generate_keyword_weights(fawkes_config_file)
     elif action == FawkesActions.TRAIN_LSTM_MODEL:
+        import fawkes.algorithms.categorisation.lstm.trainer as lstm_trainer
         lstm_trainer.train_lstm_model(fawkes_config_file)
     elif action == FawkesActions.QUERY_SIMILAR_REVIEWS:
+        import fawkes.algorithms.similarity.similarity as similarity
         similarity.get_similar_reviews_for_app(app_config_file, query_term, 20)
     else:
         raise Exception("Invalid action!")
