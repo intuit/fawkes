@@ -2,6 +2,9 @@ import re
 import sys
 import os
 import json
+import nltk
+
+nltk.download("wordnet", quiet=True)
 
 from nltk.stem.wordnet import WordNetLemmatizer
 
