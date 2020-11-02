@@ -7,11 +7,14 @@ import itertools
 import operator
 import dateutil.parser
 import hashlib
+import nltk
 
 import jsonschema
 
 from pprint import pprint
 from datetime import datetime, timedelta
+
+nltk.download("stopwords", quiet=True)
 
 from nltk.corpus import stopwords
 from pathlib import Path

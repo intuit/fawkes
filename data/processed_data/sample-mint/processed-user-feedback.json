@@ -16,6 +16,7 @@
                 "compound": 0.4767
             },
             "category": "Application",
+            "review_message_encoding": null,
             "extra_properties": {
                 "category_scores": {
                     "User Experience": 0,

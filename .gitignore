@@ -25,6 +25,10 @@ data/**/*.json
 data/**/*.csv
 data/**/*.h5
 data/**/*.html
+data/**/*.tar.gz
+
+# Common App. agnostic models
+models/**
 
 # Enabling sample-data
 !data/raw_data/sample-mint/*

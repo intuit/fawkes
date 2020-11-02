@@ -20,7 +20,8 @@ class DerivedInsight:
 
     Attributes:
         sentiment: The sentiment attached to the user review.
-        category: The category in which the user review falls.
+        category: The category in which the user review false.
+        review_message_encoding: The sentence encoding into a vector.
         extra_properties: Any other extra derived insights. Free flowing dict.
     """
 
@@ -30,10 +31,12 @@ class DerivedInsight:
         if derived_insight is None:
             self.sentiment = None
             self.category = constants.CATEGORY_NOT_FOUND
+            self.review_message_encoding = None
             self.extra_properties = {}
         else:
             self.sentiment = derived_insight["sentiment"]
             self.category = derived_insight["category"]
+            self.review_message_encoding = derived_insight["review_message_encoding"]
             self.extra_properties = derived_insight["extra_properties"]
 
     def to_dict(self):
@@ -42,6 +45,7 @@ class DerivedInsight:
         return {
             "sentiment": self.sentiment,
             "category": self.category,
+            "review_message_encoding": self.review_message_encoding,
             "extra_properties": self.extra_properties,
         }
 
@@ -84,6 +88,7 @@ class Review:
         self.app_name = app_name
         self.channel_name = channel_name
         self.channel_type = channel_type
+
         # Optional but core fields
         # Rating. We check if the rating is present or not.
         if rating != None:
@@ -96,13 +101,16 @@ class Review:
             self.rating = None
         # User Id.
         self.user_id = user_id
+
         # Derived Insights
         if constants.DERIVED_INSIGHTS in review[0]:
             self.derived_insight = DerivedInsight(review[0][constants.DERIVED_INSIGHTS])
         else:
             self.derived_insight = DerivedInsight()
+
         # The raw value of the review itself.
         self.raw_review = review[0]
+
         # Now that we have all info that we wanted for a review.
         # We do some post processing.
         if timestamp_format == constants.UNIX_TIMESTAMP:
@@ -117,18 +125,22 @@ class Review:
         ).astimezone(
             timezone("UTC") # Convert it to UTC timezone
         )
+
         # Clean up the message
         # Removes links from message using regex
         self.message = url_regex.sub("", self.message)
         # Removing the non ascii chars
         self.message = (self.message.encode("ascii", "ignore")).decode("utf-8")
+
         # Determine the hash-id.
-        # It should almost in all cases never be overridden.
+        # It should, almost in all cases never be overridden.
         if hash_id != None:
             self.hash_id = hash_id
         else:
             # Every review hash id which is unique to the message and the timestamp
-            self.hash_id = utils.calculate_hash(message + str(timestamp))
+            self.hash_id = utils.calculate_hash(self.message + self.timestamp.strftime(
+                constants.TIMESTAMP_FORMAT # Convert it to a standard datetime format
+            ))
 
     @classmethod
     def from_review_json(cls, review):
@@ -161,3 +173,6 @@ class Review:
             "hash_id": self.hash_id,
             "derived_insight": self.derived_insight.to_dict(),
         }
+
+    def __lt__(self, other):
+        return len(self.message) < len(other.message)

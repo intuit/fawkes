@@ -62,15 +62,28 @@ PLAYSTORE_CLASS_TYPE = "div"
 PLAYSTORE_CLASS_NAME = "BHMmbe"
 
 # File paths
+# Configs
 FAWKES_CONFIG_FILE = "app/fawkes-config.json"
-APP_CONFIG_SCHEMA_FILE = "fawkes/configs/app-config-schema.json"
+APP_CONFIG_SCHEMA_FILE = "fawkes/configs/schemas/app-config-schema.json"
+
+# Reviews
 RAW_USER_REVIEWS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/{channel_name}-raw-feedback.{extension}"
 PARSED_USER_REVIEWS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/parsed-user-feedback.json"
 PROCESSED_USER_REVIEWS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/processed-user-feedback.json"
+
+# App. specific ML models
 LSTM_CATEGORY_MODEL_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/lstm-category-trained-model.h5"
 LSTM_CATEGORY_ARTICLE_TOKENIZER_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/lstm-category-article-tokenizer.json"
 LSTM_CATEGORY_LABEL_TOKENIZER_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/lstm-category-label-tokenizer.json"
+
+# App. agnostic ML models
+SENTENCE_ENCODER_MODEL = "models/universal-sentence-encoder_4/"
+
+# Email Summary
 EMAIL_SUMMARY_GENERATED_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/email-summary-generated.html"
+
+# Query Results
+QUERY_RESULTS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/query-{query_hash}.json"
 
 # Generic cleanup
 URL_REGEX = r"(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=% &:/~+#-]*[\w@?^=%&/~+#-])?"

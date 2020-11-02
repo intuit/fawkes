@@ -4,6 +4,8 @@ import os
 import json
 import nltk
 
+nltk.download("wordnet", quiet=True)
+
 from pprint import pprint
 from nltk.stem.wordnet import WordNetLemmatizer
 
@@ -13,7 +15,6 @@ import fawkes.utils.utils as utils
 import fawkes.constants.constants as constants
 
 lmtzr = WordNetLemmatizer()
-nltk.download("wordnet", quiet=True)
 
 def isBigram(word):
     if " " in word:

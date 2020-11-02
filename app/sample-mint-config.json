@@ -39,12 +39,19 @@
         "bug_type": "1"
     },
     "algorithm_config": {
-        "categorization_algorithm": "text_match",
+        "algorithms_to_run": [
+            "categorization",
+            "bug_feature_categorization",
+            "sentiment_analysis"
+        ],
         "algorithm_days_filter": 1000,
-        "bug_feature_keywords_file": "app/bug-feature-keywords.json",
-        "bug_feature_keywords_weights_file": "app/bug-feature-keywords-weights.json",
-        "category_keywords_file": "app/category-keywords.json",
-        "category_keywords_weights_file": "app/category-keywords-weights.json"
+        "categorization": {
+            "algorithm": "text_match",
+            "bug_feature_keywords_file": "app/bug-feature-keywords.json",
+            "bug_feature_keywords_weights_file": "app/bug-feature-keywords-weights.json",
+            "category_keywords_file": "app/category-keywords.json",
+            "category_keywords_weights_file": "app/category-keywords-weights.json"
+        }
     },
     "env_keys": [],
     "review_channels": [
@@ -105,7 +112,7 @@
             "processed_data_folder": "processed_data",
             "models_folder": "models",
             "emails_folder": "emails",
-            "query_response_folder": "query_response_data"
+            "query_folder": "query_folder"
         }
     }
 }

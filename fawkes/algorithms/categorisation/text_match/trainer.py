@@ -2,6 +2,9 @@ import re
 import sys
 import os
 import json
+import nltk
+
+nltk.download("wordnet", quiet=True)
 
 from nltk.stem.wordnet import WordNetLemmatizer
 
@@ -58,15 +61,15 @@ def generate_keyword_weights(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
         # First look at the category keywords.
         utils.dump_json(
             parse_keywords_file(
-                app_config.algorithm_config.category_keywords_file
+                app_config.algorithm_config.categorization.category_keywords_file
             ),
-            app_config.algorithm_config.category_keywords_weights_file,
+            app_config.algorithm_config.categorization.category_keywords_weights_file,
         )
         # Then look at the bug-feature keywords
         utils.dump_json(
             parse_keywords_file(
-                app_config.algorithm_config.bug_feature_keywords_file,
+                app_config.algorithm_config.categorization.bug_feature_keywords_file,
                 False
             ),
-            app_config.algorithm_config.bug_feature_keywords_weights_file,
+            app_config.algorithm_config.categorization.bug_feature_keywords_weights_file,
         )

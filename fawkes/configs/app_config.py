@@ -113,7 +113,7 @@ class CategorizationAlgorithms:
     TEXT_MATCH_CLASSIFICATION = "text_match"
     LSTM_CLASSIFICATION = "lstm_classification"
 
-class AlgorithmConfig:
+class CategorizationAlgorithmConfig:
     """  The configurations required for running algorithms.
 
     Attributes:
@@ -126,12 +126,30 @@ class AlgorithmConfig:
     """
 
     def __init__(self, config):
-        self.categorization_algorithm = config["categorization_algorithm"]
-        self.algorithm_days_filter = config["algorithm_days_filter"]
+        self.algorithm = config["algorithm"]
         self.bug_feature_keywords_file = config["bug_feature_keywords_file"]
         self.bug_feature_keywords_weights_file = config["bug_feature_keywords_weights_file"]
         self.category_keywords_file = config["category_keywords_file"]
         self.category_keywords_weights_file = config["category_keywords_weights_file"]
+
+class Algorithms:
+    CATEGORIZATION = "categorization"
+    BUG_FEATURE_CATEGORIZATION = "bug_feature_categorization"
+    SENTIMENT_ANALYSIS = "sentiment_analysis"
+    MESSAGE_ENCODING = "message_encoding"
+
+class AlgorithmConfig:
+    """  The configurations required for running algorithms.
+
+    Attributes:
+        algorithms_to_run: A list of algorithms to run.
+        algorithm_days_filter: The time filter in days to be used for filtering the user review for running the algorithms.
+    """
+
+    def __init__(self, config):
+        self.algorithms_to_run = config["algorithms_to_run"]
+        self.algorithm_days_filter = config["algorithm_days_filter"]
+        self.categorization = CategorizationAlgorithmConfig(config["categorization"])
 
 
 class ReviewChannelTypes:
@@ -324,7 +342,7 @@ class FawkesInternalDataConfig:
         self.processed_data_folder = config["processed_data_folder"]
         self.models_folder = config["models_folder"]
         self.emails_folder = config["emails_folder"]
-        self.query_response_folder = config["query_response_folder"]
+        self.query_folder = config["query_folder"]
 
 class FawkesInternalConfig:
     """ The internal configurations of fawkes exposed so that users can modify as required.
