@@ -4,7 +4,6 @@ import os
 import sys
 import pathlib
 
-from datetime import datetime, timedelta
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from datetime import datetime, timedelta, timezone

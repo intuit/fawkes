@@ -188,7 +188,7 @@
                             "categorization",
                             "bug_feature_categorization",
                             "sentiment_analysis",
-                            "sentence_encoding"
+                            "message_encoding"
                         ]
                     }
                 }

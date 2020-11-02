@@ -9,3 +9,4 @@ class FawkesActions:
     PUSH_SLACK = 'push.slack'
     GENERATE_TEXT_MATCH_KEYWORDS = 'generate.text_match.keywords'
     TRAIN_LSTM_MODEL = 'train.model.lstm_classification'
+    QUERY_SIMILAR_REVIEWS = 'query.similar.reviews'

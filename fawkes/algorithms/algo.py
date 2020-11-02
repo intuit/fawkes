@@ -26,10 +26,18 @@ from fawkes.configs.fawkes_config import FawkesConfig
 from fawkes.review.review import Review
 from fawkes.algorithms.sentiment.sentiment import get_sentiment
 from fawkes.cli.fawkes_actions import FawkesActions
+from fawkes.algorithms.similarity.similarity import embed_reviews
 
 def add_review_sentiment_score(review):
     # Add the sentiment to the review's derived insight and return the review
     review.derived_insight.sentiment = get_sentiment(review.message)
+    # Return the review
+    return review
+
+def add_review_message_encoding(review, encoding):
+    # Add the review message's encoding as a derived insight.
+    # We first convert the tensor object to a numpy array and then to a list so that it can be saved as a json.
+    review.derived_insight.review_message_encoding = encoding.numpy().tolist()
     # Return the review
     return review
 
@@ -186,6 +194,21 @@ def run_bug_feature_categorization(reviews, app_config, num_processes):
 
     return reviews
 
+def run_review_text_encoding(reviews, app_config, num_processes):
+    if Algorithms.MESSAGE_ENCODING in app_config.algorithm_config.algorithms_to_run:
+        # Log the number of reviews we got.
+        logging.info(logs.CURRENT_ALGORITHM_START, Algorithms.MESSAGE_ENCODING, "ALL", app_config.app.name)
+        # Adding review text embeddings
+        review_message_embeddings = embed_reviews([
+            review.message for review in reviews
+        ])
+        reviews = [
+            add_review_message_encoding(review, review_encoding) for review, review_encoding in list(zip(reviews, review_message_embeddings))
+        ]
+        # Log the number of reviews we got.
+        logging.info(logs.CURRENT_ALGORITHM_END, Algorithms.MESSAGE_ENCODING, "ALL", app_config.app.name)
+    return reviews
+
 def run_algo(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
     # Read the app-config.json file.
     fawkes_config = FawkesConfig(
@@ -242,6 +265,9 @@ def run_algo(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
 
         # Running bug/feature categorizatio
         reviews = run_bug_feature_categorization(reviews, app_config, num_processes)
+
+        # Running the message encoding
+        reviews = run_review_text_encoding(reviews, app_config, num_processes)
 
         # Create the intermediate folders
         processed_user_reviews_file_path = constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(

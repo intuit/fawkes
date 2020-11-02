@@ -33,6 +33,7 @@ class FawkesSanityTest(unittest.TestCase):
                 "derived_insight": {
                     "sentiment": None,
                     "category": "uncategorized",
+                    "review_message_encoding": None,
                     "extra_properties": {}
                 }
             }
@@ -65,6 +66,7 @@ class FawkesSanityTest(unittest.TestCase):
                         "compound": 0.4767
                     },
                     "category": "Application",
+                    "review_message_encoding": None,
                     "extra_properties": {
                         "category_scores": {
                             "User Experience": 0,

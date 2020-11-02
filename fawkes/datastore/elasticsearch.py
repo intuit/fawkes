@@ -183,7 +183,7 @@ def query_from_elasticsearch(fawkes_config_file = constants.FAWKES_CONFIG_FILE, 
 
     query_response_file = constants.ELASTICSEARCH_FETCH_DATA_FILE_PATH.format(
         base_folder=app_config.fawkes_internal_config.data.base_folder,
-        dir_name=app_config.fawkes_internal_config.data.query_response_folder,
+        dir_name=app_config.fawkes_internal_config.data.query_folder,
         app_name=app_config.app.name,
         extension=format
     )

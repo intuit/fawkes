@@ -112,7 +112,7 @@
             "processed_data_folder": "processed_data",
             "models_folder": "models",
             "emails_folder": "emails",
-            "query_response_folder": "query_response_data"
+            "query_folder": "query_folder"
         }
     }
 }

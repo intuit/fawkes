@@ -20,7 +20,8 @@ class DerivedInsight:
 
     Attributes:
         sentiment: The sentiment attached to the user review.
-        category: The category in which the user review falls.
+        category: The category in which the user review false.
+        review_message_encoding: The sentence encoding into a vector.
         extra_properties: Any other extra derived insights. Free flowing dict.
     """
 
@@ -30,10 +31,12 @@ class DerivedInsight:
         if derived_insight is None:
             self.sentiment = None
             self.category = constants.CATEGORY_NOT_FOUND
+            self.review_message_encoding = None
             self.extra_properties = {}
         else:
             self.sentiment = derived_insight["sentiment"]
             self.category = derived_insight["category"]
+            self.review_message_encoding = derived_insight["review_message_encoding"]
             self.extra_properties = derived_insight["extra_properties"]
 
     def to_dict(self):
@@ -42,6 +45,7 @@ class DerivedInsight:
         return {
             "sentiment": self.sentiment,
             "category": self.category,
+            "review_message_encoding": self.review_message_encoding,
             "extra_properties": self.extra_properties,
         }
 
@@ -169,3 +173,6 @@ class Review:
             "hash_id": self.hash_id,
             "derived_insight": self.derived_insight.to_dict(),
         }
+
+    def __lt__(self, other):
+        return len(self.message) < len(other.message)

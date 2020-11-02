@@ -11,6 +11,7 @@
         "derived_insight": {
             "sentiment": null,
             "category": "uncategorized",
+            "review_message_encoding": null,
             "extra_properties": {}
         }
     }
