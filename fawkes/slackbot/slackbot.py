@@ -162,7 +162,7 @@ def send_review_to_slack(slack_url,
                     review.timestamp.timetuple()
                 ),
             "footer":
-                review.app_name + " : " + review.channel_name,
+                review.app_name + " : " + review.channel_name + " | User Id: " + str(review.user_id),
             "actions":
                 get_actions(review, app_config)
         }
