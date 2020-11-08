@@ -223,6 +223,7 @@ class AppStoreReviewChannel(ReviewChannel):
         self.timestamp_format = "%Y-%m-%d %H:%M:%S"
         self.message_key = "content"
         self.rating_key = "rating"
+        self.rating_max_value = 5.0
 
 class PlayStoreReviewChannel(ReviewChannel):
     """ The configurations specific to App. Store.
@@ -247,6 +248,7 @@ class PlayStoreReviewChannel(ReviewChannel):
         self.timestamp_format = "%Y-%m-%d %H:%M:%S"
         self.message_key = "body"
         self.rating_key = "rating"
+        self.rating_max_value = 5.0
 
 class TwitterReviewChannel(ReviewChannel):
     """ The configurations specific to Twitter.
