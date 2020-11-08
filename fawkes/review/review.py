@@ -69,7 +69,8 @@ class Review:
 
     def __init__(
         self,
-        *review,
+        review,
+        *,
         message = "",
         timestamp = "",
         app_name = "",
@@ -81,6 +82,7 @@ class Review:
         review_timezone="UTC",
         timestamp_format=constants.TIMESTAMP_FORMAT,
         hash_id=None,
+        raw_review = None,
     ):
         """ Initialiser of a user review """
 
@@ -107,13 +109,13 @@ class Review:
         self.user_id = user_id
 
         # Derived Insights
-        if constants.DERIVED_INSIGHTS in review[0]:
-            self.derived_insight = DerivedInsight(review[0][constants.DERIVED_INSIGHTS])
+        if constants.DERIVED_INSIGHTS in review:
+            self.derived_insight = DerivedInsight(review[constants.DERIVED_INSIGHTS])
         else:
             self.derived_insight = DerivedInsight()
 
         # The raw value of the review itself.
-        self.raw_review = review[0]
+        self.raw_review = raw_review
 
         # Now that we have all info that we wanted for a review.
         # We do some post processing.
@@ -159,6 +161,7 @@ class Review:
             channel_type=review["channel_type"],
             rating=review["rating"],
             user_id=review["user_id"],
+            raw_review=review["raw_review"]
         )
 
     def to_dict(self):
@@ -176,6 +179,7 @@ class Review:
             "channel_type": self.channel_type,
             "hash_id": self.hash_id,
             "derived_insight": self.derived_insight.to_dict(),
+            "raw_review": self.raw_review,
         }
 
     def __lt__(self, other):
