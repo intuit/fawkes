@@ -29,7 +29,7 @@ class FawkesSanityTest(unittest.TestCase):
                 "app_name": "sample-mint",
                 "channel_name": "appstore",
                 "channel_type": "ios",
-                "hash_id": "17663da08ed71f2664446e4c1b2f2a4417fcbb68",
+                "hash_id": "a5461e62ee4eccbab92900ba01d49d9ed0642dcc",
                 "derived_insight": {
                     "sentiment": None,
                     "category": "uncategorized",
@@ -63,7 +63,7 @@ class FawkesSanityTest(unittest.TestCase):
                 "app_name": "sample-mint",
                 "channel_name": "appstore",
                 "channel_type": "ios",
-                "hash_id": "17663da08ed71f2664446e4c1b2f2a4417fcbb68",
+                "hash_id": "a5461e62ee4eccbab92900ba01d49d9ed0642dcc",
                 "derived_insight": {
                     "sentiment": {
                         "neg": 0.0,
