@@ -76,6 +76,7 @@ class Review:
         channel_name = "",
         channel_type = "",
         rating = None,
+        rating_max_value = None,
         user_id = None,
         review_timezone="UTC",
         timestamp_format=constants.TIMESTAMP_FORMAT,
@@ -95,6 +96,9 @@ class Review:
             # Sometimes we get empty strings. So can't assume anything about the data type.
             try:
                 self.rating = float(rating)
+                # Normalising the rating to be a value between 1 - 5
+                if rating_max_value != None:
+                    self.rating = constants.RATINGS_NORMALIZATION_CONSTANT * (self.rating / rating_max_value)
             except ValueError:
                 self.rating = None
         else:

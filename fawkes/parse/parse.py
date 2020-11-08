@@ -72,6 +72,7 @@ def parse_csv(raw_user_reviews_file_path, review_channel, app_config):
                     channel_type=review_channel.channel_type,
                     review_timezone=review_channel.timezone,
                     timestamp_format=review_channel.timestamp_format,
+                    rating_max_value=review_channel.rating_max_value,
                 )
             )
 
@@ -111,6 +112,7 @@ def parse_json(raw_user_reviews_file_path, review_channel, app_config):
                 channel_type=review_channel.channel_type,
                 review_timezone=review_channel.timezone,
                 timestamp_format=review_channel.timestamp_format,
+                rating_max_value=review_channel.rating_max_value,
             )
         )
 
@@ -149,6 +151,7 @@ def parse_json_lines(raw_user_reviews_file_path, review_channel, app_config):
                     channel_type=review_channel.channel_type,
                     review_timezone=review_channel.timezone,
                     timestamp_format=review_channel.timestamp_format,
+                    rating_max_value=review_channel.rating_max_value,
                 )
             )
     return parsed_reviews

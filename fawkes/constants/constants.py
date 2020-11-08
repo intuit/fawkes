@@ -6,6 +6,9 @@ CATEGORY_SCORES = "category_scores"
 CATEGORY = "category"
 SENTIMENT = "sentiment"
 
+# Ratings Related.
+RATINGS_NORMALIZATION_CONSTANT = 5.0
+
 # Twitter Related
 TWITTER_QUERY_LANGUAGE = "en"
 KEY_CONTAINING_TWEETS = "statuses"
@@ -16,10 +19,7 @@ POSSIBLY_SENSITIVE = "possibly_sensitive"
 
 # Salesforce related
 SALESFORCE_ACCESS_TOKEN_KEY = "access_token"
-SALESFORCE_QUERY_LIST = "salesforce-query-list"
-SALESFORCE_BASE_URL = "salesforce-base-url"
 SALESFORCE_PAGINATION_URL = "nextRecordsUrl"
-SALESFORCE_OAUTH_PARAMS = "salesforce-oauth-params"
 SALESFORCE_EXTRACTION_DAYS = 10
 RECORDS = "records"
 DONE = "done"
