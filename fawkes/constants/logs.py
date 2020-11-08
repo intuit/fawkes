@@ -12,3 +12,6 @@ PLAYSTORE_API_KEYS_EXHAUSTED = "Exhausted all API keys for Playstore Searchman"
 
 # App Store
 APPSTORE_BAD_RESPONSE =  "Bad Response from App Store API."
+
+# Elastic Search
+ELASTIC_PUSH_PROGRESS = "Pushing bath number %s to elastic search"

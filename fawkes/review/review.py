@@ -115,7 +115,8 @@ class Review:
             self.derived_insight = DerivedInsight()
 
         # The raw value of the review itself.
-        self.raw_review = raw_review
+        # We need to clean it up. https://github.com/intuit/fawkes/issues/58
+        self.raw_review = utils.remove_empty_keys(raw_review)
 
         # Now that we have all info that we wanted for a review.
         # We do some post processing.
@@ -146,7 +147,7 @@ class Review:
             # Every review hash id which is unique to the message and the timestamp
             self.hash_id = utils.calculate_hash(self.message + self.timestamp.strftime(
                 constants.TIMESTAMP_FORMAT # Convert it to a standard datetime format
-            ))
+            ) + str(self.user_id))
 
     @classmethod
     def from_review_json(cls, review):
