@@ -264,6 +264,12 @@
                             "null"
                         ]
                     },
+                    "rating_max_value": {
+                        "type": [
+                            "number",
+                            "null"
+                        ]
+                    },
                     "app_id": {
                         "type": "string"
                     },
@@ -342,6 +348,7 @@
                     "timezone",
                     "message_key",
                     "rating_key",
+                    "rating_max_value",
                     "user_id_key"
                 ],
                 "allOf": [

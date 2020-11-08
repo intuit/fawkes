@@ -35,6 +35,12 @@ class FawkesSanityTest(unittest.TestCase):
                     "category": "uncategorized",
                     "review_message_encoding": None,
                     "extra_properties": {}
+                },
+                "raw_review": {
+                    "updated": "2020-03-15 14:13:17",
+                    "rating": 5,
+                    "version": "7.1.0",
+                    "content": "I just heard about this budgeting app. So I gave it a try. I am impressed thus far. However I still can\u00e2\u20ac\u2122t add all of my financial institutions so my budget is kind of skewed. But other that I can say I\u00e2\u20ac\u2122m more aware of my spending"
                 }
             }
         ]
@@ -77,6 +83,12 @@ class FawkesSanityTest(unittest.TestCase):
                         },
                         "bug_feature": "feature"
                     }
+                },
+                "raw_review": {
+                    "updated": "2020-03-15 14:13:17",
+                    "rating": 5,
+                    "version": "7.1.0",
+                    "content": "I just heard about this budgeting app. So I gave it a try. I am impressed thus far. However I still can\u00e2\u20ac\u2122t add all of my financial institutions so my budget is kind of skewed. But other that I can say I\u00e2\u20ac\u2122m more aware of my spending"
                 }
             }
         ]

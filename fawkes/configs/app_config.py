@@ -182,6 +182,8 @@ class ReviewChannel:
         timezone: The timezone in which the user review is in.
         message_key: The key in the json/csv where the message of the user review can be found.
         rating_key: The key in the json/csv where the rating of the user review can be found.
+        rating_max_value: The maximum value of the rating. Used to normalize between ratings out of 5 vs ratings out of 10.
+        user_id_key: The key in the json/csv where the user identifier of the user review can be found.
     """
 
     def __init__(self, config):
@@ -195,6 +197,7 @@ class ReviewChannel:
         self.timezone = config["timezone"]
         self.message_key = config["message_key"]
         self.rating_key = config["rating_key"]
+        self.rating_max_value = config["rating_max_value"]
         self.user_id_key = config["user_id_key"]
 
 class AppStoreReviewChannel(ReviewChannel):
@@ -220,6 +223,7 @@ class AppStoreReviewChannel(ReviewChannel):
         self.timestamp_format = "%Y-%m-%d %H:%M:%S"
         self.message_key = "content"
         self.rating_key = "rating"
+        self.rating_max_value = 5.0
 
 class PlayStoreReviewChannel(ReviewChannel):
     """ The configurations specific to App. Store.
@@ -244,6 +248,7 @@ class PlayStoreReviewChannel(ReviewChannel):
         self.timestamp_format = "%Y-%m-%d %H:%M:%S"
         self.message_key = "body"
         self.rating_key = "rating"
+        self.rating_max_value = 5.0
 
 class TwitterReviewChannel(ReviewChannel):
     """ The configurations specific to Twitter.

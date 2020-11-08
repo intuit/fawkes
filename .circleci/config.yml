@@ -4,7 +4,7 @@ debug: true
 jobs:
   test:
     docker:
-      - image: circleci/python:3.7.3
+      - image: circleci/python:3.8.6
     steps:
       - checkout
       - run:

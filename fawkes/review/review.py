@@ -69,17 +69,20 @@ class Review:
 
     def __init__(
         self,
-        *review,
+        review,
+        *,
         message = "",
         timestamp = "",
         app_name = "",
         channel_name = "",
         channel_type = "",
         rating = None,
+        rating_max_value = None,
         user_id = None,
         review_timezone="UTC",
         timestamp_format=constants.TIMESTAMP_FORMAT,
         hash_id=None,
+        raw_review = None,
     ):
         """ Initialiser of a user review """
 
@@ -95,6 +98,9 @@ class Review:
             # Sometimes we get empty strings. So can't assume anything about the data type.
             try:
                 self.rating = float(rating)
+                # Normalising the rating to be a value between 1 - 5
+                if rating_max_value != None:
+                    self.rating = constants.RATINGS_NORMALIZATION_CONSTANT * (self.rating / rating_max_value)
             except ValueError:
                 self.rating = None
         else:
@@ -103,13 +109,13 @@ class Review:
         self.user_id = user_id
 
         # Derived Insights
-        if constants.DERIVED_INSIGHTS in review[0]:
-            self.derived_insight = DerivedInsight(review[0][constants.DERIVED_INSIGHTS])
+        if constants.DERIVED_INSIGHTS in review:
+            self.derived_insight = DerivedInsight(review[constants.DERIVED_INSIGHTS])
         else:
             self.derived_insight = DerivedInsight()
 
         # The raw value of the review itself.
-        self.raw_review = review[0]
+        self.raw_review = raw_review
 
         # Now that we have all info that we wanted for a review.
         # We do some post processing.
@@ -155,6 +161,7 @@ class Review:
             channel_type=review["channel_type"],
             rating=review["rating"],
             user_id=review["user_id"],
+            raw_review=review["raw_review"]
         )
 
     def to_dict(self):
@@ -172,6 +179,7 @@ class Review:
             "channel_type": self.channel_type,
             "hash_id": self.hash_id,
             "derived_insight": self.derived_insight.to_dict(),
+            "raw_review": self.raw_review,
         }
 
     def __lt__(self, other):
