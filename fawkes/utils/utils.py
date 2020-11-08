@@ -135,7 +135,11 @@ def write_query_results(response, write_file, format):
     # Create the intermediate folders
     dir_name = os.path.dirname(write_file)
     Path(dir_name).mkdir(parents=True, exist_ok=True)
+
     if format == constants.JSON:
         dump_json(response, write_file)
     elif format == constants.CSV:
         dump_csv(response, write_file)
+
+def remove_empty_keys(raw_review):
+    return {k:v for k,v in raw_review.items() if k != ""}
