@@ -336,9 +336,6 @@ class VerticaConnectionConfig:
         port: port for the database.
         user: username to authenticate.
         password: password to authenticate.
-        query:
-            query to retrieve the user reviews. It should contain earliest and latest time.
-            refer https://docs.splunk.com/Documentation/Splunk/latest/Search/Specifytimemodifiersinyoursearch
     """
     def __init__(self, config):
         self.host = config["host"]
