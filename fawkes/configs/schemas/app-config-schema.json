@@ -221,7 +221,8 @@
                             "json",
                             "remote_file",
                             "blank",
-                            "splunk"
+                            "splunk",
+                            "vertica"
                         ]
                     },
                     "channel_name": {
