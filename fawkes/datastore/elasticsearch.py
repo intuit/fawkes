@@ -20,6 +20,7 @@ from fawkes.configs.fawkes_config import FawkesConfig
 from fawkes.review.review import Review
 from fawkes.cli.fawkes_actions import FawkesActions
 
+
 def create_index(elastic_search_url, index):
     response = requests.put(elastic_search_url + "/" + index)
     return response
@@ -27,8 +28,7 @@ def create_index(elastic_search_url, index):
 
 def get_indices(elastic_search_url):
     headers = {"content-type": "application/json"}
-    response = requests.get(elastic_search_url + "/_cat/indices?v",
-                            headers=headers)
+    response = requests.get(elastic_search_url + "/_cat/indices?v", headers=headers)
 
     # Don"t know who made this as a text based API
     indices = response.text.split("\n")
@@ -90,21 +90,17 @@ def bulk_push_to_elastic(elastic_search_url, index, reviews):
     return response
 
 
-def push_data_to_elasticsearch(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
+def push_data_to_elasticsearch(fawkes_config_file=constants.FAWKES_CONFIG_FILE):
     # Read the app-config.json file.
-    fawkes_config = FawkesConfig(
-        utils.open_json(fawkes_config_file)
-    )
+    fawkes_config = FawkesConfig(utils.open_json(fawkes_config_file))
     # For every app registered in app-config.json we
     for app_config_file in fawkes_config.apps:
         # Creating an AppConfig object
-        app_config = AppConfig(
-            utils.open_json(
-                app_config_file
-            )
-        )
+        app_config = AppConfig(utils.open_json(app_config_file))
         # Log the current operation which is being performed.
-        logging.info(logs.OPERATION, FawkesActions.PUSH_ELASTICSEARCH, "ALL", app_config.app.name)
+        logging.info(
+            logs.OPERATION, FawkesActions.PUSH_ELASTICSEARCH, "ALL", app_config.app.name
+        )
 
         # Path where the user reviews were stored after parsing.
         processed_user_reviews_file_path = constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
@@ -122,14 +118,13 @@ def push_data_to_elasticsearch(fawkes_config_file = constants.FAWKES_CONFIG_FILE
         # Filtering out reviews which are not applicable.
         reviews = filter_utils.filter_reviews_by_time(
             filter_utils.filter_reviews_by_channel(
-                reviews, filter_utils.filter_disabled_review_channels(
-                    app_config
-                ),
+                reviews, filter_utils.filter_disabled_review_channels(app_config)
             ),
-            datetime.now(timezone.utc) - timedelta(days=app_config.elastic_config.elastic_search_days_filter)
+            datetime.now(timezone.utc)
+            - timedelta(days=app_config.elastic_config.elastic_search_days_filter),
         )
 
-         # Log the number of reviews we got.
+        # Log the number of reviews we got.
         logging.info(logs.NUM_REVIEWS, len(reviews), "ALL", app_config.app.name)
 
         # We shuffle the reviews. This is because of how elastic search.
@@ -139,8 +134,10 @@ def push_data_to_elasticsearch(fawkes_config_file = constants.FAWKES_CONFIG_FILE
         indices = get_indices(app_config.elastic_config.elastic_search_url)
         if app_config.elastic_config.index not in indices:
             # Create a new index
-            create_index(app_config.elastic_config.elastic_search_url,
-                         app_config.elastic_config.index)
+            create_index(
+                app_config.elastic_config.elastic_search_url,
+                app_config.elastic_config.index,
+            )
 
         # Bulk push the data
         i = 0
@@ -148,34 +145,46 @@ def push_data_to_elasticsearch(fawkes_config_file = constants.FAWKES_CONFIG_FILE
             response = bulk_push_to_elastic(
                 app_config.elastic_config.elastic_search_url,
                 app_config.elastic_config.index,
-                reviews[i *
-                        constants.BULK_UPLOAD_SIZE:min((i + 1) *
-                                             constants.BULK_UPLOAD_SIZE, len(reviews))])
+                reviews[
+                    i
+                    * constants.BULK_UPLOAD_SIZE : min(
+                        (i + 1) * constants.BULK_UPLOAD_SIZE, len(reviews)
+                    )
+                ],
+            )
             if response.status_code != 200:
                 print(
                     "[Error] push_data_to_elasticsearch :: Got status code : ",
-                    response.status_code)
-                print("[Error] push_data_to_elasticsearch :: Response is : ",
-                      response.text)
+                    response.status_code,
+                )
+                print(
+                    "[Error] push_data_to_elasticsearch :: Response is : ",
+                    response.text,
+                )
             i += 1
 
-def query_from_elasticsearch(fawkes_config_file = constants.FAWKES_CONFIG_FILE, query_term="", format=constants.JSON):
-    fawkes_config = FawkesConfig(
-        utils.open_json(fawkes_config_file)
-    )
+
+def query_from_elasticsearch(
+    fawkes_config_file=constants.FAWKES_CONFIG_FILE,
+    query_term="",
+    format=constants.JSON,
+):
+    fawkes_config = FawkesConfig(utils.open_json(fawkes_config_file))
     # For every app registered in app-config.json we
     for app_config_file in fawkes_config.apps:
         # Creating an AppConfig object
-        app_config = AppConfig(
-            utils.open_json(
-                app_config_file
-            )
-        )
+        app_config = AppConfig(utils.open_json(app_config_file))
 
     if query_term == "":
         endpoint = app_config.elastic_config.elastic_search_url + "_" + constants.SEARCH
     else:
-        endpoint = app_config.elastic_config.elastic_search_url + query_term + "/" + "_" + constants.SEARCH
+        endpoint = (
+            app_config.elastic_config.elastic_search_url
+            + query_term
+            + "/"
+            + "_"
+            + constants.SEARCH
+        )
 
     response = requests.get(endpoint)
 
@@ -185,12 +194,13 @@ def query_from_elasticsearch(fawkes_config_file = constants.FAWKES_CONFIG_FILE, 
         base_folder=app_config.fawkes_internal_config.data.base_folder,
         dir_name=app_config.fawkes_internal_config.data.query_folder,
         app_name=app_config.app.name,
-        extension=format
+        extension=format,
     )
 
     utils.write_query_results(results, query_response_file, format)
 
     return results
+
 
 if __name__ == "__main__":
     push_data_to_elasticsearch()
