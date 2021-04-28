@@ -1,3 +1,12 @@
+import numpy as np
+from fawkes.cli.fawkes_actions import FawkesActions
+from fawkes.review.review import Review
+from fawkes.configs.fawkes_config import FawkesConfig
+from fawkes.configs.app_config import AppConfig, ReviewChannelTypes, CategorizationAlgorithms, Algorithms
+import fawkes.constants.logs as logs
+import fawkes.constants.constants as constants
+import fawkes.utils.filter_utils as filter_utils
+import fawkes.utils.utils as utils
 import sys
 import os
 import importlib
@@ -13,15 +22,6 @@ from datetime import datetime, timedelta, timezone
 #  This is so that the following imports work
 sys.path.append(os.path.realpath("."))
 
-import fawkes.utils.utils as utils
-import fawkes.utils.filter_utils as filter_utils
-import fawkes.constants.constants as constants
-import fawkes.constants.logs as logs
-
-from fawkes.configs.app_config import AppConfig, ReviewChannelTypes, CategorizationAlgorithms, Algorithms
-from fawkes.configs.fawkes_config import FawkesConfig
-from fawkes.review.review import Review
-from fawkes.cli.fawkes_actions import FawkesActions
 
 def add_review_sentiment_score(review):
     # WE import the module only when its required.
@@ -32,19 +32,23 @@ def add_review_sentiment_score(review):
     # Return the review
     return review
 
+
 def add_review_message_encoding(review, encoding):
     # Add the review message's encoding as a derived insight.
-    # We first convert the tensor object to a numpy array and then to a list so that it can be saved as a json.
+    # We first convert the tensor object to a numpy array and then to a list
+    # so that it can be saved as a json.
     review.derived_insight.review_message_encoding = encoding.numpy().tolist()
     # Return the review
     return review
+
 
 def text_match_categortization(review, app_config, topics):
     # WE import the module only when its required.
     import fawkes.algorithms.categorisation.text_match.categoriser as text_match_categoriser
 
     # Find the category of the review
-    category_scores, category = text_match_categoriser.text_match(review.message, topics)
+    category_scores, category = text_match_categoriser.text_match(
+        review.message, topics)
     # Add the category to the review's derived insight and return the review
     review.derived_insight.category = category
     # Add the category scores.
@@ -52,17 +56,25 @@ def text_match_categortization(review, app_config, topics):
     # Return the review
     return review
 
+
 def bug_feature_classification(review, topics):
     # WE import the module only when its required.
     import fawkes.algorithms.categorisation.text_match.categoriser as text_match_categoriser
 
     _, category = text_match_categoriser.text_match(review.message, topics)
-    # Add the bug-feature classification to the review's derived insight and return the review
+    # Add the bug-feature classification to the review's derived insight and
+    # return the review
     review.derived_insight.extra_properties[constants.BUG_FEATURE] = category
     # Return the review
     return review
 
-def lstm_classification(reviews, model, article_tokenizer, label_tokenizer, cleaned_labels):
+
+def lstm_classification(
+        reviews,
+        model,
+        article_tokenizer,
+        label_tokenizer,
+        cleaned_labels):
     # WE import the module only when its required.
     import fawkes.algorithms.categorisation.lstm.categoriser as lstm_categoriser
 
@@ -80,29 +92,44 @@ def lstm_classification(reviews, model, article_tokenizer, label_tokenizer, clea
 
     return reviews
 
+
 def run_sentiment_analysis(reviews, app_config, num_processes):
     if Algorithms.SENTIMENT_ANALYSIS in app_config.algorithm_config.algorithms_to_run:
         # Log the number of reviews we got.
-        logging.info(logs.CURRENT_ALGORITHM_START, 'SENTIMENT_ANALYSIS', "ALL", app_config.app.name)
+        logging.info(
+            logs.CURRENT_ALGORITHM_START,
+            'SENTIMENT_ANALYSIS',
+            "ALL",
+            app_config.app.name)
 
         # Adding sentiment
         with Pool(num_processes) as process:
             reviews = process.map(add_review_sentiment_score, reviews)
 
         # Log the number of reviews we got.
-        logging.info(logs.CURRENT_ALGORITHM_END, 'SENTIMENT_ANALYSIS', "ALL", app_config.app.name)
+        logging.info(
+            logs.CURRENT_ALGORITHM_END,
+            'SENTIMENT_ANALYSIS',
+            "ALL",
+            app_config.app.name)
 
     return reviews
+
 
 def run_categorization(reviews, app_config, num_processes):
     if Algorithms.CATEGORIZATION in app_config.algorithm_config.algorithms_to_run:
         if app_config.algorithm_config.categorization.algorithm == CategorizationAlgorithms.TEXT_MATCH_CLASSIFICATION:
             # Log the number of reviews we got.
-            logging.info(logs.CURRENT_ALGORITHM_START, CategorizationAlgorithms.TEXT_MATCH_CLASSIFICATION, "ALL", app_config.app.name)
+            logging.info(
+                logs.CURRENT_ALGORITHM_START,
+                CategorizationAlgorithms.TEXT_MATCH_CLASSIFICATION,
+                "ALL",
+                app_config.app.name)
 
             # We read from the topic file first
             topics = {}
-            topics = utils.open_json(app_config.algorithm_config.categorization.category_keywords_weights_file)
+            topics = utils.open_json(
+                app_config.algorithm_config.categorization.category_keywords_weights_file)
 
             # Adding text-match categorization
             with Pool(num_processes) as process:
@@ -116,13 +143,21 @@ def run_categorization(reviews, app_config, num_processes):
                 )
 
             # Log the number of reviews we got.
-            logging.info(logs.CURRENT_ALGORITHM_END, CategorizationAlgorithms.TEXT_MATCH_CLASSIFICATION, "ALL", app_config.app.name)
+            logging.info(
+                logs.CURRENT_ALGORITHM_END,
+                CategorizationAlgorithms.TEXT_MATCH_CLASSIFICATION,
+                "ALL",
+                app_config.app.name)
         elif app_config.algorithm_config.categorization.algorithm == CategorizationAlgorithms.LSTM_CLASSIFICATION:
             # WE import the module only when its required.
             import tensorflow as tf
 
             # Log the number of reviews we got.
-            logging.info(logs.CURRENT_ALGORITHM_START, CategorizationAlgorithms.LSTM_CLASSIFICATION, "ALL", app_config.app.name)
+            logging.info(
+                logs.CURRENT_ALGORITHM_START,
+                CategorizationAlgorithms.LSTM_CLASSIFICATION,
+                "ALL",
+                app_config.app.name)
 
             # Load the TensorFlow model
             model = tf.keras.models.load_model(
@@ -130,20 +165,18 @@ def run_categorization(reviews, app_config, num_processes):
                     base_folder=app_config.fawkes_internal_config.data.base_folder,
                     dir_name=app_config.fawkes_internal_config.data.models_folder,
                     app_name=app_config.app.name,
-                )
-            )
+                ))
 
             # Load the article tokenizer file
             tokenizer_json = utils.open_json(
-               constants.LSTM_CATEGORY_ARTICLE_TOKENIZER_FILE_PATH.format(
+                constants.LSTM_CATEGORY_ARTICLE_TOKENIZER_FILE_PATH.format(
                     base_folder=app_config.fawkes_internal_config.data.base_folder,
                     dir_name=app_config.fawkes_internal_config.data.models_folder,
                     app_name=app_config.app.name,
                 ),
             )
             article_tokenizer = tf.keras.preprocessing.text.tokenizer_from_json(
-                tokenizer_json
-            )
+                tokenizer_json)
 
             # Load the label tokenizer file
             tokenizer_json = utils.open_json(
@@ -174,21 +207,35 @@ def run_categorization(reviews, app_config, num_processes):
             )
 
             # Log the number of reviews we got.
-            logging.info(logs.CURRENT_ALGORITHM_END, CategorizationAlgorithms.LSTM_CLASSIFICATION, "ALL", app_config.app.name)
+            logging.info(
+                logs.CURRENT_ALGORITHM_END,
+                CategorizationAlgorithms.LSTM_CLASSIFICATION,
+                "ALL",
+                app_config.app.name)
 
         # Log the number of reviews we got.
-        logging.info(logs.NUM_REVIEWS, len(reviews), "ALL", app_config.app.name)
+        logging.info(
+            logs.NUM_REVIEWS,
+            len(reviews),
+            "ALL",
+            app_config.app.name)
 
     return reviews
+
 
 def run_bug_feature_categorization(reviews, app_config, num_processes):
     if Algorithms.BUG_FEATURE_CATEGORIZATION in app_config.algorithm_config.algorithms_to_run:
         # Log the number of reviews we got.
-        logging.info(logs.CURRENT_ALGORITHM_START, Algorithms.BUG_FEATURE_CATEGORIZATION, "ALL", app_config.app.name)
+        logging.info(
+            logs.CURRENT_ALGORITHM_START,
+            Algorithms.BUG_FEATURE_CATEGORIZATION,
+            "ALL",
+            app_config.app.name)
 
         # We read from the topic file first
         topics = {}
-        topics = utils.open_json(app_config.algorithm_config.categorization.bug_feature_keywords_weights_file)
+        topics = utils.open_json(
+            app_config.algorithm_config.categorization.bug_feature_keywords_weights_file)
 
         # Adding bug/feature classification
         with Pool(num_processes) as process:
@@ -200,9 +247,14 @@ def run_bug_feature_categorization(reviews, app_config, num_processes):
                 reviews
             )
         # Log the number of reviews we got.
-        logging.info(logs.CURRENT_ALGORITHM_END, Algorithms.BUG_FEATURE_CATEGORIZATION, "ALL", app_config.app.name)
+        logging.info(
+            logs.CURRENT_ALGORITHM_END,
+            Algorithms.BUG_FEATURE_CATEGORIZATION,
+            "ALL",
+            app_config.app.name)
 
     return reviews
+
 
 def run_review_text_encoding(reviews, app_config, num_processes):
     if Algorithms.MESSAGE_ENCODING in app_config.algorithm_config.algorithms_to_run:
@@ -210,20 +262,31 @@ def run_review_text_encoding(reviews, app_config, num_processes):
         from fawkes.algorithms.similarity.similarity import embed_reviews
 
         # Log the number of reviews we got.
-        logging.info(logs.CURRENT_ALGORITHM_START, Algorithms.MESSAGE_ENCODING, "ALL", app_config.app.name)
+        logging.info(
+            logs.CURRENT_ALGORITHM_START,
+            Algorithms.MESSAGE_ENCODING,
+            "ALL",
+            app_config.app.name)
         # Adding review text embeddings
         review_message_embeddings = embed_reviews([
             review.message for review in reviews
         ])
         reviews = [
-            add_review_message_encoding(review, review_encoding) for review, review_encoding in list(zip(reviews, review_message_embeddings))
-        ]
+            add_review_message_encoding(
+                review, review_encoding) for review, review_encoding in list(
+                zip(
+                    reviews, review_message_embeddings))]
         # Log the number of reviews we got.
-        logging.info(logs.CURRENT_ALGORITHM_END, Algorithms.MESSAGE_ENCODING, "ALL", app_config.app.name)
+        logging.info(
+            logs.CURRENT_ALGORITHM_END,
+            Algorithms.MESSAGE_ENCODING,
+            "ALL",
+            app_config.app.name)
 
     return reviews
 
-def run_algo(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
+
+def run_algo(fawkes_config_file=constants.FAWKES_CONFIG_FILE):
     # Read the app-config.json file.
     fawkes_config = FawkesConfig(
         utils.open_json(fawkes_config_file)
@@ -237,7 +300,11 @@ def run_algo(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
             )
         )
         # Log the current operation which is being performed.
-        logging.info(logs.OPERATION, FawkesActions.RUN_ALGO, "ALL", app_config.app.name)
+        logging.info(
+            logs.OPERATION,
+            FawkesActions.RUN_ALGO,
+            "ALL",
+            app_config.app.name)
 
         # Path where the user reviews were stored after parsing.
         parsed_user_reviews_file_path = constants.PARSED_USER_REVIEWS_FILE_PATH.format(
@@ -255,15 +322,20 @@ def run_algo(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
         # Filtering out reviews which are not applicable.
         reviews = filter_utils.filter_reviews_by_time(
             filter_utils.filter_reviews_by_channel(
-                reviews, filter_utils.filter_disabled_review_channels(
-                    app_config
-                ),
+                reviews,
+                filter_utils.filter_disabled_review_channels(app_config),
             ),
-            datetime.now(timezone.utc) - timedelta(days=app_config.algorithm_config.algorithm_days_filter)
-        )
+            datetime.now(
+                timezone.utc) -
+            timedelta(
+                days=app_config.algorithm_config.algorithm_days_filter))
 
         # Log the number of reviews we got.
-        logging.info(logs.NUM_REVIEWS, len(reviews), "ALL", app_config.app.name)
+        logging.info(
+            logs.NUM_REVIEWS,
+            len(reviews),
+            "ALL",
+            app_config.app.name)
 
         # Number of process to make
         num_processes = min(constants.PROCESS_NUMBER, os.cpu_count())
@@ -278,7 +350,8 @@ def run_algo(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
         reviews = run_categorization(reviews, app_config, num_processes)
 
         # Running bug/feature categorizatio
-        reviews = run_bug_feature_categorization(reviews, app_config, num_processes)
+        reviews = run_bug_feature_categorization(
+            reviews, app_config, num_processes)
 
         # Running the message encoding
         reviews = run_review_text_encoding(reviews, app_config, num_processes)

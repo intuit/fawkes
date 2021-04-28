@@ -51,6 +51,10 @@
             "bug_feature_keywords_weights_file": "app/bug-feature-keywords-weights.json",
             "category_keywords_file": "app/category-keywords.json",
             "category_keywords_weights_file": "app/category-keywords-weights.json"
+        },
+        "summarization": {
+            "num_clusters": 2,
+            "summary_length_per_cluster": 30
         }
     },
     "env_keys": [],

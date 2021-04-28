@@ -15,3 +15,6 @@ APPSTORE_BAD_RESPONSE =  "Bad Response from App Store API."
 
 # Elastic Search
 ELASTIC_PUSH_PROGRESS = "Pushing bath number %s to elastic search"
+
+# Summarization
+INSUFFICIENT_DATA = "Insufficient reviews in %s category"

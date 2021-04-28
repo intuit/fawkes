@@ -17,3 +17,5 @@ splunk-sdk
 numpy
 tensorflow_hub
 vertica-python
+gensim
+sentence-transformers
