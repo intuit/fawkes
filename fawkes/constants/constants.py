@@ -85,6 +85,9 @@ EMAIL_SUMMARY_GENERATED_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/email-s
 # Query Results
 QUERY_RESULTS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/query-{query_hash}.json"
 
+# review Summary Results
+REVIEW_SUMMARY_RESULTS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/review-summary-generated.json"
+
 # Generic cleanup
 URL_REGEX = r"(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=% &:/~+#-]*[\w@?^=%&/~+#-])?"
 LINK_REGEX = "<[^>]+>"
@@ -123,3 +126,8 @@ SEARCH = "search"
 WEEKLY_EMAIL_TEMPLATE = "fawkes/email_summary/templates/weekly.html"
 WEEKLY_EMAIL_DETAILED_TEMPLATE = "fawkes/email_summary/templates/weekly-detailed.html"
 WEEKLY_EMAIL_DETAILED_REVIEW_BLOCK_TEMPLATE = "fawkes/email_summary/templates/weekly-detailed-review-block.html"
+
+# Summrization constants
+minimum_reviews_per_cluster = 10
+max_words_in_sentence = 20
+min_words_in_sentence = 4

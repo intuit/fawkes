@@ -30,6 +30,7 @@ def define_arguments(parser):
             FawkesActions.PUSH_SLACK,
             FawkesActions.GENERATE_TEXT_MATCH_KEYWORDS,
             FawkesActions.TRAIN_LSTM_MODEL,
+            FawkesActions.SUMMARIZE,
             FawkesActions.QUERY_SIMILAR_REVIEWS,
         ],
     )
@@ -115,6 +116,10 @@ def run_action(
         import fawkes.algorithms.categorisation.lstm.trainer as lstm_trainer
 
         lstm_trainer.train_lstm_model(fawkes_config_file)
+    elif action == FawkesActions.SUMMARIZE:
+        import fawkes.algorithms.summarization.summarization as summarize
+
+        summarize.generate_summary(app_config_file)
     elif action == FawkesActions.QUERY_SIMILAR_REVIEWS:
         import fawkes.algorithms.similarity.similarity as similarity
 
