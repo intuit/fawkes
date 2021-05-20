@@ -67,9 +67,9 @@ class FawkesSanityTest(unittest.TestCase):
                 "derived_insight": {
                     "sentiment": {
                         "neg": 0.0,
-                        "neu": 0.928,
-                        "pos": 0.072,
-                        "compound": 0.4767
+                        "neu": 0.951,
+                        "pos": 0.049,
+                        "compound": 0.2617
                     },
                     "category": "Application",
                     "review_message_encoding": None,
