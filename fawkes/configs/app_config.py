@@ -80,6 +80,12 @@ class SlackCustomNotifications:
         self.keyword_based_rules = config["keyword_based_rules"]
 
 
+class SlackCustomChannel:
+    def __init__(self, config):
+        self.channel_name = config["channel_name"]
+        self.slack_channel = config["slack_channel"]
+
+
 class SlackConfig:
     """ The configurations required for sending user reviews to slack and triggering custom notifications.
 
@@ -95,7 +101,11 @@ class SlackConfig:
         self.slack_hook_url = config["slack_hook_url"]
         self.slack_run_interval = config["slack_run_interval"]
         self.slack_notification_rules = SlackCustomNotifications(
-            config["slack_notification_rules"])
+            config["slack_notification_rules"]
+        )
+        self.custom_channels = [
+            SlackCustomChannel(channel) for channel in config["custom_channels"]
+        ]
 
 
 class JiraConfig:
@@ -152,7 +162,9 @@ class CategorizationAlgorithmConfig:
     def __init__(self, config):
         self.algorithm = config["algorithm"]
         self.bug_feature_keywords_file = config["bug_feature_keywords_file"]
-        self.bug_feature_keywords_weights_file = config["bug_feature_keywords_weights_file"]
+        self.bug_feature_keywords_weights_file = config[
+            "bug_feature_keywords_weights_file"
+        ]
         self.category_keywords_file = config["category_keywords_file"]
         self.category_keywords_weights_file = config["category_keywords_weights_file"]
 
@@ -175,8 +187,7 @@ class AlgorithmConfig:
     def __init__(self, config):
         self.algorithms_to_run = config["algorithms_to_run"]
         self.algorithm_days_filter = config["algorithm_days_filter"]
-        self.categorization = CategorizationAlgorithmConfig(
-            config["categorization"])
+        self.categorization = CategorizationAlgorithmConfig(config["categorization"])
         self.summarization = SummarizationConfig(config["summarization"])
 
 
@@ -403,7 +414,8 @@ class VerticaReviewChannel(ReviewChannel):
     def __init__(self, config):
         super().__init__(config)
         self.vertica_connection_config = VerticaConnectionConfig(
-            config["vertica_connection_config"])
+            config["vertica_connection_config"]
+        )
         self.query = config["query"]
 
 
@@ -474,7 +486,8 @@ Definition of a Review Channel.
         self.env_keys = config["env_keys"]
         self.custom_code_module_path = config["custom_code_module_path"]
         self.fawkes_internal_config = FawkesInternalConfig(
-            config["fawkes_internal_config"])
+            config["fawkes_internal_config"]
+        )
 
         # Add the review channels
         self.review_channels = []
@@ -482,51 +495,33 @@ Definition of a Review Channel.
         # Determine the channel_type and initialize the object accordingly
         for review_channel in config["review_channels"]:
             if review_channel["channel_type"] == ReviewChannelTypes.IOS:
-                self.review_channels.append(
-                    AppStoreReviewChannel(review_channel)
-                )
+                self.review_channels.append(AppStoreReviewChannel(review_channel))
             elif review_channel["channel_type"] == ReviewChannelTypes.ANDROID:
-                self.review_channels.append(
-                    PlayStoreReviewChannel(review_channel)
-                )
+                self.review_channels.append(PlayStoreReviewChannel(review_channel))
             elif review_channel["channel_type"] == ReviewChannelTypes.TWITTER:
-                self.review_channels.append(
-                    TwitterReviewChannel(review_channel)
-                )
+                self.review_channels.append(TwitterReviewChannel(review_channel))
             elif review_channel["channel_type"] == ReviewChannelTypes.SPREADSHEET:
-                self.review_channels.append(
-                    SpreadSheetReviewChannel(review_channel)
-                )
+                self.review_channels.append(SpreadSheetReviewChannel(review_channel))
             elif review_channel["channel_type"] == ReviewChannelTypes.SPLUNK:
-                self.review_channels.append(
-                    SplunkReviewChannel(review_channel)
-                )
+                self.review_channels.append(SplunkReviewChannel(review_channel))
             elif review_channel["channel_type"] == ReviewChannelTypes.VERTICA:
-                self.review_channels.append(
-                    VerticaReviewChannel(review_channel)
-                )
+                self.review_channels.append(VerticaReviewChannel(review_channel))
             else:
-                self.review_channels.append(
-                    ReviewChannel(review_channel)
-                )
+                self.review_channels.append(ReviewChannel(review_channel))
 
     def inject_env_vars_as_values(self, config):
         config_string = json.dumps(config)
         env_vars = config["env_keys"]
 
         for key in env_vars:
-            config_string = config_string.replace(
-                key,
-                os.environ[key]
-            )
+            config_string = config_string.replace(key, os.environ[key])
         return json.loads(config_string)
 
     def validate_app_config_schema(self, document):
         try:
-            schema = utils.open_json(
-                constants.APP_CONFIG_SCHEMA_FILE
-            )
+            schema = utils.open_json(constants.APP_CONFIG_SCHEMA_FILE)
             jsonschema.validate(document, schema)
         except ValidationError as e:
             raise ValidationError(
-                "App config schema validation failed: " + str(e.message))
+                "App config schema validation failed: " + str(e.message)
+            )

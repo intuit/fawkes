@@ -30,7 +30,8 @@
             "keyword_based_rules": {
                 "crash": []
             }
-        }
+        },
+        "custom_channels": []
     },
     "jira_config": {
         "base_url": "",
