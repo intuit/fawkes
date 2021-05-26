@@ -259,6 +259,7 @@ def send_reviews_to_slack(fawkes_config_file=constants.FAWKES_CONFIG_FILE):
         # We also have an option to configure custom slack channels for each channels
         for channel in app_config.slack_config.custom_channels:
             reviews_for_channel = filter_utils.filter_reviews_by_channel(
+                reviews,
                 [channel.channel_name]
             )
             for review in reviews_for_channel:
