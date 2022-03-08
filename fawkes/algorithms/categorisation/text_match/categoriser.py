@@ -6,7 +6,7 @@ import nltk
 import logging
 
 nltk.download("wordnet", quiet=True)
-
+nltk.download("omw-1.4", quiet=True)
 
 from nltk.stem.wordnet import WordNetLemmatizer
 
