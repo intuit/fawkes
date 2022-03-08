@@ -3,7 +3,7 @@ import os
 import re
 from datetime import datetime, timedelta
 from pytz import timezone
-from pprint import pprint
+
 
 # This is so that below import works.  Sets the pwd to home directory
 sys.path.append(os.path.realpath("."))
@@ -12,6 +12,7 @@ import fawkes.utils.utils as utils
 import fawkes.constants.constants as constants
 
 url_regex = re.compile(constants.URL_REGEX)
+
 
 class DerivedInsight:
     """ The Derived Insights from a user review.
@@ -25,7 +26,7 @@ class DerivedInsight:
         extra_properties: Any other extra derived insights. Free flowing dict.
     """
 
-    def __init__(self, derived_insight = None):
+    def __init__(self, derived_insight=None):
         """ Initialiser of the derived insight """
 
         if derived_insight is None:
@@ -49,6 +50,7 @@ class DerivedInsight:
             "extra_properties": self.extra_properties,
         }
 
+
 class Review:
     """ Definition of a user review.
 
@@ -71,18 +73,18 @@ class Review:
         self,
         review,
         *,
-        message = "",
-        timestamp = "",
-        app_name = "",
-        channel_name = "",
-        channel_type = "",
-        rating = None,
-        rating_max_value = None,
-        user_id = None,
+        message="",
+        timestamp="",
+        app_name="",
+        channel_name="",
+        channel_type="",
+        rating=None,
+        rating_max_value=None,
+        user_id=None,
         review_timezone="UTC",
         timestamp_format=constants.TIMESTAMP_FORMAT,
         hash_id=None,
-        raw_review = None,
+        raw_review=None,
     ):
         """ Initialiser of a user review """
 
@@ -100,7 +102,9 @@ class Review:
                 self.rating = float(rating)
                 # Normalising the rating to be a value between 1 - 5
                 if rating_max_value != None:
-                    self.rating = constants.RATINGS_NORMALIZATION_CONSTANT * (self.rating / rating_max_value)
+                    self.rating = constants.RATINGS_NORMALIZATION_CONSTANT * (
+                        self.rating / rating_max_value
+                    )
             except ValueError:
                 self.rating = None
         else:
@@ -124,13 +128,15 @@ class Review:
             self.timestamp = datetime.fromtimestamp(timestamp)
         else:
             self.timestamp = datetime.strptime(
-                timestamp, timestamp_format # Parse it using the given timestamp format
+                timestamp, timestamp_format  # Parse it using the given timestamp format
             )
 
         self.timestamp = self.timestamp.replace(
-            tzinfo=timezone(review_timezone) # Replace the timezone with the given timezone
+            tzinfo=timezone(
+                review_timezone
+            )  # Replace the timezone with the given timezone
         ).astimezone(
-            timezone("UTC") # Convert it to UTC timezone
+            timezone("UTC")  # Convert it to UTC timezone
         )
 
         # Clean up the message
@@ -145,9 +151,13 @@ class Review:
             self.hash_id = hash_id
         else:
             # Every review hash id which is unique to the message and the timestamp
-            self.hash_id = utils.calculate_hash(self.message + self.timestamp.strftime(
-                constants.TIMESTAMP_FORMAT # Convert it to a standard datetime format
-            ) + str(self.user_id))
+            self.hash_id = utils.calculate_hash(
+                self.message
+                + self.timestamp.strftime(
+                    constants.TIMESTAMP_FORMAT  # Convert it to a standard datetime format
+                )
+                + str(self.user_id)
+            )
 
     @classmethod
     def from_review_json(cls, review):
@@ -162,7 +172,7 @@ class Review:
             channel_type=review["channel_type"],
             rating=review["rating"],
             user_id=review["user_id"],
-            raw_review=review["raw_review"]
+            raw_review=review["raw_review"],
         )
 
     def to_dict(self):
@@ -171,7 +181,7 @@ class Review:
         return {
             "message": self.message,
             "timestamp": self.timestamp.strftime(
-                constants.TIMESTAMP_FORMAT # Convert it to a standard datetime format
+                constants.TIMESTAMP_FORMAT  # Convert it to a standard datetime format
             ),
             "rating": self.rating,
             "user_id": self.user_id,
