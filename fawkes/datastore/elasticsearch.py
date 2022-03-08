@@ -5,7 +5,7 @@ import json
 import random
 import logging
 
-from pprint import pprint
+
 from datetime import datetime, timedelta, timezone
 
 sys.path.append(os.path.realpath("."))
@@ -153,14 +153,7 @@ def push_data_to_elasticsearch(fawkes_config_file=constants.FAWKES_CONFIG_FILE):
                 ],
             )
             if response.status_code != 200:
-                print(
-                    "[Error] push_data_to_elasticsearch :: Got status code : ",
-                    response.status_code,
-                )
-                print(
-                    "[Error] push_data_to_elasticsearch :: Response is : ",
-                    response.text,
-                )
+                logging.error(logs.ELASTIC_SEARCH_PUSH_ERROR, response.status_code)
             i += 1
 
 

@@ -3,18 +3,21 @@ import sys
 import os
 import json
 import nltk
+import logging
 
 nltk.download("wordnet", quiet=True)
 
-from pprint import pprint
+
 from nltk.stem.wordnet import WordNetLemmatizer
 
 sys.path.append(os.path.realpath("."))
 
 import fawkes.utils.utils as utils
 import fawkes.constants.constants as constants
+import fawkes.constants.logs as logs
 
 lmtzr = WordNetLemmatizer()
+
 
 def isBigram(word):
     if " " in word:
@@ -67,10 +70,8 @@ def text_match(text, list_of_topics):
                     # What might be a good way to do that ?
                     # Law of diminishing returns ?
                     scores[topic] += list_of_topics[topic][lem_word]
-            except BaseException:
-                print(
-                    "[ERROR] Error In text_match! You should check this. This can be FATAL."
-                )
+            except BaseException as e:
+                logging.error(logs.TEXT_MATCH_ERROR, e)
                 pass
     category = max(scores, key=lambda key: scores[key])
 

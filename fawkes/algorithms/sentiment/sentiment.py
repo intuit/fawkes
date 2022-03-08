@@ -1,6 +1,5 @@
 import nltk
 
-from pprint import pprint
 
 nltk.download("vader_lexicon", quiet=True)
 

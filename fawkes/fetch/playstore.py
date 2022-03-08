@@ -4,7 +4,6 @@ import sys
 import os
 import logging
 
-from pprint import pprint
 
 # This is so that below import works
 sys.path.append(os.path.realpath("."))
@@ -14,6 +13,7 @@ import fawkes.constants.constants as constants
 
 import fawkes.constants.logs as logs
 
+
 def fetch(review_channel):
     # Since searchman allows us to have limited credits, we iterate over a set of API keys that we will use every month.
     # The API key gets refreshed every month
@@ -22,7 +22,7 @@ def fetch(review_channel):
         "appId": review_channel.app_id,
         "apiKey": review_channel.searchman_api_key[searchman_api_key_index],
         "count": 100,
-        "start": 0
+        "start": 0,
     }
 
     reviews = []
@@ -34,9 +34,12 @@ def fetch(review_channel):
         # store.
         try:
             params["start"] = current_page * 100
-            response = requests.get(constants.SEARCHMAN_REVIEWS_ENDPOINT.format(
-                platform=review_channel.channel_type),
-                                    params=params)
+            response = requests.get(
+                constants.SEARCHMAN_REVIEWS_ENDPOINT.format(
+                    platform=review_channel.channel_type
+                ),
+                params=params,
+            )
             review_page = json.loads(response.text)
             if "data" in review_page:
                 review_page = review_page["data"]
@@ -49,7 +52,8 @@ def fetch(review_channel):
             searchman_api_key_index += 1
             if searchman_api_key_index < len(review_channel.searchman_api_key):
                 params["apiKey"] = review_channel.searchman_api_key[
-                    searchman_api_key_index]
+                    searchman_api_key_index
+                ]
             else:
                 logging.error(logs.PLAYSTORE_API_KEYS_EXHAUSTED)
                 break

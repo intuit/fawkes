@@ -6,7 +6,7 @@ import time
 import urllib
 import logging
 
-from pprint import pprint
+
 from datetime import datetime, timedelta, timezone
 
 #  This is so that the following imports work
@@ -259,8 +259,7 @@ def send_reviews_to_slack(fawkes_config_file=constants.FAWKES_CONFIG_FILE):
         # We also have an option to configure custom slack channels for each channels
         for channel in app_config.slack_config.custom_channels:
             reviews_for_channel = filter_utils.filter_reviews_by_channel(
-                reviews,
-                [channel.channel_name]
+                reviews, [channel.channel_name]
             )
             for review in reviews_for_channel:
                 send_review_to_slack(

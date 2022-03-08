@@ -11,7 +11,7 @@ import nltk
 
 import jsonschema
 
-from pprint import pprint
+
 from datetime import datetime, timedelta
 
 nltk.download("stopwords", quiet=True)
@@ -25,6 +25,7 @@ sys.path.append(os.path.realpath("."))
 import fawkes.constants.constants as constants
 from fawkes.constants.stop_words import EXTENDED_STOP_WORDS
 
+
 def open_json(file_location):
     with open(file_location, "r") as read_file:
         documents = json.load(read_file)
@@ -35,14 +36,16 @@ def dump_json(records, write_file):
     with open(write_file, "w") as file:
         json.dump(records, file, indent=4)
 
+
 def dump_csv(records, write_file):
-    #Get the column values from query response
+    # Get the column values from query response
     field_names = list(records.keys())
-    #Write the value corresponding to above columns in csv file
-    with open(write_file, 'w') as csvfile:
+    # Write the value corresponding to above columns in csv file
+    with open(write_file, "w") as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=field_names)
         writer.writeheader()
         writer.writerow(records)
+
 
 def get_json_key_value(json_object, keys_list):
     """ Get the value from json pointing to string of keys input: [k1,k2] """
@@ -68,6 +71,7 @@ def get_json_key_value(json_object, keys_list):
 
     return get_json_key_value(json_object[key], keys_list[1:])
 
+
 def check_tweet_authenticity(tweet_message, twitter_handle_blacklist):
     """  Checks if tweets incoming are authentic. basically there is blacklist of twitter-handles """
     is_tweet_authentic = True
@@ -84,6 +88,7 @@ def check_for_explicit_content(tweet):
         return tweet[constants.POSSIBLY_SENSITIVE]
     return True
 
+
 def remove_stop_words(document):
     """
         Removes stop words. Takes tokenised document as input and returns
@@ -96,8 +101,10 @@ def remove_stop_words(document):
     stop_words = set(stop_words + EXTENDED_STOP_WORDS)
     return [token for token in document if token not in stop_words]
 
+
 def calculate_hash(string):
     return hashlib.sha1(string.encode("utf-8")).hexdigest()
+
 
 def most_common(L):
     # https://stackoverflow.com/a/1520716/3751615
@@ -131,6 +138,7 @@ def fetch_channel_config(app_config, channel_type):
             return review_channel
     return None
 
+
 def write_query_results(response, write_file, format):
     # Create the intermediate folders
     dir_name = os.path.dirname(write_file)
@@ -141,5 +149,6 @@ def write_query_results(response, write_file, format):
     elif format == constants.CSV:
         dump_csv(response, write_file)
 
+
 def remove_empty_keys(raw_review):
-    return {k:v for k,v in raw_review.items() if k != ""}
+    return {k: v for k, v in raw_review.items() if k != ""}

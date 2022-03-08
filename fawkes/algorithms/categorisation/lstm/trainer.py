@@ -15,7 +15,7 @@ nltk.download("stopwords", quiet=True)
 
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from pprint import pprint
+
 from nltk.corpus import stopwords
 
 #  This is so that the following imports work
@@ -23,7 +23,11 @@ sys.path.append(os.path.realpath("."))
 
 import fawkes.utils.utils as utils
 import fawkes.constants.constants as constants
-from fawkes.configs.app_config import AppConfig, ReviewChannelTypes, CategorizationAlgorithms
+from fawkes.configs.app_config import (
+    AppConfig,
+    ReviewChannelTypes,
+    CategorizationAlgorithms,
+)
 from fawkes.configs.fawkes_config import FawkesConfig
 from fawkes.review.review import Review
 
@@ -94,7 +98,6 @@ def split_data(articles, labels):
 
 
 def train(articles, labels):
-    print("[LOG] LSTM pre-processing started")
     # Splitting the data into training and validation set
     train_articles, train_labels, validation_articles, validation_labels = split_data(
         articles, labels
@@ -129,9 +132,7 @@ def train(articles, labels):
     validation_label_seq = np.array(
         label_tokenizer.texts_to_sequences(validation_labels)
     )
-    print("[LOG] LSTM pre-processing completed")
 
-    print("[LOG] LSTM building model started")
     model = tf.keras.Sequential(
         [
             # Add an Embedding layer expecting input vocab of size 5000, and output
@@ -151,9 +152,6 @@ def train(articles, labels):
     model.compile(
         loss="sparse_categorical_crossentropy", optimizer="adam", metrics=["accuracy"]
     )
-    print("[LOG] LSTM building model completed")
-
-    print("[LOG] LSTM training model started")
 
     # Getting down to business
     model.fit(
@@ -164,25 +162,16 @@ def train(articles, labels):
         verbose=2,
     )
 
-    print("[LOG] LSTM training model completed")
-
     return model, article_tokenizer, label_tokenizer
 
 
-def train_lstm_model(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
+def train_lstm_model(fawkes_config_file=constants.FAWKES_CONFIG_FILE):
     # Read the app-config.json file.
-    fawkes_config = FawkesConfig(
-        utils.open_json(fawkes_config_file)
-    )
+    fawkes_config = FawkesConfig(utils.open_json(fawkes_config_file))
     # For every app registered in app-config.json we
     for app_config_file in fawkes_config.apps:
         # Creating an AppConfig object
-        app_config = AppConfig(
-            utils.open_json(
-                app_config_file
-            )
-        )
-        print("[LOG] going through app config ", app_config.app.name)
+        app_config = AppConfig(utils.open_json(app_config_file))
 
         # Path where the user reviews were stored after parsing.
         processed_user_reviews_file_path = constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
@@ -193,11 +182,12 @@ def train_lstm_model(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
 
         if not (
             app_config.algorithm_config.categorization_algorithm != None
-            and app_config.algorithm_config.categorization_algorithm == CategorizationAlgorithms.LSTM_CLASSIFICATION
+            and app_config.algorithm_config.categorization_algorithm
+            == CategorizationAlgorithms.LSTM_CLASSIFICATION
         ):
             continue
 
-       # Loading the reviews
+        # Loading the reviews
         reviews = utils.open_json(processed_user_reviews_file_path)
 
         # Converting the json object to Review object
@@ -205,9 +195,7 @@ def train_lstm_model(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
 
         # reviews = utils.filter_reviews(reviews, app_config)
 
-        articles, labels, cleaned_labels = get_articles_and_labels(
-            reviews
-        )
+        articles, labels, cleaned_labels = get_articles_and_labels(reviews)
 
         trained_model, article_tokenizer, label_tokenizer = train(articles, labels)
 

@@ -2,7 +2,7 @@ import fawkes.utils.utils as utils
 import fawkes.constants.constants as constants
 import json
 import os
-from pprint import pprint
+
 import sys
 import jsonschema
 from jsonschema import ValidationError

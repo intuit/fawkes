@@ -5,6 +5,7 @@ import json
 import nltk
 
 nltk.download("wordnet", quiet=True)
+nltk.download("omw-1.4", quiet=True)
 
 from nltk.stem.wordnet import WordNetLemmatizer
 
@@ -17,6 +18,7 @@ from fawkes.configs.app_config import AppConfig
 from fawkes.configs.fawkes_config import FawkesConfig
 
 lmtzr = WordNetLemmatizer()
+
 
 def parse_keywords_file(keyword_file_name, enable_remove_stop_words=True):
     # Topics is a dict, key = Topic Name. value = list of words and weights.
@@ -45,19 +47,14 @@ def parse_keywords_file(keyword_file_name, enable_remove_stop_words=True):
         topics[topic_keyword] = topic
     return topics
 
-def generate_keyword_weights(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
+
+def generate_keyword_weights(fawkes_config_file=constants.FAWKES_CONFIG_FILE):
     # Read the app-config.json file.
-    fawkes_config = FawkesConfig(
-        utils.open_json(fawkes_config_file)
-    )
+    fawkes_config = FawkesConfig(utils.open_json(fawkes_config_file))
     # For every app registered in app-config.json we
     for app_config_file in fawkes_config.apps:
         # Creating an AppConfig object
-        app_config = AppConfig(
-            utils.open_json(
-                app_config_file
-            )
-        )
+        app_config = AppConfig(utils.open_json(app_config_file))
         # First look at the category keywords.
         utils.dump_json(
             parse_keywords_file(
@@ -69,7 +66,7 @@ def generate_keyword_weights(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
         utils.dump_json(
             parse_keywords_file(
                 app_config.algorithm_config.categorization.bug_feature_keywords_file,
-                False
+                False,
             ),
             app_config.algorithm_config.categorization.bug_feature_keywords_weights_file,
         )
