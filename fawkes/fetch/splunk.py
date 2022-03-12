@@ -2,6 +2,7 @@ import json
 import splunklib.client as client
 import splunklib.results as results
 
+
 def fetch(review_channel):
     reviews = []
     try:
@@ -14,7 +15,7 @@ def fetch(review_channel):
             basic=True,
         )
 
-        query = 'search {}'.format(review_channel.query)
+        query = "search {}".format(review_channel.query)
         stream = service.jobs.export(query)
 
         reader = results.ResultsReader(stream)

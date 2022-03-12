@@ -23,7 +23,7 @@ from fawkes.cli.fawkes_actions import FawkesActions
 
 
 def parse_csv(raw_user_reviews_file_path, review_channel, app_config):
-    """ Parses the CSV files to a Review object """
+    """Parses the CSV files to a Review object"""
 
     with open(raw_user_reviews_file_path, "r") as file_handle:
         # Read all the reviews from the CSV file
@@ -82,7 +82,7 @@ def parse_csv(raw_user_reviews_file_path, review_channel, app_config):
 
 
 def parse_json(raw_user_reviews_file_path, review_channel, app_config):
-    """ Parses the JSON files to a Review object """
+    """Parses the JSON files to a Review object"""
 
     reviews = utils.open_json(raw_user_reviews_file_path)
     parsed_reviews = []
@@ -201,12 +201,14 @@ def parse_reviews(fawkes_config_file=constants.FAWKES_CONFIG_FILE):
                     app_config.app.name,
                 )
 
-                raw_user_reviews_file_path = constants.RAW_USER_REVIEWS_FILE_PATH.format(
-                    base_folder=app_config.fawkes_internal_config.data.base_folder,
-                    dir_name=app_config.fawkes_internal_config.data.raw_data_folder,
-                    app_name=app_config.app.name,
-                    channel_name=review_channel.channel_name,
-                    extension=review_channel.file_type,
+                raw_user_reviews_file_path = (
+                    constants.RAW_USER_REVIEWS_FILE_PATH.format(
+                        base_folder=app_config.fawkes_internal_config.data.base_folder,
+                        dir_name=app_config.fawkes_internal_config.data.raw_data_folder,
+                        app_name=app_config.app.name,
+                        channel_name=review_channel.channel_name,
+                        extension=review_channel.file_type,
+                    )
                 )
                 if review_channel.file_type == constants.JSON:  # Parse JSON
                     channel_reviews = parse_json(

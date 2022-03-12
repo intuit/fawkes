@@ -19,3 +19,4 @@ tensorflow_hub
 vertica-python
 gensim
 sentence-transformers
+black

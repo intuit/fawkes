@@ -347,10 +347,12 @@ def run_algo(fawkes_config_file=constants.FAWKES_CONFIG_FILE):
         reviews = run_review_text_encoding(reviews, app_config, num_processes)
 
         # Create the intermediate folders
-        processed_user_reviews_file_path = constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
-            base_folder=app_config.fawkes_internal_config.data.base_folder,
-            dir_name=app_config.fawkes_internal_config.data.processed_data_folder,
-            app_name=app_config.app.name,
+        processed_user_reviews_file_path = (
+            constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
+                base_folder=app_config.fawkes_internal_config.data.base_folder,
+                dir_name=app_config.fawkes_internal_config.data.processed_data_folder,
+                app_name=app_config.app.name,
+            )
         )
 
         dir_name = os.path.dirname(processed_user_reviews_file_path)

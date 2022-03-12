@@ -4,6 +4,7 @@
 """
 
 import os
+
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 import tensorflow as tf
@@ -31,8 +32,10 @@ from fawkes.cli.fawkes_actions import FawkesActions
 module_url = constants.SENTENCE_ENCODER_MODEL
 model = hub.load(module_url)
 
+
 def embed_reviews(reviews):
     return model(reviews)
+
 
 def get_similar_reviews(reviews, query, num_results):
     # We generate the emdedding of the query
@@ -40,9 +43,7 @@ def get_similar_reviews(reviews, query, num_results):
 
     # Compute the similarity score for all the review w.r.t to this review
     similarity_scores = [
-        np.inner(
-            embedded_query[0], review.derived_insight.review_message_encoding
-        )
+        np.inner(embedded_query[0], review.derived_insight.review_message_encoding)
         for review in reviews
     ]
 
@@ -51,22 +52,26 @@ def get_similar_reviews(reviews, query, num_results):
 
     return reviews_with_scores[:num_results]
 
+
 def get_similar_reviews_for_app(app_config_file, query, num_results):
     # Creating an AppConfig object
-    app_config = AppConfig(
-        utils.open_json(
-            app_config_file
-        )
-    )
+    app_config = AppConfig(utils.open_json(app_config_file))
 
     # Log the current operation which is being performed.
-    logging.info(logs.QUERY_START, FawkesActions.QUERY_SIMILAR_REVIEWS, "ALL", app_config.app.name)
+    logging.info(
+        logs.QUERY_START,
+        FawkesActions.QUERY_SIMILAR_REVIEWS,
+        "ALL",
+        app_config.app.name,
+    )
 
     # Path where the user reviews were stored after parsing.
-    processed_user_reviews_file_path = constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
-        base_folder=app_config.fawkes_internal_config.data.base_folder,
-        dir_name=app_config.fawkes_internal_config.data.processed_data_folder,
-        app_name=app_config.app.name,
+    processed_user_reviews_file_path = (
+        constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
+            base_folder=app_config.fawkes_internal_config.data.base_folder,
+            dir_name=app_config.fawkes_internal_config.data.processed_data_folder,
+            app_name=app_config.app.name,
+        )
     )
 
     # Loading the reviews
@@ -78,24 +83,26 @@ def get_similar_reviews_for_app(app_config_file, query, num_results):
     # Filtering out reviews which are not applicable.
     reviews = filter_utils.filter_reviews_by_time(
         filter_utils.filter_reviews_by_channel(
-            reviews, filter_utils.filter_disabled_review_channels(
-                app_config
-            ),
+            reviews,
+            filter_utils.filter_disabled_review_channels(app_config),
         ),
-        datetime.now(timezone.utc) - timedelta(days=app_config.algorithm_config.algorithm_days_filter)
+        datetime.now(timezone.utc)
+        - timedelta(days=app_config.algorithm_config.algorithm_days_filter),
     )
 
-    similar_reviews =  get_similar_reviews(reviews, query, num_results)
+    similar_reviews = get_similar_reviews(reviews, query, num_results)
 
     # Log the current operation which is being performed.
-    logging.info(logs.QUERY_END, FawkesActions.QUERY_SIMILAR_REVIEWS, "ALL", app_config.app.name)
+    logging.info(
+        logs.QUERY_END, FawkesActions.QUERY_SIMILAR_REVIEWS, "ALL", app_config.app.name
+    )
 
     # Create the intermediate folders
     query_results_file_path = constants.QUERY_RESULTS_FILE_PATH.format(
         base_folder=app_config.fawkes_internal_config.data.base_folder,
         dir_name=app_config.fawkes_internal_config.data.query_folder,
         app_name=app_config.app.name,
-        query_hash=utils.calculate_hash(query)
+        query_hash=utils.calculate_hash(query),
     )
 
     dir_name = os.path.dirname(query_results_file_path)
@@ -111,5 +118,3 @@ def get_similar_reviews_for_app(app_config_file, query, num_results):
         ],
         query_results_file_path,
     )
-
-

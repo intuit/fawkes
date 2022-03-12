@@ -32,7 +32,7 @@ def get_query_results(base_url, bearer_token, query):
 
 
 def get_next_page(url, bearer_token):
-    """ Get remaining pages of the query """
+    """Get remaining pages of the query"""
     headers = {"Authorization": "Bearer " + bearer_token}
     response = requests.get(url, headers=headers)
     return json.loads(response.text)

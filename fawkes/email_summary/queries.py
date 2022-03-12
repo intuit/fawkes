@@ -9,39 +9,49 @@ import fawkes.utils.utils as utils
 import fawkes.constants.constants as constants
 from fawkes.configs.app_config import ReviewChannelTypes
 
+
 def numberOfReview(reviews):
     return len(reviews)
 
 
 def topCategory(reviews):
     if len(reviews) > 1:
-        return utils.most_common([
-            review.derived_insight.category
-            for review in reviews
-            if review.derived_insight.category != constants.CATEGORY_NOT_FOUND
-        ])
+        return utils.most_common(
+            [
+                review.derived_insight.category
+                for review in reviews
+                if review.derived_insight.category != constants.CATEGORY_NOT_FOUND
+            ]
+        )
     else:
         return reviews[0].category
 
 
 def numFeatureReq(reviews):
-    return len([
-        review for review in reviews
-        if review.derived_insight.extra_properties[constants.BUG_FEATURE] == constants.FEATURE
-    ])
+    return len(
+        [
+            review
+            for review in reviews
+            if review.derived_insight.extra_properties[constants.BUG_FEATURE]
+            == constants.FEATURE
+        ]
+    )
 
 
 def numBugsReported(reviews):
-    return len([
-        review for review in reviews
-        if review.derived_insight.extra_properties[constants.BUG_FEATURE] == constants.BUG
-    ])
+    return len(
+        [
+            review
+            for review in reviews
+            if review.derived_insight.extra_properties[constants.BUG_FEATURE]
+            == constants.BUG
+        ]
+    )
 
 
 def appStoreRating(reviews):
     reviews = [
-        review for review in reviews
-        if review.channel_type == ReviewChannelTypes.IOS
+        review for review in reviews if review.channel_type == ReviewChannelTypes.IOS
     ]
     if len(reviews) == 0:
         return 0.0
@@ -51,7 +61,8 @@ def appStoreRating(reviews):
 
 def playStoreRating(reviews):
     reviews = [
-        review for review in reviews
+        review
+        for review in reviews
         if review.channel_type == ReviewChannelTypes.ANDROID
     ]
     if len(reviews) == 0:
@@ -61,8 +72,7 @@ def playStoreRating(reviews):
 
 
 def happyReview1(reviews):
-    return sorted(reviews, key=utils.get_sentiment_compound,
-                  reverse=True)[0].message
+    return sorted(reviews, key=utils.get_sentiment_compound, reverse=True)[0].message
 
 
 def unhappyReview1(reviews):
@@ -70,45 +80,34 @@ def unhappyReview1(reviews):
 
 
 def positiveReview(reviews):
-    return len([
-        review for review in reviews
-        if utils.get_sentiment_compound(review) > 0.0
-    ])
+    return len(
+        [review for review in reviews if utils.get_sentiment_compound(review) > 0.0]
+    )
 
 
 def neutralReview(reviews):
-    return len([
-        review for review in reviews
-        if utils.get_sentiment_compound(review) == 0.0
-    ])
+    return len(
+        [review for review in reviews if utils.get_sentiment_compound(review) == 0.0]
+    )
 
 
 def negativeReview(reviews):
-    return len([
-        review for review in reviews
-        if utils.get_sentiment_compound(review) < 0.0
-    ])
+    return len(
+        [review for review in reviews if utils.get_sentiment_compound(review) < 0.0]
+    )
 
 
 def topCategoryNumberOfReview(reviews):
     tc = topCategory(reviews)
-    return len([
-        review for review in reviews if review.derived_insight.category == tc
-    ])
+    return len([review for review in reviews if review.derived_insight.category == tc])
 
 
 def fromDate(reviews):
-    return min([
-        review.timestamp
-        for review in reviews
-    ]).strftime('%b %d')
+    return min([review.timestamp for review in reviews]).strftime("%b %d")
 
 
 def toDate(reviews):
-    return max([
-        review.timestamp
-        for review in reviews
-    ]).strftime('%b %d')
+    return max([review.timestamp for review in reviews]).strftime("%b %d")
 
 
 def getVocByCategory(reviews):
@@ -123,7 +122,8 @@ def getVocByCategory(reviews):
 
 def playStoreNumberReview(reviews):
     reviews = [
-        review for review in reviews
+        review
+        for review in reviews
         if review.channel_type == ReviewChannelTypes.ANDROID
     ]
     return len(reviews)
@@ -131,7 +131,6 @@ def playStoreNumberReview(reviews):
 
 def appStoreNumberReview(reviews):
     reviews = [
-        review for review in reviews
-        if review.channel_type == ReviewChannelTypes.IOS
+        review for review in reviews if review.channel_type == ReviewChannelTypes.IOS
     ]
     return len(reviews)

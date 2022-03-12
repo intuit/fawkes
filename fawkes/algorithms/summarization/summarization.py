@@ -24,11 +24,11 @@ import fawkes.constants.logs as logs
 
 def k_means_classification(sentences, num_clusters):
     """
-        @param{list<string>}: sentences - List of review sentence
-        @param{Integer}: num_clusters - User defined number of clusters
-        @returns{list<list<string>}: clustered_sentences - List of clusters of sentences
+    @param{list<string>}: sentences - List of review sentence
+    @param{Integer}: num_clusters - User defined number of clusters
+    @returns{list<list<string>}: clustered_sentences - List of clusters of sentences
 
-        Groups similar sentences into clusters
+    Groups similar sentences into clusters
     """
     # Reference : https://github.com/UKPLab/sentence-transformers
 
@@ -54,11 +54,11 @@ def k_means_classification(sentences, num_clusters):
 
 def summarize_text(text, word_count):
     """
-        @param{string}: text - text corpus to summarize
-        @param{integer}: word_count - max number of words in a summary
-        @returns{list<string>}: generated summary
+    @param{string}: text - text corpus to summarize
+    @param{integer}: word_count - max number of words in a summary
+    @returns{list<string>}: generated summary
 
-        function to summarize a piece of text
+    function to summarize a piece of text
     """
     gen_summary = summarize(text, word_count=word_count).split("\n")
     # remove all empty reviews from the list
@@ -68,13 +68,13 @@ def summarize_text(text, word_count):
 
 def preprocess_review(reviews):
     """
-        @param{list<Review>}: reviews - List of reviews class object
-        @returns{list<string>}: processed_sentences - List of processed reviews
+    @param{list<Review>}: reviews - List of reviews class object
+    @returns{list<string>}: processed_sentences - List of processed reviews
 
-        Code to preprocess the data
-            - extract messages from review object
-            - tokenize
-            - remove sentences of inappropriate lengths
+    Code to preprocess the data
+        - extract messages from review object
+        - tokenize
+        - remove sentences of inappropriate lengths
     """
     processed_sentences = []
 
@@ -98,14 +98,14 @@ def preprocess_review(reviews):
 
 def generate_summary(fawkes_config_file=constants.FAWKES_CONFIG_FILE):
     """
-        @param{string}: fawkes_config_file - config file path
-        @returns{map<string,list<string>>}: summarized_reviews - summarized reviews per category
+    @param{string}: fawkes_config_file - config file path
+    @returns{map<string,list<string>>}: summarized_reviews - summarized reviews per category
 
-        Main function to create a summary of reviews
-            - queries to get reviews
-            - preprocess reviews based on each category
-            - cluster similar reviews
-            - rank and summarize amongst cluster to provide a summarize
+    Main function to create a summary of reviews
+        - queries to get reviews
+        - preprocess reviews based on each category
+        - cluster similar reviews
+        - rank and summarize amongst cluster to provide a summarize
     """
     # Read the app-config.json file.
     fawkes_config = FawkesConfig(utils.open_json(fawkes_config_file))
@@ -114,10 +114,12 @@ def generate_summary(fawkes_config_file=constants.FAWKES_CONFIG_FILE):
         # Creating an AppConfig object
         app_config = AppConfig(utils.open_json(app_config_file))
         # Path where the user reviews were stored after parsing.
-        processed_user_reviews_file_path = constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
-            base_folder=app_config.fawkes_internal_config.data.base_folder,
-            dir_name=app_config.fawkes_internal_config.data.processed_data_folder,
-            app_name=app_config.app.name,
+        processed_user_reviews_file_path = (
+            constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
+                base_folder=app_config.fawkes_internal_config.data.base_folder,
+                dir_name=app_config.fawkes_internal_config.data.processed_data_folder,
+                app_name=app_config.app.name,
+            )
         )
 
         # Loading the reviews
