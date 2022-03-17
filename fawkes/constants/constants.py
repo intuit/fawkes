@@ -67,26 +67,42 @@ FAWKES_CONFIG_FILE = "app/fawkes-config.json"
 APP_CONFIG_SCHEMA_FILE = "fawkes/configs/schemas/app-config-schema.json"
 
 # Reviews
-RAW_USER_REVIEWS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/{channel_name}-raw-feedback.{extension}"
-PARSED_USER_REVIEWS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/parsed-user-feedback.json"
-PROCESSED_USER_REVIEWS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/processed-user-feedback.json"
+RAW_USER_REVIEWS_FILE_PATH = (
+    "{base_folder}/{dir_name}/{app_name}/{channel_name}-raw-feedback.{extension}"
+)
+PARSED_USER_REVIEWS_FILE_PATH = (
+    "{base_folder}/{dir_name}/{app_name}/parsed-user-feedback.json"
+)
+PROCESSED_USER_REVIEWS_FILE_PATH = (
+    "{base_folder}/{dir_name}/{app_name}/processed-user-feedback.json"
+)
 
 # App. specific ML models
-LSTM_CATEGORY_MODEL_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/lstm-category-trained-model.h5"
-LSTM_CATEGORY_ARTICLE_TOKENIZER_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/lstm-category-article-tokenizer.json"
-LSTM_CATEGORY_LABEL_TOKENIZER_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/lstm-category-label-tokenizer.json"
+LSTM_CATEGORY_MODEL_FILE_PATH = (
+    "{base_folder}/{dir_name}/{app_name}/lstm-category-trained-model.h5"
+)
+LSTM_CATEGORY_ARTICLE_TOKENIZER_FILE_PATH = (
+    "{base_folder}/{dir_name}/{app_name}/lstm-category-article-tokenizer.json"
+)
+LSTM_CATEGORY_LABEL_TOKENIZER_FILE_PATH = (
+    "{base_folder}/{dir_name}/{app_name}/lstm-category-label-tokenizer.json"
+)
 
 # App. agnostic ML models
 SENTENCE_ENCODER_MODEL = "models/universal-sentence-encoder_4/"
 
 # Email Summary
-EMAIL_SUMMARY_GENERATED_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/email-summary-generated.html"
+EMAIL_SUMMARY_GENERATED_FILE_PATH = (
+    "{base_folder}/{dir_name}/{app_name}/email-summary-generated.html"
+)
 
 # Query Results
 QUERY_RESULTS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/query-{query_hash}.json"
 
 # review Summary Results
-REVIEW_SUMMARY_RESULTS_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/review-summary-generated.json"
+REVIEW_SUMMARY_RESULTS_FILE_PATH = (
+    "{base_folder}/{dir_name}/{app_name}/review-summary-generated.json"
+)
 
 # Generic cleanup
 URL_REGEX = r"(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=% &:/~+#-]*[\w@?^=%&/~+#-])?"
@@ -101,7 +117,9 @@ TWEET_LIMIT = 5
 # Elasticsearch related
 BULK_UPLOAD_SIZE = 10000
 NEW_LINE = "\n"
-ELASTICSEARCH_FETCH_DATA_FILE_PATH = "{base_folder}/{dir_name}/{app_name}/fetch-query-response.{extension}"
+ELASTICSEARCH_FETCH_DATA_FILE_PATH = (
+    "{base_folder}/{dir_name}/{app_name}/fetch-query-response.{extension}"
+)
 
 # Slackbot related
 JIRA_ISSUE_URL_TEMPLATE = "{base_url}/secure/CreateIssueDetails!init.jspa?{params}"
@@ -125,7 +143,9 @@ SEARCH = "search"
 # Email notification service
 WEEKLY_EMAIL_TEMPLATE = "fawkes/email_summary/templates/weekly.html"
 WEEKLY_EMAIL_DETAILED_TEMPLATE = "fawkes/email_summary/templates/weekly-detailed.html"
-WEEKLY_EMAIL_DETAILED_REVIEW_BLOCK_TEMPLATE = "fawkes/email_summary/templates/weekly-detailed-review-block.html"
+WEEKLY_EMAIL_DETAILED_REVIEW_BLOCK_TEMPLATE = (
+    "fawkes/email_summary/templates/weekly-detailed-review-block.html"
+)
 
 # Summrization constants
 minimum_reviews_per_cluster = 10

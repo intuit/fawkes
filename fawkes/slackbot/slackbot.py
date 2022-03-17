@@ -121,9 +121,11 @@ def get_people_to_tag(app_config, review):
             review.derived_insight.category
             in app_config.slack_config.slack_notification_rules.category_based_rules
         ):
-            list_of_slack_ids += app_config.slack_config.slack_notification_rules.category_based_rules[
-                review.derived_insight.category
-            ]
+            list_of_slack_ids += (
+                app_config.slack_config.slack_notification_rules.category_based_rules[
+                    review.derived_insight.category
+                ]
+            )
     # Now adding people who have subscribed to keywords
     if app_config.slack_config.slack_notification_rules.keyword_based_rules != None:
         for (
@@ -218,10 +220,12 @@ def send_reviews_to_slack(fawkes_config_file=constants.FAWKES_CONFIG_FILE):
         )
 
         # Create the intermediate folders
-        processed_user_reviews_file_path = constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
-            base_folder=app_config.fawkes_internal_config.data.base_folder,
-            dir_name=app_config.fawkes_internal_config.data.processed_data_folder,
-            app_name=app_config.app.name,
+        processed_user_reviews_file_path = (
+            constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
+                base_folder=app_config.fawkes_internal_config.data.base_folder,
+                dir_name=app_config.fawkes_internal_config.data.processed_data_folder,
+                app_name=app_config.app.name,
+            )
         )
 
         # Loading the reviews

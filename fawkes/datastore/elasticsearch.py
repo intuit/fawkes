@@ -103,10 +103,12 @@ def push_data_to_elasticsearch(fawkes_config_file=constants.FAWKES_CONFIG_FILE):
         )
 
         # Path where the user reviews were stored after parsing.
-        processed_user_reviews_file_path = constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
-            base_folder=app_config.fawkes_internal_config.data.base_folder,
-            dir_name=app_config.fawkes_internal_config.data.processed_data_folder,
-            app_name=app_config.app.name,
+        processed_user_reviews_file_path = (
+            constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
+                base_folder=app_config.fawkes_internal_config.data.base_folder,
+                dir_name=app_config.fawkes_internal_config.data.processed_data_folder,
+                app_name=app_config.app.name,
+            )
         )
 
         # Loading the reviews

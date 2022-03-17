@@ -11,7 +11,7 @@ sys.path.append(os.path.realpath("."))
 
 
 class App:
-    """ The App in the App Config. Contains the application level properties.
+    """The App in the App Config. Contains the application level properties.
 
     Attributes:
         name: The name of the application.
@@ -24,7 +24,7 @@ class App:
 
 
 class ElasticConfig:
-    """ The configurations required for ElasticSearch and Kibana.
+    """The configurations required for ElasticSearch and Kibana.
 
     Attributes:
         index: The index name where all the data goes in elastic search.
@@ -45,7 +45,7 @@ class ElasticConfig:
 
 
 class EmailConfig:
-    """ The configurations required for sending an email summary from fawkes.
+    """The configurations required for sending an email summary from fawkes.
 
     Attributes:
         email_template_file: The template file to be used for the email summary.
@@ -68,7 +68,7 @@ class EmailConfig:
 
 
 class SlackCustomNotifications:
-    """ The configurations required for triggering custom notifications to users on slack based on categories and keyword phrases which match.
+    """The configurations required for triggering custom notifications to users on slack based on categories and keyword phrases which match.
 
     Attributes:
         category_based_rules: A dictionary with category names as keys and list of slack username's to be notified as values.
@@ -87,7 +87,7 @@ class SlackCustomChannel:
 
 
 class SlackConfig:
-    """ The configurations required for sending user reviews to slack and triggering custom notifications.
+    """The configurations required for sending user reviews to slack and triggering custom notifications.
 
     Attributes:
         slack_channel: The slack channel to send the user reviews to.
@@ -109,7 +109,7 @@ class SlackConfig:
 
 
 class JiraConfig:
-    """ The configurations required to add Jira related information in the slack notification.
+    """The configurations required to add Jira related information in the slack notification.
 
     Attributes:
         base_url:
@@ -127,7 +127,7 @@ class JiraConfig:
 
 
 class SummarizationConfig:
-    """ The configurations required to generate review summary
+    """The configurations required to generate review summary
 
     Attributes:
         num_clusters:
@@ -148,7 +148,7 @@ class CategorizationAlgorithms:
 
 
 class CategorizationAlgorithmConfig:
-    """  The configurations required for running algorithms.
+    """The configurations required for running algorithms.
 
     Attributes:
         categorization_algorithm: The categorisation algorithm to use to categorise the user reviews.
@@ -177,7 +177,7 @@ class Algorithms:
 
 
 class AlgorithmConfig:
-    """  The configurations required for running algorithms.
+    """The configurations required for running algorithms.
 
     Attributes:
         algorithms_to_run: A list of algorithms to run.
@@ -206,7 +206,7 @@ class ReviewChannelTypes:
 
 
 class ReviewChannel:
-    """ Definition of a Review Channel.
+    """Definition of a Review Channel.
 
     ReviewChannel is the base class for all the review channel types.
     Review Channels are sources from which user reviews are extracted.
@@ -243,7 +243,7 @@ class ReviewChannel:
 
 
 class AppStoreReviewChannel(ReviewChannel):
-    """ The configurations specific to App. Store.
+    """The configurations specific to App. Store.
 
     Attributes:
         app_id:
@@ -269,7 +269,7 @@ class AppStoreReviewChannel(ReviewChannel):
 
 
 class PlayStoreReviewChannel(ReviewChannel):
-    """ The configurations specific to App. Store.
+    """The configurations specific to App. Store.
 
     Attributes:
         app_id:
@@ -295,7 +295,7 @@ class PlayStoreReviewChannel(ReviewChannel):
 
 
 class TwitterReviewChannel(ReviewChannel):
-    """ The configurations specific to Twitter.
+    """The configurations specific to Twitter.
 
     Attributes:
         consumer_key: The consumer key for the twitter api.
@@ -323,7 +323,7 @@ class TwitterReviewChannel(ReviewChannel):
 
 
 class SpreadSheetReviewChannel(ReviewChannel):
-    """ The configurations specific to Google Spreadsheets.
+    """The configurations specific to Google Spreadsheets.
 
     Attributes:
         spreadsheet_id: The spreadsheet id.
@@ -339,7 +339,7 @@ class SpreadSheetReviewChannel(ReviewChannel):
 
 
 class SalesforceReviewChannel(ReviewChannel):
-    """ The configurations specific to Salesforce.
+    """The configurations specific to Salesforce.
 
     Attributes:
         base_url: The base url of the salesforce api.
@@ -355,7 +355,7 @@ class SalesforceReviewChannel(ReviewChannel):
 
 
 class SplunkReviewChannel(ReviewChannel):
-    """ The configurations specific to Splunk.
+    """The configurations specific to Splunk.
 
     Attributes:
         host: splunk host for api.
@@ -376,7 +376,7 @@ class SplunkReviewChannel(ReviewChannel):
 
 
 class VerticaConnectionConfig:
-    """ The configurations for connecting to vertical
+    """The configurations for connecting to vertical
 
     Attributes:
         host: host for the database.
@@ -403,7 +403,7 @@ class VerticaConnectionConfig:
 
 
 class VerticaReviewChannel(ReviewChannel):
-    """ The configurations specific to Vertica.
+    """The configurations specific to Vertica.
 
     Attributes:
         vertica_connection_config: The configurations related to
@@ -420,7 +420,7 @@ class VerticaReviewChannel(ReviewChannel):
 
 
 class FawkesInternalDataConfig:
-    """ The configurations specific to internals of where fawkes stores the intermediate data files.
+    """The configurations specific to internals of where fawkes stores the intermediate data files.
 
     Attributes:
         base_folder: The base folder path to store all the files.
@@ -442,7 +442,7 @@ class FawkesInternalDataConfig:
 
 
 class FawkesInternalConfig:
-    """ The internal configurations of fawkes exposed so that users can modify as required.
+    """The internal configurations of fawkes exposed so that users can modify as required.
 
     Attributes:
         data: Configuration options related to data.
@@ -453,22 +453,22 @@ class FawkesInternalConfig:
 
 
 class AppConfig:
-    """ The configuration for running Fawkes for a particular app.
+    """The configuration for running Fawkes for a particular app.
 
 
-Definition of a Review Channel.
+    Definition of a Review Channel.
 
-    Attributes:
-        app: The application level properties.
-        elastic_config: The configurations required for ElasticSearch and Kibana.
-        email_config: The configurations required for sending an email summary from fawkes.
-        slack_config: The configurations required for sending user reviews to slack and triggering custom notifications.
-        jira_config: The configurations required to add Jira related information in the slack notification.
-        algorithm_config: The configurations required for running algorithms.
-        env_keys: A list of variables in the configs which need to fetched from the environment variables of the system.
-        custom_code_module_path: The file to any custom code that need to be executed at different stages.
-        fawkes_internal_config: The internal configurations of fawkes exposed so that users can modify as required.
-        review_channels: A list of review channel configuration.
+        Attributes:
+            app: The application level properties.
+            elastic_config: The configurations required for ElasticSearch and Kibana.
+            email_config: The configurations required for sending an email summary from fawkes.
+            slack_config: The configurations required for sending user reviews to slack and triggering custom notifications.
+            jira_config: The configurations required to add Jira related information in the slack notification.
+            algorithm_config: The configurations required for running algorithms.
+            env_keys: A list of variables in the configs which need to fetched from the environment variables of the system.
+            custom_code_module_path: The file to any custom code that need to be executed at different stages.
+            fawkes_internal_config: The internal configurations of fawkes exposed so that users can modify as required.
+            review_channels: A list of review channel configuration.
     """
 
     def __init__(self, config):

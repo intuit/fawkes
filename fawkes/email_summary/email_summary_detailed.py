@@ -62,10 +62,12 @@ def generate_email_summary_detailed(fawkes_config_file=constants.FAWKES_CONFIG_F
         # Creating an AppConfig object
         app_config = AppConfig(utils.open_json(app_config_file))
         # Path where the user reviews were stored after parsing.
-        processed_user_reviews_file_path = constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
-            base_folder=app_config.fawkes_internal_config.data.base_folder,
-            dir_name=app_config.fawkes_internal_config.data.processed_data_folder,
-            app_name=app_config.app.name,
+        processed_user_reviews_file_path = (
+            constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
+                base_folder=app_config.fawkes_internal_config.data.base_folder,
+                dir_name=app_config.fawkes_internal_config.data.processed_data_folder,
+                app_name=app_config.app.name,
+            )
         )
 
         # Loading the reviews
@@ -146,10 +148,12 @@ def generate_email_summary_detailed(fawkes_config_file=constants.FAWKES_CONFIG_F
         )
 
         # Path where the generated email in html format will be stored
-        email_summary_generated_file_path = constants.EMAIL_SUMMARY_GENERATED_FILE_PATH.format(
-            base_folder=app_config.fawkes_internal_config.data.base_folder,
-            dir_name=app_config.fawkes_internal_config.data.emails_folder,
-            app_name=app_config.app.name,
+        email_summary_generated_file_path = (
+            constants.EMAIL_SUMMARY_GENERATED_FILE_PATH.format(
+                base_folder=app_config.fawkes_internal_config.data.base_folder,
+                dir_name=app_config.fawkes_internal_config.data.emails_folder,
+                app_name=app_config.app.name,
+            )
         )
 
         dir_name = os.path.dirname(email_summary_generated_file_path)

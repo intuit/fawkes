@@ -6,10 +6,15 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 #  This is so that the following imports work
 sys.path.append(os.path.realpath("."))
 
-from fawkes.algorithms.categorisation.lstm.trainer import MAX_LENGTH, PADDING_TYPE, TRUNC_TYPE
+from fawkes.algorithms.categorisation.lstm.trainer import (
+    MAX_LENGTH,
+    PADDING_TYPE,
+    TRUNC_TYPE,
+)
+
 
 def predict_labels(articles, model, article_tokenizer, label_tokenizer):
-    """ Given an article we predict the label """
+    """Given an article we predict the label"""
 
     # Convert the give article to tokens
     tokenized_articles = article_tokenizer.texts_to_sequences(articles)

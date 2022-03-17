@@ -18,28 +18,29 @@ import fawkes.utils.utils as utils
 import fawkes.utils.filter_utils as filter_utils
 import fawkes.constants.constants as constants
 
-from fawkes.configs.app_config import AppConfig, ReviewChannelTypes, CategorizationAlgorithms
+from fawkes.configs.app_config import (
+    AppConfig,
+    ReviewChannelTypes,
+    CategorizationAlgorithms,
+)
 from fawkes.configs.fawkes_config import FawkesConfig
 from fawkes.review.review import Review
 
-def generate_email_summary(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
+
+def generate_email_summary(fawkes_config_file=constants.FAWKES_CONFIG_FILE):
     # Read the app-config.json file.
-    fawkes_config = FawkesConfig(
-        utils.open_json(fawkes_config_file)
-    )
+    fawkes_config = FawkesConfig(utils.open_json(fawkes_config_file))
     # For every app registered in app-config.json we
     for app_config_file in fawkes_config.apps:
         # Creating an AppConfig object
-        app_config = AppConfig(
-            utils.open_json(
-                app_config_file
-            )
-        )
+        app_config = AppConfig(utils.open_json(app_config_file))
         # Path where the user reviews were stored after parsing.
-        processed_user_reviews_file_path = constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
-            base_folder=app_config.fawkes_internal_config.data.base_folder,
-            dir_name=app_config.fawkes_internal_config.data.processed_data_folder,
-            app_name=app_config.app.name,
+        processed_user_reviews_file_path = (
+            constants.PROCESSED_USER_REVIEWS_FILE_PATH.format(
+                base_folder=app_config.fawkes_internal_config.data.base_folder,
+                dir_name=app_config.fawkes_internal_config.data.processed_data_folder,
+                app_name=app_config.app.name,
+            )
         )
 
         # Loading the reviews
@@ -51,11 +52,11 @@ def generate_email_summary(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
         # Filtering out reviews which are not applicable.
         reviews = filter_utils.filter_reviews_by_time(
             filter_utils.filter_reviews_by_channel(
-                reviews, filter_utils.filter_disabled_review_channels(
-                    app_config
-                ),
+                reviews,
+                filter_utils.filter_disabled_review_channels(app_config),
             ),
-            datetime.now(timezone.utc) - timedelta(days=app_config.email_config.email_time_span)
+            datetime.now(timezone.utc)
+            - timedelta(days=app_config.email_config.email_time_span),
         )
 
         # We get all the data.
@@ -76,20 +77,21 @@ def generate_email_summary(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
             "toDate": queries.toDate(reviews),
             "appLogo": app_config.app.logo,
             "timeSpanWords": app_config.email_config.email_time_span,
-            "kibanaDashboardURL": app_config.elastic_config.kibana_url
+            "kibanaDashboardURL": app_config.elastic_config.kibana_url,
         }
 
         # Get the initial HTML from the template file.
         formatted_html = email_utils.generate_email(
-            app_config.email_config.email_template_file,
-            template_data
+            app_config.email_config.email_template_file, template_data
         )
 
         # Path where the generated email in html format will be stored
-        email_summary_generated_file_path = constants.EMAIL_SUMMARY_GENERATED_FILE_PATH.format(
-            base_folder=app_config.fawkes_internal_config.data.base_folder,
-            dir_name=app_config.fawkes_internal_config.data.emails_folder,
-            app_name=app_config.app.name,
+        email_summary_generated_file_path = (
+            constants.EMAIL_SUMMARY_GENERATED_FILE_PATH.format(
+                base_folder=app_config.fawkes_internal_config.data.base_folder,
+                dir_name=app_config.fawkes_internal_config.data.emails_folder,
+                app_name=app_config.app.name,
+            )
         )
 
         dir_name = os.path.dirname(email_summary_generated_file_path)
@@ -97,4 +99,3 @@ def generate_email_summary(fawkes_config_file = constants.FAWKES_CONFIG_FILE):
 
         with open(email_summary_generated_file_path, "w") as email_file_handle:
             email_file_handle.write(formatted_html)
-

@@ -48,7 +48,7 @@ def dump_csv(records, write_file):
 
 
 def get_json_key_value(json_object, keys_list):
-    """ Get the value from json pointing to string of keys input: [k1,k2] """
+    """Get the value from json pointing to string of keys input: [k1,k2]"""
     # This will be the key
     key = keys_list[0]
 
@@ -73,7 +73,7 @@ def get_json_key_value(json_object, keys_list):
 
 
 def check_tweet_authenticity(tweet_message, twitter_handle_blacklist):
-    """  Checks if tweets incoming are authentic. basically there is blacklist of twitter-handles """
+    """Checks if tweets incoming are authentic. basically there is blacklist of twitter-handles"""
     is_tweet_authentic = True
 
     for handle in twitter_handle_blacklist:
@@ -91,10 +91,10 @@ def check_for_explicit_content(tweet):
 
 def remove_stop_words(document):
     """
-        Removes stop words. Takes tokenised document as input and returns
-        after removing the stop words.
-        input : ["phil","is","good"]
-        output : ["phil","good"]
+    Removes stop words. Takes tokenised document as input and returns
+    after removing the stop words.
+    input : ["phil","is","good"]
+    output : ["phil","good"]
     """
 
     stop_words = stopwords.words("english")

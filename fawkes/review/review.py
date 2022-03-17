@@ -15,7 +15,7 @@ url_regex = re.compile(constants.URL_REGEX)
 
 
 class DerivedInsight:
-    """ The Derived Insights from a user review.
+    """The Derived Insights from a user review.
 
     Derived insights include attributes like sentiment, category etc. which are obtained by running algorithms on top of the existing user review.
 
@@ -27,7 +27,7 @@ class DerivedInsight:
     """
 
     def __init__(self, derived_insight=None):
-        """ Initialiser of the derived insight """
+        """Initialiser of the derived insight"""
 
         if derived_insight is None:
             self.sentiment = None
@@ -41,7 +41,7 @@ class DerivedInsight:
             self.extra_properties = derived_insight["extra_properties"]
 
     def to_dict(self):
-        """ Converts the DerivedInsight class object to a dict """
+        """Converts the DerivedInsight class object to a dict"""
 
         return {
             "sentiment": self.sentiment,
@@ -52,7 +52,7 @@ class DerivedInsight:
 
 
 class Review:
-    """ Definition of a user review.
+    """Definition of a user review.
 
     When initialising a user review, we also standardise the timestamp and cleanup the message.
 
@@ -86,7 +86,7 @@ class Review:
         hash_id=None,
         raw_review=None,
     ):
-        """ Initialiser of a user review """
+        """Initialiser of a user review"""
 
         self.message = message
         self.timestamp = timestamp
@@ -161,7 +161,7 @@ class Review:
 
     @classmethod
     def from_review_json(cls, review):
-        """ Initialse a user review object from a dict """
+        """Initialse a user review object from a dict"""
 
         return cls(
             review,
@@ -176,7 +176,7 @@ class Review:
         )
 
     def to_dict(self):
-        """ Converts the Review class object to a dict """
+        """Converts the Review class object to a dict"""
 
         return {
             "message": self.message,
